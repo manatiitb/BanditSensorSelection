@@ -46,7 +46,7 @@
 %\newcommand{\EE}[1]{\mathbb{E}[#1]}
 %\DeclareMathOperator{\sgn}{sgn}
 
-\title{Unsupervised Cost-Sensitive Online Prediction}
+\title{Label Free Resource-Constrained Learning}
 
 % The \author macro works with any number of authors. There are two
 % commands used to separate the names and addresses of multiple
@@ -99,7 +99,7 @@
 	\end{abstract}
 
 \section{Introduction}
-The quality of sensors used in a decision system influences the accuracy of  the measurements or the predictions. Typically, a less accurate sensor is cheap and produces the predictions faster. A more accurate sensor is costly and takes more time to output predictions. In practice, the budget/time constraints do not allow costly/slow sensors to be used all the time and one has to use the sensor that is the most `cost effective'. One natural way is to use a sensor for which sum of prediction error rate and cost is the lowest. However,  values of the errors rate may not be known a priori and the best cost effective sensor cannot be determined. Further, the true labels required to estimate the error rate may also be not available or prohibitively expensive to know. In this paper we study the problem of learning the most cost effective sensor when the true labels are not known, and the goal is to efficiently learn the most cost effective sensor. 
+The quality of sensors used in a decision system influences the accuracy of  the measurements or the predictions. Typically, a less accurate sensor is cheap and produces predictions faster. A more accurate sensor is costly and takes more time to output predictions. In practice, the budget/time constraints do not allow costly/slow sensors to be used all the time and one has to use the sensor that is the most `cost effective'. One natural way is to use a sensor for which sum of prediction error rate and cost is the lowest. However,  values of the errors rate may not be known a priori and the best cost effective sensor cannot be determined. Further, the true labels required to estimate the error rate may also be not available or prohibitively expensive to know. In this paper we study the problem of learning the most cost effective sensor when the true labels are not known, and the goal is to efficiently learn the most cost effective sensor. 
 
 
 
