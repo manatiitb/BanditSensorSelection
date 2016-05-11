@@ -108,7 +108,7 @@ Several papers including \cite{AISTATS13_SupervisedSequentialLearning_TrapezSali
 In this work we focus on sequential predication of binary labels.  Similar to \cite{ML13_MultistageClassifier_TrapezSaligramaCastanon}, we consider that the order in which sensors are applied is fixed. Typically, the cheapest sensor, or the one with highest error rate, is used first, followed by next cheap sensor with smaller error rate and so on. The sensors thus constitute stages of a cascade, where prediction error rates decrease along the depth, while the costs increase. For each new sample, the learner applies the sensors sequentially and can stop at any stage in the cascade. The goal is to stop at a stage where expected loss is the smallest. Loss at depth $k$ is defined as total cost incurred for acquiring sensor predictions plus a penalty which is $1$ if the prediction of $k^{th}$ sensor is correct, otherwise it is zero. If the learner stops at a depth $k$, he obtains the predictions of all the first $k$ senors as feedback, but which of them are correct is unknown. We refer to this setup as the Sensor Acquisitions Problem (SAP). 
 
 The feedback in SAP do not reveal information about the losses, hence the learner cannot identify the best stage for any sample. 
-We thus make an assumption on the observed feedback. Specifically, we assume that if a cheap sensor predicts a label correctly, the prediction of a better quality sensor is also correct. We refer to this assumption as {\em dominance condition}. When the dominance conditions holds, the learner can partially infer the losses from the stages, which, as discussed later, is sufficient to learn the best stage for a given sample. We further demonstrate that under any weaker condition the learner cannot identify the best stage. The examples discussed in the beginning satisfy dominance conditions. In the wireless communication example discussed above, if an error correcting code (ex. Reed-Solomon, LDPC \cite{Book_InferenceLearning_MacKay} recovers information in a channel with certain noise level, then certainly we can recover the information on the channel with more redundancy blocks in the error correction code (though at a lower transmission rate).     
+We thus focus on scenarios where feedback satisfies some stochastic ordering. Specifically, we assume that if a sensor in the cascade predicts a label correctly, any subsequent sensor also predict it correctly. We refer to this assumption as {\em dominance condition}. When it holds, the learner can partially infer losses of the stages, which, as discussed later, is sufficient to learn the best stage for a given sample. We further demonstrate that under any weaker condition the learner cannot identify the best stage. Dominance conditions holds in many scenarios includes the examples discussed at the beginning. In the wireless communication example, if an error correcting code (ex. Reed-Solomon, LDPC \cite{Book_InferenceLearning_MacKay} recovers information in a channel with certain noise level, then with more redundancy blocks in the error correction code we can certainly recover the information on the channel (though at a lower transmission rate).     
 
 Our first main contribution is to show that if the dominance condition holds the SAP problem can be reduced to 
 a stochastic multi-armed bandit with side observations,
@@ -118,9 +118,9 @@ of any meta-strategy is equal to its bandit-regret
 when the procedure is used to play in the corresponding
 bandit problem. As a consequence, we conclude that existing efficient
 bandit algorithms, as well as their bounds on bandit-regret,
-can be immediately applied to achieve new results
+can be directly applied to achieve new results
 for SAP. Although the underlying
-reduction is straightforward, it provides a complete characterization of the fundamental limits and what can be achieved for the SAP.
+reduction is straightforward, it gives ready policies with performance guarantees for SAP and their fundamental limitations .
 
 
 Related Work: \cite{AISTATS13_SupervisedSequentialLearning_TrapezSaligram}\cite{ICML14_PredictionWithLimitedAdvice_LattimoreCrammerCzepes}
