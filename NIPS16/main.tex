@@ -335,7 +335,9 @@ In the following we establish that under the dominance condition efficient algor
 %], but differs in terms of the information structure when action $2$ is played: in the apple tasting problem, playing action $2$ in a round reveals loss incurred by both the actions. Whereas, in the sensor selection problem we get only partial information on which of the two actions is better in that round. However, we will see below that the partial information is enough to distinguish the optimal arm and one can obtain performance similar to that in the apple tasting problem .
 
 \section{Background on Stochastic Multi-armed Bandits}
-A stochastic multi-armed bandit (MAB), denoted as $\phi:=(K, (\nu_k)_{1 \leq k \leq K})$, is a sequential learning problem where number of arms $K$ is known and each arm $i \in [K]$ gives rewards drawn according to an unknown distribution $\nu_k$. Let $X_{i,n}$ denote the random reward from arm $i$ in its $n$th play. For each arm $i\in [K]$, $\{X_{i,t}: t>0\}$ are independently and identically (i.i.d) distributed and for all $t>0$, $\{X_{i,t}, i \in [K]\}$ are independent. We note that in the standard MAB setting the learner observes only reward from the selected arm in each round and no information from the other arms is revealed. A policy is any allocation strategy that maps the past history into an arm in each round, and let $\Pi^\phi$ denote a set of polices on $\phi$. If the learner knows $\{\nu_k\}_{k \in [K]}$, then the optimal policy is to play the arm with highest mean. For any policy $\pi \in \Pi^\phi$, its performance is measured with respect to the optimal policy and is defined in terms of expected cumulative regret (or simply regret) as follows:  Let $\pi$ selects arm $i_t$ in round $t$. After $T$ rounds, its regret is 
+A stochastic multi-armed bandit (MAB), denoted as $\phi:=(K, (\nu_k)_{1 \leq k \leq K})$, is a sequential learning problem where number of arms $K$ is known and each arm $i \in [K]$ gives rewards drawn according to an unknown distribution $\nu_k$. Let $X_{i,n}$ denote the random reward from arm $i$ in its $n$th play. For each arm $i\in [K]$, $\{X_{i,t}: t>0\}$ are independently and identically (i.i.d) distributed and for all $t>0$, $\{X_{i,t}, i \in [K]\}$ are independent. We note that in the standard MAB setting the learner observes only reward from the selected arm in each round and no information from the other arms is revealed. However, in many applications playing an arm reveals information about the other arms which can be exploited to improve learning performance. Let $\mathcal{N}_i$  denote the set of arms such that playing arm $i$ reveals rewards of all arms $j \in \mathcal{N}_i$. We refer to $\mathcal{N}_i$ as neighborhood of $i$ and the graph induced by the neighborhood sets as side-information graph. Given a set of neighborhood $\{\mathcal{N}_i, i\in [K]\}$, let $\phi_G:=(K, (\nu_k)_{1\leq k\leq K}, G)$ denote a MAB with side-information graph $G=(V,E)$, where $|V|=K$ and $(i,j)\in E$ if $j \in \mathcal{N}_i$. The side-observation graph is known to the learner and remains fixed during the play. 
+
+A policy is any allocation strategy that maps the past history into an arm in each round, and let $\Pi^\phi$ denote a set of polices on $\phi$. If the learner knows $\{\nu_k\}_{k \in [K]}$, then the optimal policy is to play the arm with highest mean. For any policy $\pi \in \Pi^\phi$, its performance is measured with respect to the optimal policy and is defined in terms of expected cumulative regret (or simply regret) as follows:  Let $\pi$ selects arm $i_t$ in round $t$. After $T$ rounds, its regret is 
 \begin{equation}
 \label{eqn:BanditRegret}
 R^\phi_T(\pi)= T \mu_{i^*}- \sum_{t=1}^{T}\mu_{i_t},
@@ -344,27 +346,28 @@ where $\mu_i=\mathbb{E}[X_{i,n}]$ denotes mean of distribution  $\nu_i$ for all 
 \[R^\phi_T(\pi)=\sum_{i=1}^{K}(\mu_{i^*}-\mu_i)\mathbb{E}[N^\phi_i(T)].\]
 The goal of the learner is to learn a policy that minimizes the regret.  
 
-MAB problems have been extensively studied in the literature. The seminal paper of Lai \& Robbins 
-\cite{AAM85_Asymptotically_LaiRobbins} showed that for any consistent policy (that plays sub-optimal arms only sup-polynomially many times in the time horizon) the regret grows logarithmically in time horizon. Specifically, for a class of parametric reward distributions, they showed that regret of any consistent policy satisfies
-\begin{equation}
-\label{eqn:MABLowerBound}
-\liminf_{n \rightarrow \infty}\frac{ R^\phi_T(\pi)}{\log T} \geq \sum_{i\neq i^*} \frac{\mu_{i^*}-\mu_i}{D(\mu_{i^*}||\mu_i)},
-\end{equation}
-where  $D(p||q)$ is the KL-divergence of $p,q \in [0\; 1]$. Further, the authors in \cite{AAM85_Asymptotically_LaiRobbins}  provided an upper confidence bound (UCB) based policy that asymptotically achieves the lower bound for a class of parmetric reward distributions.
- 
-Auer et, al. \cite{ML02_FiniteTimeAnalysis_AuerBianchiFischer} proposed an anytime policy named UCB1, that is based on the UCB strategy and showed that it is optimal on any MAB with bounded rewards. Specifically, they showed that regret of UCB1 for any $T>K$ is upper bound as 
-\begin{equation}
-\label{eqn:UCB1UpperBound}
-R^\phi_T(\mbox{UCB1})\leq \sum_{i\neq i^*} \frac{8\log n}{\mu_{i^*}-\mu_i} + (\pi^2/3 + 1)(\mu_{i^*}-\mu_i).
-\end{equation}
-Thus demonstrating the optimality of UCB1. Since the work of Auer et. al. several works have proposed improvised UCB based policies like, KL-UCB \cite{COLT11_TheKL-UCBAlgorithm_GarivierCappe}, MOSS \cite{JMLR2010_RegretBoundsAndMinimax_AudibertBubeck}.
-
-
-\subsection{MAB With Side Information}
-In many applications playing an arm reveals information about the other arms which can be exploited to improve learning performance. Let $\mathcal{N}_i$  denote the set of arms such that playing arm $i$ reveals rewards of all arms $j \in \mathcal{N}_i$. We refer to $\mathcal{N}_i$ as neighborhood of $i$ and the graph induced by the neighborhood sets as side-information graph. Given a set of neighborhood $\{\mathcal{N}_i, i\in [K]\}$, let $\phi_G:=(K, (\nu_k)_{1\leq k\leq K}, G)$ denote a MAB with side-information graph $G=(V,E)$, where $|V|=K$ and $(i,j)\in E$ if $j \in \mathcal{N}_i$. The side-observation graph is known to the learner and remains fixed during the play. 
-
-Let $\Pi^{\phi_G}$ denote the set of all policies on $\phi_G$ that map the past history (including the side-observations) to an action in each round. For any policy $\pi  \in \Pi^{\phi_G}$, we denote the regret over a period $T$ as $R^{\phi_G}_T(\pi)$ and is given by (\ref{eqn:BanditRegret}). Note that, in each round, 
-only reward from the arm played contribute to the regret and not that from the side-observations. In \cite{Sigmetrics15_StochasticBanditsWithSideObservations_BuccapatnamEriyilmazShroff} the authors extended the lower bound in (\ref{eqn:MABLowerBound}) to incorporate the effect of side-observations. Specifically, they establish that any policy $\pi \in \Pi^{\phi_G} 
+%MAB problems have been extensively studied in the literature. The seminal paper of Lai \& Robbins 
+%\cite{AAM85_Asymptotically_LaiRobbins} showed that for any consistent policy (that plays sub-optimal arms only sup-polynomially many times in the time horizon) the regret grows logarithmically in time horizon. Specifically, for a class of parametric reward distributions, they showed that regret of any consistent policy satisfies
+%\begin{equation}
+%\label{eqn:MABLowerBound}
+%\liminf_{n \rightarrow \infty}\frac{ R^\phi_T(\pi)}{\log T} \geq \sum_{i\neq i^*} \frac{\mu_{i^*}-\mu_i}{D(\mu_{i^*}||\mu_i)},
+%\end{equation}
+%where  $D(p||q)$ is the KL-divergence of $p,q \in [0\; 1]$. Further, the authors in \cite{AAM85_Asymptotically_LaiRobbins}  provided an upper confidence bound (UCB) based policy that asymptotically achieves the lower bound for a class of parmetric reward distributions.
+% 
+%Auer et, al. \cite{ML02_FiniteTimeAnalysis_AuerBianchiFischer} proposed an anytime policy named UCB1, that is based on the UCB strategy and showed that it is optimal on any MAB with bounded rewards. Specifically, they showed that regret of UCB1 for any $T>K$ is upper bound as 
+%\begin{equation}
+%\label{eqn:UCB1UpperBound}
+%R^\phi_T(\mbox{UCB1})\leq \sum_{i\neq i^*} \frac{8\log n}{\mu_{i^*}-\mu_i} + (\pi^2/3 + 1)(\mu_{i^*}-\mu_i).
+%\end{equation}
+%Thus demonstrating the optimality of UCB1. Since the work of Auer et. al. several works have proposed improvised UCB based policies like, KL-UCB \cite{COLT11_TheKL-UCBAlgorithm_GarivierCappe}, MOSS \cite{JMLR2010_RegretBoundsAndMinimax_AudibertBubeck}.
+%
+%
+%\subsection{MAB With Side Information}
+%
+%
+%Let $\Pi^{\phi_G}$ denote the set of all policies on $\phi_G$ that map the past history (including the side-observations) to an action in each round. For any policy $\pi  \in \Pi^{\phi_G}$, we denote the regret over a period $T$ as $R^{\phi_G}_T(\pi)$ and is given by (\ref{eqn:BanditRegret}). Note that, in each round, 
+%only reward from the arm played contribute to the regret and not that from the side-observations. 
+The authors in \cite{Sigmetrics15_StochasticBanditsWithSideObservations_BuccapatnamEriyilmazShroff} establish that any policy $\pi \in \Pi^{\phi_G} 
 $ where side observation graph is such that $i \in \mathcal{N}_i$ for all $i\in [K]$ satisfies
 %\begin{equation}
 %\label{RegretBandit}
@@ -400,9 +403,9 @@ The regret of UCB-LP is upper bounded by
 \mathcal{O}\left(\sum_{i\in [K]} z_i^* \log T\right) +\mathcal{O}(K\delta),
 \end{equation}
 where $\delta= \max_{i \in [K]}|\mathcal{K}_i|$ and $\{z_i^*\}$ are the optimal values of $LP2$. Since any dominating set is a feasible solution of $LP2$, we get $\sum_{i\in [K]}z_i^*\leq \xi(G)$, and the regret of UCB-LP is $\mathcal{O}(\xi(G)\log T)$. 
-\subsection{Special case: 1-armed bandit}
-In the MAB problem when all the arms have a fixed reward except for one, we get 1-armed bandit. 
-The learner knows the arms that give fixed reward the goal is to identify the quality of the arm that gives stochastic reward as fast as possible. A straightforward modification of UCB1 achieves optimal regret of $\Theta(\log T)$.
+%\subsection{Special case: 1-armed bandit}
+%In the MAB problem when all the arms have a fixed reward except for one, we get 1-armed bandit. 
+%The learner knows the arms that give fixed reward the goal is to identify the quality of the arm that gives stochastic reward as fast as possible. A straightforward modification of UCB1 achieves optimal regret of $\Theta(\log T)$.
   
  \section{Regret Equivalence}
 In this section we establish that under the dominance condition SAP is `regret equivalent' to an instance of MAB with side-information and the corresponding algorithm for MAB can be suitably imported to solve SAP efficiently.   
@@ -419,30 +422,30 @@ In the SAP with only two actions, the feedback from action $i=1$ reveals no info
 {\bf Apple tasting problem:} In the apple tasting problem, a learner gets a sequence of apples and some of them can be rotten. In each round, the learner can either accept or reject an apple. If an apple is accepted, the learner tastes it and incurs a penalty if it is rotten. If apple is rejectsed, he still incurs the penalty if it is rotten, but do not get to observe its quality. %Thus, each time the learner accepts an apple, he knows the penalty incurred for both the actions. However, no loss values is revealed if he rejects. 
 The goal of the learner is to taste more good apples. 
 The SAP setting is a more general version than the apple tasting problem--in any round, actions $1$ reveals no loss values. Action $2$  reveals only partial information about the losses, but not the exact losses as in the apple tasting problem. However, we next show that the partial information is enough to achieve optimal performance.  
-
-\begin{thm}
-	\label{thm:2SAPRegret}
-Assume dominance condition (\ref{eqn:DominanceCondition}) holds. Then SAP $\psi$ with $K=2$ is regret-equivalent to a stochastic $1$-armed bandit.
-\end{thm}
-%a_i\mathbb{E}[N_i(T)]$ where $\Delta_1= c- \min\{\gamma_1-\gamma_2,c\}$ and $\Delta_2= \gamma_1-\gamma_2- \min\{\gamma_1-\gamma_2,c\}$, which can also be expressed as $\Delta_1=\gamma_1 - \mathbb{E}[L(i^*)]$ and  $\Delta_2=\gamma_2+c - \mathbb{E}[L(i^*)]$, implying that the corresponding policy on the SAP also gives the same regret and vice versa. 
-The following corollary follow immediately from the regret equivalence. 
-\begin{proposition}[SAP regret lower bound]
-	Let $\pi$ be any policy on SAT with 2 sensors such that it pulls the suboptimal arm only sub polynomial many times, i.e., $\mathbb{E}[N_i(T)]=o(T^a)$ for all $a>0$ and $i\neq i^*$. Then,
-	\begin{equation}
-	\liminf_{T \rightarrow \infty} R^\psi_T(\pi)/\log T \geq \frac{|\gamma_1-\gamma_2-c|}{D(\hat{\gamma},\gamma^*)} \mbox{ where } \gamma^*=\min\{\gamma_1,\gamma_2+c\},  \hat{\gamma}=\max\{\gamma_1,\gamma_2+c\}
-	\end{equation}
-	and $D(\hat{\gamma},\gamma^*)$  is the KL-divergence between $\hat{\gamma}$ and $\gamma^*$.
-\end{proposition}
-
-\begin{proposition}[SAP regret upper bound]
-	Let $\pi^\prime$ denote a policy on a $1$-armed stochastic bandit where one arm has mean $\gamma_1-\gamma_2$ and the other gives fixed reward $c$. Then, the regret of a policy $g(\pi)$ for the SAT problem obtained according the mapping (\ref{eqn:1BanditToSAP}) is upper bounded as
-	\begin{equation}
-	R^\psi_T(g(\pi))\leq \frac{6\log T}{|\gamma_1-\gamma_2-c|} + |\gamma_1-\gamma_2-c|(1+\pi^2/3) 	\mbox{ when } \pi^\prime=\mbox{UCB1}. 
-	\end{equation}
-		\begin{equation}
-		R^\psi_T(g(\pi))\leq \frac{|\gamma_1-\gamma_2-c|\log T}{D(\hat{\gamma},\gamma^*)} + \mathcal{O}(\sqrt{\log T }) 	\mbox{ when } \pi^\prime=\mbox{KL-UCB}. 
-		\end{equation}
-\end{proposition}
+%
+%\begin{thm}
+%	\label{thm:2SAPRegret}
+%Assume dominance condition (\ref{eqn:DominanceCondition}) holds. Then SAP $\psi$ with $K=2$ is regret-equivalent to a stochastic $1$-armed bandit.
+%\end{thm}
+%%a_i\mathbb{E}[N_i(T)]$ where $\Delta_1= c- \min\{\gamma_1-\gamma_2,c\}$ and $\Delta_2= \gamma_1-\gamma_2- \min\{\gamma_1-\gamma_2,c\}$, which can also be expressed as $\Delta_1=\gamma_1 - \mathbb{E}[L(i^*)]$ and  $\Delta_2=\gamma_2+c - \mathbb{E}[L(i^*)]$, implying that the corresponding policy on the SAP also gives the same regret and vice versa. 
+%The following corollary follow immediately from the regret equivalence. 
+%\begin{proposition}[SAP regret lower bound]
+%	Let $\pi$ be any policy on SAT with 2 sensors such that it pulls the suboptimal arm only sub polynomial many times, i.e., $\mathbb{E}[N_i(T)]=o(T^a)$ for all $a>0$ and $i\neq i^*$. Then,
+%	\begin{equation}
+%	\liminf_{T \rightarrow \infty} R^\psi_T(\pi)/\log T \geq \frac{|\gamma_1-\gamma_2-c|}{D(\hat{\gamma},\gamma^*)} \mbox{ where } \gamma^*=\min\{\gamma_1,\gamma_2+c\},  \hat{\gamma}=\max\{\gamma_1,\gamma_2+c\}
+%	\end{equation}
+%	and $D(\hat{\gamma},\gamma^*)$  is the KL-divergence between $\hat{\gamma}$ and $\gamma^*$.
+%\end{proposition}
+%
+%\begin{proposition}[SAP regret upper bound]
+%	Let $\pi^\prime$ denote a policy on a $1$-armed stochastic bandit where one arm has mean $\gamma_1-\gamma_2$ and the other gives fixed reward $c$. Then, the regret of a policy $g(\pi)$ for the SAT problem obtained according the mapping (\ref{eqn:1BanditToSAP}) is upper bounded as
+%	\begin{equation}
+%	R^\psi_T(g(\pi))\leq \frac{6\log T}{|\gamma_1-\gamma_2-c|} + |\gamma_1-\gamma_2-c|(1+\pi^2/3) 	\mbox{ when } \pi^\prime=\mbox{UCB1}. 
+%	\end{equation}
+%		\begin{equation}
+%		R^\psi_T(g(\pi))\leq \frac{|\gamma_1-\gamma_2-c|\log T}{D(\hat{\gamma},\gamma^*)} + \mathcal{O}(\sqrt{\log T }) 	\mbox{ when } \pi^\prime=\mbox{KL-UCB}. 
+%		\end{equation}
+%\end{proposition}
 \subsection{SAP with more than two actions}
 In the SAP with two sensors, only action 2 provides information about the losses. In the case with $K>2$ sensors, by playing an action $k$, we can obtain information about the losses of all sensors $l<k$ by recursively applying the dominance condition between pair of sensors. 
 \begin{wrapfigure}{r}{6cm}
@@ -579,39 +582,6 @@ Note that the some of mean 	values $\{\gamma_1- \gamma_i - \sum_{j\leq i} c_j\}$
 %\[{\hat{\mu}_{j,t-1}^I + \sqrt{\frac{6\log t}{\sum_{k\geq j} N_{k}(t-1)}} < \displaystyle \sum_{k=I+1}^{j}c_k} \quad for \;\; j> I\]
 %
 
-\section{Extension to context based prediction}
-\label{sec:Contextual}
-In this section we consider that the prediction errors depend on the context $X_t$, and in each round the learner can decide which action to apply based on $X_t$. Let  $\gamma_i(X_t)=\Pr\{\hat{Y}^1_t \neq \hat{Y}^2_t| X_t\}$ for all $i \in [K]$. We refer to this setting as  Contextual Sensor Acquisition Problem (CSAP) and denote it as $\psi_c=(K, \mathcal{A}, \mathcal{C}, (\gamma_i,c_i)_{i\in [K]})$. 
-
-Given $x \in \mathcal{C}$, let $L_t(a|x)$ denote the loss from action $a\in \mathcal{A}$ in round $t$. A policy on $\phi^c$ maps past history and current contextual information to an action. Let $\Pi^{\psi_c}$ denote set of policies on $\psi_c$ and for any policy $\pi \in \Pi^{\psi_c}$, let $\pi(x_t)$ denote the action selected when the context is $x_t$. For any sequence $\{x_t,y_t\}_{t>0}$, the regret of a policy $\pi$ is defined as:
-\begin{equation}
-R^{\phi_c}_T(\pi)= \sum_{t=1}^{T} \mathbb{E}\left [L_t(\pi(x_t)|x_t)\right ]-\sum_{t=1}^{T}\min_{a \in \mathcal{A}} \mathbb{E} \left [ L_t(a|x_t)\right ]. 
-\end{equation}
-As earlier, the goal is to learn a policy that minimizes the expected regret, i.e., $\pi^*= \arg \min_{\pi \in \Pi^{\psi_c}} \mathbb{E}[R^{\psi_c}_T(\pi)].$
-
-In this section we focus on CSA-problem with two sensors and assume that sensor predictions errors are linear in the context. Specifically, we assume that there exists $\theta_1, \theta_2 \in \mathcal{R}^d$ such that $\gamma_1(x)=x^\prime\theta_1$ and $\gamma_2(x)+c=x^\prime\theta_2$ for all $x \in \mathcal{C}$, were $x^\prime$ denotes the transpose of $x$. By default all vectors are column vectors. In the following we establish that CSAP is regret equivalent to a stochastic liner bandits with varying decision sets. We first recall the stochastic linear bandit setup and relevant results. 
-
-\noindent
-{\bf Note: $c$ is a fixed cost and does not depend on context. We are assuming that error rate of sensor $2$ offset by $c$ is a linear quantity. Another possibility is, we can assume that there exists a $x_0 \in \mathcal{C}$ such that $c=x_0^\prime \theta_2 $ and we have oracle access to $x_0$. Then all the arguments hold.} 
-
-\section{Background on Stochastic Linear Bandits}
-In round $t$, the learner is given a decision set $D_t \subset \mathcal{R}^d$ from which he has to choose an action. For a choice $x_t \in D_t$, the learner receives a reward $r_t=x_t^\prime\theta^* + \epsilon_t$, where $\theta^* \in \mathcal{R}^d$ is unknown and $\epsilon_t$ is random noise of zero mean. The learner's goal  is to maximize the expected accumulated reward $\mathbb{E}\left[\sum_{t=1}^{T} r_t \right]$ over a period $T$. If the leaner knows $\theta^*$, his optimal strategy is to select $x_t^*=\arg \max_{x \in D_t} x^\prime \theta^* $ in round $t$. The performance of any policy $\pi$ that selects action $x_t$ at time $t$ is 
-measured with respect to the optimal policy and is given by the expected regret  as follows
-\begin{equation}
-\label{eqn:LinearBanditRegret}
-R^L_T(\pi)= \sum (x_t^*)^\prime \theta^* - \sum x_t^\prime \theta^* .
-\end{equation}
-The above setting, where actions sets can change in every round, is introduced in\cite{NIPS2011_ImprovedAlgorithms_AbbasiPalSzepes} and is a more general setting than that studied in \cite{COLT08_StochasticLinearOptimization_DaniHayesKakad,MOR11_LinearlyParametrized_RusmevichientongTsitsiklis} where decision set is fixed. Further, the above setting also specializes the contextual bandit studied in \cite{WWW10_Contextaulbandits_LiChuWei}. The authors in \cite{NIPS2011_ImprovedAlgorithms_AbbasiPalSzepes} developed an
-`optimism in the face of uncertainty linear bandit algorithm' (OFUL) that achieves $\mathcal{O}(d \sqrt{T})$ regret with high probability when the random noise is $R$-sub-Gaussian for some finite $R$. The performance of OFUL is significantly better than $ConfidenceBall_2$ \cite{COLT08_StochasticLinearOptimization_DaniHayesKakad}, $UncertainityEllipsoid$ \cite{MOR11_LinearlyParametrized_RusmevichientongTsitsiklis}
-and $LinUCB$ \cite{WWW10_Contextaulbandits_LiChuWei}. 
-
-
-\begin{thm}
-\label{thm:2CSAPRegret}
-Consider a CSA-problem with $K=2$ sensors. Let $\mathcal{C}$ be a bounded set and $\gamma_i(x)+c_i=x^\prime\theta_i$ for $i=1,2$ for all $x \in \mathcal{C}$. Assume $x^\prime \theta_1, x^\prime \theta_2 \in [0\; 1]$ for all $x \in \mathcal{C}$. Then, equivalent to a stochastic linear bandit. 
-\end{thm}
-
-
 
 \newpage
 \bibliographystyle{biblio}
@@ -699,7 +669,39 @@ Now, regret of regret policy $f_1(\pi)$ on the $K$-armed bandit problem with sid
 R^{\phi_G}_T(f_1(\pi))=\sum_{i=1}^{K} \left[\left (\gamma_1-\gamma_{i^*}-\sum_{j <i^*} c_j \right )-\left (\gamma_1- \gamma_{i}-\sum_{j < i} c_j \right )\right ]\mathbb{E}[N^{\phi_G}_i(T)]
 \end{equation}
 which is same as $R^\phi_T(\pi)$. This concludes the proofs. 
-\section{Proof of Theorem \ref{thm:2CSAPRegret}}
+
+
+\section{Extension to context based prediction}
+\label{sec:Contextual}
+In this section we consider that the prediction errors depend on the context $X_t$, and in each round the learner can decide which action to apply based on $X_t$. Let  $\gamma_i(X_t)=\Pr\{\hat{Y}^1_t \neq \hat{Y}^2_t| X_t\}$ for all $i \in [K]$. We refer to this setting as  Contextual Sensor Acquisition Problem (CSAP) and denote it as $\psi_c=(K, \mathcal{A}, \mathcal{C}, (\gamma_i,c_i)_{i\in [K]})$. 
+
+Given $x \in \mathcal{C}$, let $L_t(a|x)$ denote the loss from action $a\in \mathcal{A}$ in round $t$. A policy on $\phi^c$ maps past history and current contextual information to an action. Let $\Pi^{\psi_c}$ denote set of policies on $\psi_c$ and for any policy $\pi \in \Pi^{\psi_c}$, let $\pi(x_t)$ denote the action selected when the context is $x_t$. For any sequence $\{x_t,y_t\}_{t>0}$, the regret of a policy $\pi$ is defined as:
+\begin{equation}
+	R^{\phi_c}_T(\pi)= \sum_{t=1}^{T} \mathbb{E}\left [L_t(\pi(x_t)|x_t)\right ]-\sum_{t=1}^{T}\min_{a \in \mathcal{A}} \mathbb{E} \left [ L_t(a|x_t)\right ]. 
+\end{equation}
+As earlier, the goal is to learn a policy that minimizes the expected regret, i.e., $\pi^*= \arg \min_{\pi \in \Pi^{\psi_c}} \mathbb{E}[R^{\psi_c}_T(\pi)].$
+
+In this section we focus on CSA-problem with two sensors and assume that sensor predictions errors are linear in the context. Specifically, we assume that there exists $\theta_1, \theta_2 \in \mathcal{R}^d$ such that $\gamma_1(x)=x^\prime\theta_1$ and $\gamma_2(x)+c=x^\prime\theta_2$ for all $x \in \mathcal{C}$, were $x^\prime$ denotes the transpose of $x$. By default all vectors are column vectors. In the following we establish that CSAP is regret equivalent to a stochastic liner bandits with varying decision sets. We first recall the stochastic linear bandit setup and relevant results. 
+
+\subsection{Background on Stochastic Linear Bandits}
+In round $t$, the learner is given a decision set $D_t \subset \mathcal{R}^d$ from which he has to choose an action. For a choice $x_t \in D_t$, the learner receives a reward $r_t=x_t^\prime\theta^* + \epsilon_t$, where $\theta^* \in \mathcal{R}^d$ is unknown and $\epsilon_t$ is random noise of zero mean. The learner's goal  is to maximize the expected accumulated reward $\mathbb{E}\left[\sum_{t=1}^{T} r_t \right]$ over a period $T$. If the leaner knows $\theta^*$, his optimal strategy is to select $x_t^*=\arg \max_{x \in D_t} x^\prime \theta^* $ in round $t$. The performance of any policy $\pi$ that selects action $x_t$ at time $t$ is 
+measured with respect to the optimal policy and is given by the expected regret  as follows
+\begin{equation}
+	\label{eqn:LinearBanditRegret}
+	R^L_T(\pi)= \sum (x_t^*)^\prime \theta^* - \sum x_t^\prime \theta^* .
+\end{equation}
+The above setting, where actions sets can change in every round, is introduced in\cite{NIPS2011_ImprovedAlgorithms_AbbasiPalSzepes} and is a more general setting than that studied in \cite{COLT08_StochasticLinearOptimization_DaniHayesKakad,MOR11_LinearlyParametrized_RusmevichientongTsitsiklis} where decision set is fixed. Further, the above setting also specializes the contextual bandit studied in \cite{WWW10_Contextaulbandits_LiChuWei}. The authors in \cite{NIPS2011_ImprovedAlgorithms_AbbasiPalSzepes} developed an
+`optimism in the face of uncertainty linear bandit algorithm' (OFUL) that achieves $\mathcal{O}(d \sqrt{T})$ regret with high probability when the random noise is $R$-sub-Gaussian for some finite $R$. The performance of OFUL is significantly better than $ConfidenceBall_2$ \cite{COLT08_StochasticLinearOptimization_DaniHayesKakad}, $UncertainityEllipsoid$ \cite{MOR11_LinearlyParametrized_RusmevichientongTsitsiklis}
+and $LinUCB$ \cite{WWW10_Contextaulbandits_LiChuWei}. 
+
+
+\begin{thm}
+	\label{thm:2CSAPRegret}
+	Consider a CSA-problem with $K=2$ sensors. Let $\mathcal{C}$ be a bounded set and $\gamma_i(x)+c_i=x^\prime\theta_i$ for $i=1,2$ for all $x \in \mathcal{C}$. Assume $x^\prime \theta_1, x^\prime \theta_2 \in [0\; 1]$ for all $x \in \mathcal{C}$. Then, equivalent to a stochastic linear bandit. 
+\end{thm}
+
+
+\subsection{Proof of Theorem \ref{thm:2CSAPRegret}}
 Let $\{x_t,y_t\}_{t\geq 0}$ be an arbitrary sequence of context-label pairs. Consider a stochastic linear bandit where $D_t=\{0, x_t\} $ is a decision set in round $t$. 
 From the previous section, we know that given a context $x$, action $1$ is optimal if $\gamma_1(x)-\gamma_2(x) -c< 0$, otherwise  action $2$ is optimal. Let $\theta:=\theta_1-\theta_2$, then it boils down to check if $x^\prime\theta-c<0$ for each context $x\in \mathcal{C}$. 
 
