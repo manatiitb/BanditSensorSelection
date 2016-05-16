@@ -99,7 +99,18 @@
 	\end{abstract}
 
 \section{Introduction}
-The quality of sensors used in a decision system influences the accuracy of  the measurements or the predictions. Typically, a less accurate sensor is cheap and produces predictions faster. A more accurate sensor is costly and takes more time to output predictions. In practice, the budget/time constraints do not allow costly/slow sensors to be used all the time and one has to use the sensor that is the most `cost effective'. One natural way is to use a sensor for which sum of prediction error rate and cost is the lowest. However,  values of the errors rate may not be known a priori and the best cost effective sensor cannot be determined. Further, the true labels required to estimate the error rate may also be not available or prohibitively expensive to know. In this paper we study the problem of learning the most cost effective sensor when the true labels are not known, and the goal is to efficiently learn the most cost effective sensor. 
+In many classification systems  such as medical diagnosis  and  homeland  security,  sequential decisions  are  often  warranted.   For each  instance,  an initial diagnostic test  is conducted and based on its results further tests maybe conducted. Tests have varying  costs for  acquisition,  and  these  costs  account  for delay,  throughput  or  monetary  value \footnote{As described in \cite{Trapeznikov} in security systems utilize a suite of sensors/tests such as X-rays, millimeter wave imagers (expen-
+sive & low-throughput), magnetometers, video, IR imagers human search.  Such systems  must  maintain  a  throughput  constraint  in  order to  keep  pace  with  arriving  traffic.   In  clinical  diagnosis, doctors  in the context of breast cancer diagnosis utilize tests such as genetic markers, imaging (CT, ultrasound, elastography) and biopsy. Sensors providing imagery are scored by humans. The different sensing  modalities  have  diverse  costs,  in  terms  of  health risks (radiation exposure) and monetary expense.}
+
+
+1. sequential resource constrained prediction arises in medical diagnosis and security applications.
+2. many sensor systems have pre-existing classifiers or utilize human classifiers. The output of these systems come in the form of predictions.
+3.  We assume that informative sensors are costly, cause large delays but generally give better accuracy. 
+4. we consider the setting where we do not get to see either a noiseless or a noisy version of the true ground-truth label. while the general setting resembles multi-armed bandit problem it is different in the sense that we do not have access to the reward. We can only observe the predictions. 
+5. We are given a network tree of sensors where the root is assumed to be least expensive and least informative sensor. We assume that the sensors are organized into a hierarchy of expensive and informative sensors. The goal is to identify for each instance which sensor(s) to use based on previous sensor predictions.
+
+
+%The quality of sensors used in a decision system influences the accuracy of  the measurements or the predictions. Typically, a less accurate sensor is cheap and produces predictions faster. A more accurate sensor is costly and takes more time to output predictions. In practice, the budget/time constraints do not allow costly/slow sensors to be used all the time and one has to use the sensor that is the most `cost effective'. One natural way is to use a sensor for which sum of prediction error rate and cost is the lowest. However,  values of the errors rate may not be known a priori and the best cost effective sensor cannot be determined. Further, the true labels required to estimate the error rate may also be not available or prohibitively expensive to know. In this paper we study the problem of learning the most cost effective sensor when the true labels are not known, and the goal is to efficiently learn the most cost effective sensor. 
 
 
 
