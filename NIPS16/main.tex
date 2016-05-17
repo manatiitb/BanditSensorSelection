@@ -38,6 +38,7 @@
 \newtheorem{proposition}{Proposition}
 \newtheorem{corol}{Corollary}
 \newtheorem{example}{Example}
+\newtheorem{condition}{Condition}
 \newtheorem{remark}{Remark}
 \newtheorem{definition}{Definition}
 \newtheorem{assumption}{Assumption}
@@ -95,7 +96,7 @@
 	\maketitle
 	
 	\begin{abstract}
-		We propose a sensor acquisition problem (SAP) wherein sensors (and sensing tests) are organized into a cascaded architecture of increasingly informative and expensive tests and the goal is to choose a test with the optimal cost-accuracy tradeoff for a given instance. We consider the case where we obtain no feedback in terms of rewards for our chosen actions apart from test observations. Absence of feedback raises fundamentally new challenges since one cannot infer potentially optimal tests. We pose the problem in terms of competitive optimality with the goal of minimizing cumulative regret against optimally chosen actions in hindsight. In this context we introduce the notion of weak dominance and show that it is necessary and sufficient for realizing sub-linear regret. Weak dominance on a cascade supposes that a child node in the cascade has higher accuracy when its parent node makes correct predictions. When weak dominance holds we show that we can reduce SAP to a corresponding multi-armed bandit problem with side observations. Empirically we verify that weak dominance holds for many datasets.
+		We propose a sensor acquisition problem (SAP) wherein sensors (and sensing tests) are organized into a cascaded architecture and the goal is to choose a test with the optimal cost-accuracy tradeoff for a given instance. We consider the case where we obtain no feedback in terms of rewards for our chosen actions apart from test observations. Absence of feedback raises fundamentally new challenges since one cannot infer potentially optimal tests. We pose the problem in terms of competitive optimality with the goal of minimizing cumulative regret against optimally chosen actions in hindsight. In this context we introduce the notion of weak dominance and show that it is necessary and sufficient for realizing sub-linear regret. Weak dominance on a cascade supposes that a child node in the cascade has higher accuracy when its parent node makes correct predictions. When weak dominance holds we show that we can reduce SAP to a corresponding multi-armed bandit problem with side observations. Empirically we verify that weak dominance holds for many datasets.
 	\end{abstract}
 
 \section{Introduction}
@@ -160,7 +161,7 @@ Let $\{Z_t, Y_t\}_{{t>0}}$ denote a sequence generated according to an unknown d
 
 
 
-The prediction error rate of the $i^{th}$ sensor is denoted as $\gamma_i:=\Pr\{Y_t\neq \hat{Y}^k_t\}$. In this section we assume that the error rate does not depend on the  context and postpone the treatment with contextual information to Section \ref{sec:Contextual}. Further, the sensors are arranged such that the prediction error rate improves with depth in the cascade, i.e., $\gamma_{k-1}\geq \gamma_k$ for all $k>2$. However, the learner incurs an extra cost of $c_k\geq 0$ to acquire output of sensor $k$ after acquiring output of sensor $k-1$. The sensor cascade is depicted in the adjacent figure.
+The prediction error rate of the $i^{th}$ sensor is denoted as $\gamma_i:=\Pr\{Y_t\neq \hat{Y}^k_t\}$. The learner incurs an extra cost of $c_k\geq 0$ to acquire output of sensor $k$ after acquiring output of sensor $k-1$. The sensor cascade is depicted in the adjacent figure. In this section we assume that the error rate does not depend on the  context, and the treatment with contextual information is given in the supplementary. 
 
 Let $H_t(k)$ denote the feedback observed in round $t$ from action $k$. Since we observe predictions of all the first $k$ senors by playing action $k$, we get   $H_t(k)=\{\hat{Y}^1_t,\ldots,\hat{Y}^k_t\}$.
 The loss incurred in each round is defined in terms of the prediction error and the total cost involved. When the learner selects action $k$, loss is the prediction error of sensor $k$ plus sum of the costs incurred along the path ($c_1,\ldots,c_k$). Let $L_t: \mathcal{A}\rightarrow \mathcal{R}_+$ denote the loss function in round $t$. Then,
@@ -194,12 +195,7 @@ R^\psi_T(\pi)&=& \sum_{k \in \mathcal{A}}\mathbb{E}[N_k^\psi(T)]\Delta_k.
 \section{When is SAP Learnable?}
 In the SA-Problem feedback $H_t(\cdot)$ does not reveal any information about the true label $Y_t$ in any round $t$. Hence the loss values are not known, and we are in a hopeless situation where linear regret is unavoidable. In this section we explore conditions that lead to policies that are Hannan consistent \cite{Hannan1957_HannanConsistency_Hannan}, i.e, a policy $\pi\in \Pi^\psi$ such that $R_T^\psi (\pi)/T \rightarrow 0$.
 
-Let us consider $K=2$ sensors and start with a simple condition that if sensor $1$ predicts label $1$ correctly, then sensor $2$ also predicts it correctly\footnote{Suppose we interpret label $1$ as 'threat', the condition implies that if sensor $1$ detects threat correctly, the better sensor $2$ also detects it. }, i.e.,
-\begin{equation}
-\label{eqn:PathDominace1} 
-Y_t=1 \mbox{ and } \hat{Y}_t^1=1 \implies \hat{Y}^2_t=1. 
-\end{equation}
-To fix ideas, we enumerate all possible $8$ tuples $(Y, \hat{Y}^1, \hat{Y}^2)$ as shown in Table \ref{tab:SensorOutcomes}, and write probability of $i$th tuple $i=1,2,\cdots 8$ as $p_{i-1}$.  From Table \ref{tab:SensorOutcomes}, we have  $\gamma_1=p_2+p_3+p_4+p_5$ and $\gamma_2=p_1+p_3+p_4+p_6$, thus
+To fix ideas let us consider SA-Problem with $2$ sensors. We enumerate all possible $8$ tuples $(Y, \hat{Y}^1, \hat{Y}^2)$ as shown in Table \ref{tab:SensorOutcomes}, and write probability of $i$th tuple $i=1,2,\cdots 8$ as $p_{i-1}$.  From Table \ref{tab:SensorOutcomes}, we have  $\gamma_1=p_2+p_3+p_4+p_5$ and $\gamma_2=p_1+p_3+p_4+p_6$, thus
 \begin{equation}
 	\gamma_1-\gamma_2 = p_2+p_5-p_1-p_6.
 \end{equation}
@@ -240,37 +236,63 @@ p_3 + p_7 \mbox{  if } (\hat{Y}^1, \hat{Y}^2)=(1,1)
 \end{minipage}
 
 \noindent
-Since we only observe feedbacks $(\hat{Y}_t^1, \hat{Y}_t^2)$ and not the true labels $Y_t$, only marginal probabilities $\Pr(\hat{Y}^1, \hat{Y}^2)$ as given in (\ref{eqn:Marginals}) can be estimated but not $\Pr(Y, \hat{Y}^1, \hat{Y}^2)$. The following example demonstrate  marginals do not unambiguously decide optimal action.
+Since we only observe feedbacks $(\hat{Y}_t^1, \hat{Y}_t^2)$ and not the true labels $Y_t$, only marginal probabilities $\Pr(\hat{Y}^1, \hat{Y}^2)$ as given in (\ref{eqn:Marginals}) can be estimated but not $\Pr(Y, \hat{Y}^1, \hat{Y}^2)$. Thus all the decision has to be based on the marginals only. To see when SAP has a Hannan consistent policy, let us consider the following conditions.
+\begin{condition}
+	\label{cond:PathDominance1}
+	 If sensor $1$ predicts label $1$ correctly, then sensor $2$ also predicts it correctly\footnote{Suppose we interpret label $1$ as 'threat', the condition implies that if sensor $1$ detects threat correctly, the better sensor $2$ also detects it. }, i.e.,
+	 \begin{equation*}
+	 \label{eqn:PathDominace1} 
+	 Y_t=1 \mbox{ and } \hat{Y}_t^1=1 \implies \hat{Y}^2_t=1. 
+	 \end{equation*}
+\end{condition} 
+\begin{condition}
+		\label{cond:PathDominance2}
+	If sensor $1$ predicts label $0$ correctly, then sensor $2$ also predicts it correctly, i.e.,
+	\begin{equation*}
+	\label{eqn:PathDominace2} 
+	Y_t=0 \mbox{ and } \hat{Y}_t^1=0 \implies \hat{Y}^2_t=0. 
+	\end{equation*}
+\end{condition}
+The following example demonstrate  marginals do not unambiguously decide optimal action under Condition \ref{cond:PathDominance1}.
+Set $c=0.35$ and consider the following two cases: 1) $p_2=1/2, p_1=1/4-1/40, p_5=1/4+1/40$ and 2) $p_2=1/2, p_1=1/4-3/40,p_5=1/4+3/40$. From Condition (\ref{cond:PathDominance1}) we have $p_6=0$. Also, set $p_0=p_4=p_3=p_7=0$ in both the cases. We get $\gamma_1-\gamma_2=0.3$ in the first case,  whereas $\gamma_1-\gamma_2=0.4$ in the second case. From \ref{eqn:OptimalAction}, optimal action is $1$ in the first case, whereas it is  $2$ in the second case. However, for both the cases the marginals $\Pr(\hat{Y}^1, \hat{Y}^2)$ are the same for all pairs $(\hat{Y}^1, \hat{Y}^2)$. Since we only  observe $\Pr(\hat{Y}^1, \hat{Y}^2)$, the two cases cannot be distinguished and linear regret is unavoidable. We can argue similarly that Condition (\ref{cond:PathDominance2}) is not sufficient for sub-linear regret. 
 
-Set $c=0.35$ and consider the following two cases: 1) $p_2=1/2, p_1=1/4-1/40, p_5=1/4+1/40$ and 2) $p_2=1/2, p_1=1/4-3/40,p_5=1/4+3/40$. From condition (\ref{eqn:PathDominace1}) we have $p_6=0$. Also, set $p_0=p_4=p_3=p_7=0$ in both the cases. We get $\gamma_1-\gamma_2=0.3$ in the first case,  whereas $\gamma_1-\gamma_2=0.4$ in the second case. From \ref{eqn:OptimalAction}, optimal action is $1$ in the first case, whereas it is  $2$ in the second case. However, for both the cases the marginals $\Pr(\hat{Y}^1, \hat{Y}^2)$ are the same for all pairs $(\hat{Y}^1, \hat{Y}^2)$. Since we only  observe $\Pr(\hat{Y}^1, \hat{Y}^2)$, the two cases cannot be distinguished and linear regret is unavoidable. 
+Next, consider that both Condition (\ref{cond:PathDominance1}) and (\ref{cond:PathDominance2}) hold, i.e.,  
+\begin{condition}
+	\label{cond:PathDominance}
+	If sensor $1$ is correct , then sensor $2$ is also correct, i.e.,
+	\begin{equation*}
+	\label{eqn:Dominace} 
+	 \hat{Y}_t^1=Y_t \implies \hat{Y}^2_t=Y_t. 
+	\end{equation*}
+\end{condition}
+Then, $p_1=p_6=0$ and we get $\gamma_1-\gamma_2=p_2+p_5$. Since $p_2+p_5=\Pr(\hat{Y}^1 \neq \hat{Y}^2)$, it can be estimated from observations $(\hat{Y}_t^1,\hat{Y}_t^2)$, and the optimal action can be found unambiguously. Thus Condition \ref{cond:PathDominance} gives a sufficient for existence of an Hannan consistent policy. In the following we refer to Condition (\ref{cond:PathDominance}) as strong dominance property. For the case of $K>2$ sensors, its definition is as follows: 
 
-Next, assume that  if sensor $0$ predicts label $0$ correctly, then sensor $2$ also predicts it correctly, i.e.,
-\begin{equation}
-\label{eqn:PathDominace2} 
-Y_t=0 \mbox{ and } \hat{Y}_t^1=0 \implies \hat{Y}^2_t=0. 
-\end{equation}
-Similar to the previous example, we can argue that this conditions is not sufficient to achieve sub-linear regret. Now assume that both (\ref{eqn:PathDominace1}) and (\ref{eqn:PathDominace2}) hold. Then, $p_1=p_6=0$ and we get $\gamma_1-\gamma_2=p_2+p_5$. Since $p_5+p_2=\Pr(\hat{Y}^1 \neq \hat{Y}^2)$, it can be estimated from observations $(\hat{Y}_t^1,\hat{Y}_t^2)$, and thus hope for an Hannan consistent policy. In the following we assume that (\ref{eqn:PathDominace1}) and (\ref{eqn:PathDominace2}) hold and refer to it as dominance condition. For the case of $K>2$ sensors, it is given as follows: 
-
-\begin{assumption}[Dominance Condition]
-	If sensor $i$ predicts correctly, all the sensors in the subsequent stages of the cascade also predict correctly, i.e.,
-	
+\begin{definition}[Strong Dominance]
+	A SA-Problem is said to satisfy strong dominance property if sensor $i$ predicts correctly, then all the sensors in the subsequent stages of the cascade also predict correctly, i.e.,
 	\begin{equation}
 	\label{eqn:DominanceCondition}
 	\hat{Y}_t^i=Y_t \rightarrow \hat{Y}_t^j \quad \forall j>i\geq 1.
 	\end{equation}
-\end{assumption}
+\end{definition}
 
-\subsection{Robustness of Dominance Condition}
+We will now establish necessary and sufficient conditions for SAP learnability
 For notional convenience rewrite 
 $\gamma_1- \gamma_2= p_1+p_2+p_5+p_6- 2(p_1+p_6):=p_{12}-2\delta$,
 where $p_{12}:=\Pr(Y^1\neq Y^2)$ is the probability that sensors disagree and $\delta:=\Pr(Y^2 \neq Y | Y^1=Y)$ is the conditional probability that sensor $2$ is incorrect given that sensor $1$ is correct. We can estimate $p_{12}$ from feedback $(\hat{Y}^1_t, \hat{Y}^2_t)$, but $\delta$ cannot be estimated.
-
 \begin{thm}
-For SA-Problem with $K=2$, a Hannan consistent policy exists if and only if $c \notin [p_{12}-2\delta, p_{12}]$.
+For SA-Problem with $K=2$, an Hannan consistent policy exists if and only if $c \notin [p_{12}-2\delta, p_{12}]$.
 \end{thm}
 {\bf Proof:} Under dominance condition $\delta=0$, thus actions $1$ is optimal if $p_{12}<c$, otherwise action $2$ is optimal. Suppose dominance condition is violated, i.e., $\delta>0$, but decisions are made assuming dominance condition holds (i.e., using estimates of $p_{12}$ only), then the optimal action is correctly identified provided $\delta$ is such that $p_{12}-2\delta < c \Rightarrow p_{12} <c$ or $p_{12}-2\delta >c \Rightarrow p_{12}>c$. Now, notice that the latter implication is always true. So, whenever action $2$ is optimal, violation of dominance condition does not miss the optimal action. However, the first implication holds if and only if $c \notin [p_{12}-2\delta, p_{12}]$.
 
-In the following we establish that under the dominance condition efficient algorithms for a SAP problem can be derived from algorithms on a suitable stochastic multi-armed bandit problem. We first recall the stochastic multi-armed bandit setting and the relevant results. 
+Clearly, when $\delta$ is small Hannan consistent policy exits for a large range of $c$. 
+
+\begin{definition}[Weak Dominance]
+	A SA-Problem with $K=2$ is said to satisfy weak dominance property if $c \notin [p_{12}-2\delta, p_{12}]$	
+\end{definition}
+
+Many real world applications are designed to satisfy strong dominance property. For example, in wireless communication, increasing block length (more redundancy) improves tolerance against noise. Many practical datasets like, PIMA diabetes dataset and breast cancer dataset, conditional error probabilities are small.   (i will add numerical values)
+
+In the following we establish that if dominance property holds efficient algorithms for a SAP problem can be derived from algorithms on a suitable stochastic multi-armed bandit problem. We first recall the stochastic multi-armed bandit setting and the relevant results. 
 
 %\section{Problem Setup}
 %\label{sec:Setup}
@@ -336,7 +358,7 @@ In the following we establish that under the dominance condition efficient algor
 %The feedback from action $i=1$ reveals no information about the loss incurred in that round. However feedback after action $i=2$ reveals (partial) information about the loss of both actions. Suppose feedback is such that the predictions of devices disagree, i.e., ${\hat{Y}^1_t\neq\hat{Y}^2_t}$ after action $2$.  The dominance condition then implies that the only possible events are $\hat{Y}^1_t \neq Y_t$ and $\hat{Y}^2_t=Y_t$. I.e., the true label is that predicted by device-2 and loss is zero. Suppose the predictions of the devices agree, i.e., ${\hat{Y}^1_t = \hat{Y}^2_t}$, then the dominance condition implies that either predictions of both are correct or both are incorrect. Though the true loss is not known in this case, the learner can infer some useful knowledge: in round $t$, if the prediction of both the devices agree, then the difference of loss of the actions is $L_t(2)-L_t(1)=c>0$. And if the predictions of the devices disagree, then dominance assumption implies that $L_t(1)=1$ and $L_t(2)=c$ or $L_t(2)-L_t(1)=c-1<0$. Thus, each time learner selects action $2$, he gets to know whether or not he was better off by selecting the other action. This setup is similar the standard apple tasting problem \cite{IC2000_AppleTasting_HelmboldLittlestoneLong}
 %], but differs in terms of the information structure when action $2$ is played: in the apple tasting problem, playing action $2$ in a round reveals loss incurred by both the actions. Whereas, in the sensor selection problem we get only partial information on which of the two actions is better in that round. However, we will see below that the partial information is enough to distinguish the optimal arm and one can obtain performance similar to that in the apple tasting problem .
 
-\section{Background on Stochastic Multi-armed Bandits with Side Observations}
+\section{Stochastic Multi-armed Bandits with Side Observations}
 A stochastic multi-armed bandit (MAB), denoted as $\phi:=(K, (\nu_k)_{1 \leq k \leq K})$, is a sequential learning problem where number of arms $K$ is known and each arm $i \in [K]$ gives rewards drawn according to an unknown distribution $\nu_k$. Let $X_{i,n}$ denote the random reward from arm $i$ in its $n$th play. For each arm $i\in [K]$, $\{X_{i,t}: t>0\}$ are independently and identically (i.i.d) distributed and for all $t>0$, $\{X_{i,t}, i \in [K]\}$ are independent. We note that in the standard MAB setting the learner observes only reward from the selected arm in each round and no information from the other arms is revealed. However, in many applications playing an arm reveals information about the other arms which can be exploited to improve learning performance. Let $\mathcal{N}_i$  denote neighborhood of $i$ such that playing arm $i$ reveals rewards of all arms $j \in \mathcal{N}_i$.  Given a set of neighborhood $\{\mathcal{N}_i, i\in [K]\}$, let $\phi_G:=(K, (\nu_k)_{1\leq k\leq K}, G)$ denote a MAB with side-information graph $G=(V,E)$, where $|V|=K$ and $(i,j)\in E$ if $j \in \mathcal{N}_i$. The side-observation graph is known to the learner and remains fixed during the play. To avoid cluttering, we henceforth drop subscript $G$ in $\phi_G$ and it should be clear from context if side-observations exists or not. 
 
 Let $\Pi^{\phi}$ denote a set of polices on $\phi$ that maps the past history into an arm in each round.. If the learner knows $\{\nu_k\}_{k \in [K]}$, then the optimal policy is to play the arm with highest mean. Given a policy $\pi \in \Pi^{\phi}$, its performance is measured with respect to the optimal policy and is defined in terms of expected cumulative regret (or simply regret) as follows ( only reward from the arm played contribute to the regret and not that from the side-observations):  Let $\pi$ selects arm $i_t$ in round $t$. After $T$ rounds, its regret is 
