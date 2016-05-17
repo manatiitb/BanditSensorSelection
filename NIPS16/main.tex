@@ -284,10 +284,10 @@ For SA-Problem with $K=2$, an Hannan consistent policy exists if and only if $c 
 \end{thm}
 {\bf Proof:} Under dominance condition $\delta=0$, thus actions $1$ is optimal if $p_{12}<c$, otherwise action $2$ is optimal. Suppose dominance condition is violated, i.e., $\delta>0$, but decisions are made assuming dominance condition holds (i.e., using estimates of $p_{12}$ only), then the optimal action is correctly identified provided $\delta$ is such that $p_{12}-2\delta < c \Rightarrow p_{12} <c$ or $p_{12}-2\delta >c \Rightarrow p_{12}>c$. Now, notice that the latter implication is always true. So, whenever action $2$ is optimal, violation of dominance condition does not miss the optimal action. However, the first implication holds if and only if $c \notin [p_{12}-2\delta, p_{12}]$.
 
-Clearly, when $\delta$ is small Hannan consistent policy exits for a large range of $c$. 
+Clearly, when $\delta$ is small Hannan consistent policy exits for a large range of $c$. For the case of $K>2$ sensors, its definition is as follows: 
 
 \begin{definition}[Weak Dominance]
-	A SA-Problem with $K=2$ is said to satisfy weak dominance property if $c \notin [p_{12}-2\delta, p_{12}]$	
+	A SA-Problem is said to satisfy weak dominance property if $c_k \notin [p_{k-1,k}-2\delta_{k-1,k}, p_{k-1,k}]$ for all $1<k<K$, where $p_{k-1,k}=\Pr(Y^{k-1}\neq Y^k)$ and $\delta_{k-1,k}=\Pr(Y^k\neq Y| Y^{k-1}=Y).$
 \end{definition}
 
 Many real world applications are designed to satisfy strong dominance property. For example, in wireless communication, increasing block length (more redundancy) improves tolerance against noise. Many practical datasets like, PIMA diabetes dataset and breast cancer dataset, conditional error probabilities are small.   (i will add numerical values)
