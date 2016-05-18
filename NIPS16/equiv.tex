@@ -1,0 +1,175 @@
+%!TEX root =  main.tex
+In this section we establish that under the dominance condition SAP is `regret equivalent' to an instance of MAB with side-information and the corresponding algorithm for MAB can be suitably imported to solve SAP efficiently.   
+ \noindent
+\begin{definition}[Regret Equivalence]
+	Consider a SAP problem $\psi:=(K, \mathcal{A}, (\gamma_i,c_{i-1})_{i\in [K]})$ and a bandit problem with $\phi_G:=(N, (\nu_i)_{i \in [N]},G)$ side-information graph $G$. We say that $\psi$ is regret-equivalent to $\phi_G$ if given a policy $\pi$ for problem $\psi$, one can come up with a policy $\pi^\prime$ that uses $\pi$, such that the regret of $\pi^\prime$ on any instance of $\phi_G$ is the same as the regret of $\pi$ on some corresponding instance of $\psi$, and vice versa. 
+\end{definition}	
+In the following we first consider the SAP with 2 sensors and then the general case with more than 2 sensors. The 2 sensors case helps to draw comparison with the well studied apple tasting problem and understand role of the dominance condition. 
+\subsection{SAP with two sensors}
+In the SAP with only two actions, the feedback from action $i=1$ reveals no information about the loss incurred in that round. However feedback after action $i=2$ reveals (partial) information about the loss of both actions. Suppose feedback is such that predictions of the sensors disagree, i.e., ${\hat{Y}^1_t\neq\hat{Y}^2_t}$ after action $2$.  The dominance condition then implies that the only possible events are $\hat{Y}^1_t \neq Y_t$ and $\hat{Y}^2_t=Y_t$. I.e., the true label is that predicted by sensor-2, hence loss incurred is just $c$ (prediction loss is zero). Suppose predictions of the sensors agree, i.e., ${\hat{Y}^1_t = \hat{Y}^2_t}$, then the dominance condition implies that either predictions of both are correct or both are incorrect. Though the true loss is not known in this case, the learner can infer some useful knowledge: in round $t$, if prediction of both the sensors agree, then the difference in losses of the actions is $L_t(2)-L_t(1)=c>0$. And if predictions of the sensors disagree, then dominance assumption implies that $L_t(1)=1$ and $L_t(2)=c$ or $L_t(2)-L_t(1)=c-1<0$. Thus, each time learner plays action $2$, he gets to know whether or not he was better off by selecting the other action. This setup sounds similar to the standard apple tasting problem \cite{IC2000_AppleTasting_HelmboldLittlestoneLong}
+], but differs in terms of the information structure when action $2$ is played. 
+
+\noindent
+{\bf Apple tasting problem:} In the apple tasting problem, a learner gets a sequence of apples and some of them can be rotten. In each round, the learner can either accept or reject an apple. If an apple is accepted, the learner tastes it and incurs a penalty if it is rotten. If apple is rejectsed, he still incurs the penalty if it is rotten, but do not get to observe its quality. %Thus, each time the learner accepts an apple, he knows the penalty incurred for both the actions. However, no loss values is revealed if he rejects. 
+The goal of the learner is to taste more good apples. 
+The SAP setting is a more general version than the apple tasting problem--in any round, actions $1$ reveals no loss values. Action $2$  reveals only partial information about the losses, but not the exact losses as in the apple tasting problem. However, we next show that the partial information is enough to achieve optimal performance.  
+%
+%\begin{thm}
+%	\label{thm:2SAPRegret}
+%Assume dominance condition (\ref{eqn:DominanceCondition}) holds. Then SAP $\psi$ with $K=2$ is regret-equivalent to a stochastic $1$-armed bandit.
+%\end{thm}
+%%a_i\mathbb{E}[N_i(T)]$ where $\Delta_1= c- \min\{\gamma_1-\gamma_2,c\}$ and $\Delta_2= \gamma_1-\gamma_2- \min\{\gamma_1-\gamma_2,c\}$, which can also be expressed as $\Delta_1=\gamma_1 - \mathbb{E}[L(i^*)]$ and  $\Delta_2=\gamma_2+c - \mathbb{E}[L(i^*)]$, implying that the corresponding policy on the SAP also gives the same regret and vice versa. 
+%The following corollary follow immediately from the regret equivalence. 
+%\begin{proposition}[SAP regret lower bound]
+%	Let $\pi$ be any policy on SAT with 2 sensors such that it pulls the suboptimal arm only sub polynomial many times, i.e., $\mathbb{E}[N_i(T)]=o(T^a)$ for all $a>0$ and $i\neq i^*$. Then,
+%	\begin{equation}
+%	\liminf_{T \rightarrow \infty} R^\psi_T(\pi)/\log T \geq \frac{|\gamma_1-\gamma_2-c|}{D(\hat{\gamma},\gamma^*)} \mbox{ where } \gamma^*=\min\{\gamma_1,\gamma_2+c\},  \hat{\gamma}=\max\{\gamma_1,\gamma_2+c\}
+%	\end{equation}
+%	and $D(\hat{\gamma},\gamma^*)$  is the KL-divergence between $\hat{\gamma}$ and $\gamma^*$.
+%\end{proposition}
+%
+%\begin{proposition}[SAP regret upper bound]
+%	Let $\pi^\prime$ denote a policy on a $1$-armed stochastic bandit where one arm has mean $\gamma_1-\gamma_2$ and the other gives fixed reward $c$. Then, the regret of a policy $g(\pi)$ for the SAT problem obtained according the mapping (\ref{eqn:1BanditToSAP}) is upper bounded as
+%	\begin{equation}
+%	R^\psi_T(g(\pi))\leq \frac{6\log T}{|\gamma_1-\gamma_2-c|} + |\gamma_1-\gamma_2-c|(1+\pi^2/3) 	\mbox{ when } \pi^\prime=\mbox{UCB1}. 
+%	\end{equation}
+%		\begin{equation}
+%		R^\psi_T(g(\pi))\leq \frac{|\gamma_1-\gamma_2-c|\log T}{D(\hat{\gamma},\gamma^*)} + \mathcal{O}(\sqrt{\log T }) 	\mbox{ when } \pi^\prime=\mbox{KL-UCB}. 
+%		\end{equation}
+%\end{proposition}
+\subsection{SAP with more than two actions}
+In the SAP with two sensors, only action 2 provides information about the losses. In the case with $K>2$ sensors, by playing an action $k$, we can obtain information about the losses of all sensors $l<k$ by recursively applying the dominance condition between pair of sensors. 
+\begin{wrapfigure}{r}{6cm}
+	\centering
+	\includegraphics[scale=.5]{SideInfoGraph.pdf}
+	\caption{Side observation graph $G^S$}
+	\label{fig:SideObservationGraph]}
+\end{wrapfigure} 
+Further, any information provided by action $k>2$ is contained in that provided by all actions $k^\prime\geq k$-- if action $k$ is played in round $t$, then we observe predictions $\{\hat{Y}_t^1, \hat{Y}_t^2, \cdots, \hat{Y}_t^i\}$ which includes the observed predictions of all actions $k^\prime\leq i$. 
+This side-observation can be represented by a directed graph $G^S=(V,E)$, where $|V|=K$ and $E=\{(i,j): i 1<i\leq j\leq K \}$. Note that $G^S$ has self loops for all nodes except for node $1$. The nodes in $G^S$ represents actions of the SAP and an edge $(i,j)\in E$ implies that actions $i$ provides information about action $j$. The side-observation graph for the SAP is shown in Figure (\ref{fig:SideObservationGraph]}).
+
+
+\begin{thm}
+	\label{thm:K-SAPRegret}
+Let the dominance condition (\ref{eqn:DominanceCondition}) holds. Then SAP $\psi$ with $K\geq 2$ is regret equivalent to a MAB with side-observation graph $G^S$. 
+\end{thm}
+
+%\begin{remark}
+%Note that the some of mean 	values $\{\gamma_1- \gamma_i - \sum_{j\leq i} c_j\}$ need not be positive. Since the stochastic bandit algorithms assume that reward lie in the interval $[0,1]$,  we can ensure positive means by setting distribution $\nu_k$, to have mean $\gamma_1- \gamma_i - \sum_{j< i} c_j + \sum_{k \leq K-1 }c_k$. Note that mean of each arm is shifted by the same amount, which does not change the regret value. This recovers the SAP with $K=2$ actions and Theorem \ref{thm:2SAPRegret} holds.
+%\end{remark}
+
+
+
+\begin{proposition}[SAP regret lower bound]
+	Let $\pi$ be any policy on SAT with 2 sensors such that it pulls the suboptimal arm only sub polynomial many times, i.e., $\mathbb{E}[N^\psi_i(T)]=o(T^a)$ for all $a>0$ and $i\neq i^*$. Then,
+	\begin{equation}
+	\liminf_{T \rightarrow \infty} R^\psi_T(\pi)/\log T \geq \kappa \mbox{	where  }
+	\end{equation}
+		\begin{align}
+	\kappa=&\displaystyle\min_{\{w_i\}}\sum_{i \in [K]}(\mu_{i^*}- \mu_i) w_i \nonumber\\
+	& \mbox{subjected to} \sum_{j i}w_i\geq 1/D(\mu_i + \sum_{j<i} c_j || \mu_{i^*}) \mbox{  for all } i\in [K]\\
+	& w_i \geq 0 \mbox{ for all } i \in [K] \nonumber
+	\end{align}
+\end{proposition}
+
+\begin{proposition}[K-SAT regret upper bound]
+	Let $\pi^\prime$ denote a policy on a $K$-armed stochastic bandit where mean of arm $i>1$ is $\gamma_1-\gamma_i-\sum_{j<i}c_j$ and arm $1$ has a fixed reward of value zero, and the side-observation graph is $G^S$.  Then, the regret of a policy $g_1(\pi)$ for the SAT problem obtained from mapping (\ref{eqn:KBanditToSAP}) is upper bounded as
+	\begin{equation}
+	R^\psi_T(g(\pi))\leq \mathcal{O}(\xi(G^S)\log T + K^2)
+	\end{equation}
+	when $\pi^\prime=\mbox{UCB-LP}$ \cite{Sigmetrics15_StochasticBanditsWithSideObservations_BuccapatnamEriyilmazShroff}.
+\end{proposition}
+
+
+
+
+%
+%\section{Extension to Multi-Stage and Multi-Action setting}
+% 
+% \subsection{Information and Side Observations:}
+% on the feedback observed, we continue to assume that the dominance condition holds across the stages, i.e., for all $1\leq i\leq K-1$
+% \begin{equation}
+% \label{eqn:DominanceMultiStage}
+%\mbox{ if } \hat{Y}_t^i=Y_t  \implies  \hat{Y}_t^j=Y_t \mbox{ for all } i<j\leq K
+% \end{equation}
+% Then, each time action $i>1$ is played, we get the same type of information about the loss incurred by an action pair  $(j,j-1)$ as in the SAP problem using the pair  $\{\hat{Y}_t^j,\hat{Y}_t^{j-1}\}$ for each $1<j<i$. Thus, playing action $i>1$ provides side observations about all the actions $j\leq ii$. We refer to this setting as Multi stage Sensor Acquisition Problem (MSAP). 
+% 
+% The side-observation structure in the MSAP problem can be represented by a directed graph $G=(\mathcal{V}, \mathcal{E})$ where $|\mathcal{V}|=K$ and $\mathcal{E}=\{(i,j) \in \mathcal{V}\times \mathcal{V}: i\geq j, i>1\}$. Here,  $(i,j)\in \mathcal{E}$ implies that selecting $i$ provides information about the prediction loss of action $j$. The side-observation graphs is depicted in Figure (\ref{fig:SideObservationGraph]}). Note that an edge $(i,j) \in \mathcal{E}$ only implies that playing action $i$ provides some information about the losses of actions $i\leq j$, but not their true losses. In the following we establish that regret of MSAP is equivalent to a stochastic $K$-armed bandit with the same side-observation structure.
+%  \subsection{Regret Equivalence}
+% \begin{thm}
+% 	A MSAP $(K, \mathcal{A}, (\gamma_i,c_i)_{i\in [K]}, (L(i), F(i))_{i \in \mathcal{A}} )$ with $K>2$ is regret-equivalent to a stochastic bandit problem $(N, (\nu_i)_{i \in [N]})$ with $N=K$ and side observation structure give by $G$.
+% \end{thm}	
+%Consider a $K$-armed stochastic bandit problem where  reward distribution $\nu_k$ has mean $\gamma_1-\gamma_k + \sum_{j=2}^k c_j$ for all $1\leq k\leq K$, and the side-observation from arms is given by graphs $G$ . Given an arbitrary policy $\pi$ for the MSAP  that uses the side-information, we obtain a  policy BanditG($\pi$) for the bandit problem as follows: if BanditG($\pi$) played arm $i\neq 1$ in the previous round, it inputs the feedback observed from all arms $i\leq j$ to $\pi$ and copies $\pi$'s choice for next action. If BanditG($\pi$)  played arm $1$ in the previous round, it simply copies $\pi$'s choice for next action. Conversely, suppose $\theta$ is an arbitrary policy for the bandit problem with side-observation structure $G$, let MSAP($\theta$) denote a policy for MSAP that consults $\theta$ as follows: if MSAP($\theta$) played action $i$ in the previous round it inputs feedback vector $(0, \boldsymbol{1}_{\{\hat{Y}_t^j\neq \hat{Y}_t^{j-1} \}}, \forall \; j\leq 1)$ to $\theta$ and copies its choice for next action. Otherwise it simply copies $\theta$'s choice for next action.
+%
+%We next show that regret of BanditG($\pi$) on the bandit problem is same as that of $\pi$ on MSAP, 
+% and regret of MSAP($\theta$) on MSAP is same as regret of $\theta$ on the bandit problem. 
+% 
+%For any strategy $\pi$, the expected regret of the MSAP can be expressed as 
+%\begin{eqnarray}
+%R_T(\pi) &=&\sum_{i=1}^{K}\left [ \left (\gamma_{i}+\sum_{j\leq i} c_j\right )-\left (\gamma_{i^*}+\sum_{j\leq i^*} c_j\right )\right ]\mathbb{E}[N_i(T)]\\
+%&=&\sum_{i=1}^{K} \left[\left (\gamma_1+c_1-\gamma_{i^*}-\sum_{j\leq i^*} c_j \right )-\left (\gamma_1+c_1- \gamma_{i}-\sum_{j\leq i} c_j \right )\right ]\mathbb{E}[N_i(T)]
+%\end{eqnarray} 
+%where we added and subtracted $\gamma_1+c_1$ from each term. Now, notice that this is the expected regret of the policy on a stochastic bandit where the mean rewards  are 
+%\begin{equation}
+%\gamma_1+c_1 - \gamma_i - \sum_{j\leq i} c_j \quad \mbox{for } i=1,2,\cdots, K. 
+%\end{equation}
+%\begin{remark}
+%Note that the some of mean 	values $\gamma_1+c_1 - \gamma_i - \sum_{j\leq i} c_j$ need not be positive. Since most of the stochastic bandit algorithms assume that reward lie in the interval $[0,1]$, they may not be directly applicable to our setting. However, this can be over come by setting the distributions of arm $k$, $\nu_k$, to have mean $\gamma_1+c_1 - \gamma_i - \sum_{j\leq i} c_j + \sum_{k=2}^K c_k$. Note that we translated the mean of each arm by the same amount this does not change the regret value. For $k=2$, this recovers the SAT problem and Theorem \ref{thm:SATRegret} holds
+%\end{remark}
+%$\wedge$
+%
+%\begin{thm}[Upper Bound]
+%	
+%\end{thm}
+%\begin{thm}
+%	
+%\end{thm}
+%When we pull an arm  $i$, we observe a realization of a distribution with mean $\gamma_1 -\gamma_i$, but since the cost values are fixed, this is equivalent to observe realization of a distribution with mean $\gamma_1 +c_1-\gamma_i + \sum_{j\leq i}c_i$. Thus, the sensor selection problem with mean costs $\{\gamma_i + \sum_{j\leq i}c_i\}$ is equivalent to a stochastic multi-armed problem with mean rewards $\{\gamma_1+c_1 -\gamma_i - \sum_{j\leq i}c_i\}$. 
+
+% \alglanguage{pseudocode}
+% \begin{algorithm}[!h]
+% 	\footnotesize
+% 	\caption{StAT-K}
+% 	\label{Algorithm:Stochastic Apple Tasting1}
+% 	\begin{algorithmic}[1]
+% 		\State \textbf{Input:}
+% 		\State $c_k$ cost of sensor $k=2\cdots,K $
+% 		\State \textbf{Initialization:}
+% 		\State Play $a_K$ once, observe $X_{j,t}^i$, for all $K \geq j>i\geq 1$
+% 		\State $N_{K}(1)\leftarrow 1 $, $Y_{j,1}^i\leftarrow X_{j,1}^i$ and $\hat{\mu}_{j,1}^i\leftarrow \frac{Y_{j,1}^i}{N_{K}(1)}$ for all $K \geq j > i\geq 1$
+% 		\For {$t = 2,3\cdots$}
+% 		\State {\bf Select the best action optimistically. How? We can use pairwise information to select the best action as follows}  
+% 		\For {$j=2,3,\cdots, K$}
+% 		\State $I\leftarrow 1$
+% 		\If {$\hat{\mu}_{j,t-1}^I + \sqrt{\frac{6\log t}{\sum_{k\geq j} N_{k}(t-1)}} > \displaystyle \sum_{k=I+1}^{j}c_k$}  \quad //Checks if action $I$ is better than action $i$,
+% 		\State $I\leftarrow j$
+% 		\Else
+% 		\State $I \leftarrow I$
+% 		\EndIf
+% 		\EndFor
+% 			\State play action $a_I$ and observe $X_{I,t}^i$ for all $I>i\geq 1$,
+% 			\State $N_{I}(t) \leftarrow N_{I}(t-1)+1$, $Y_{I,t}^i\leftarrow Y_{I,t-1}^j+X_{I,t}^i$ for all $ I>i \geq 1$
+% 			\State $\hat{\mu}_{I,t}^i \leftarrow \frac{Y_{I,t}^i}{\sum_{k=I}^{K}N_k(t)}$ for all $ I>i \geq 1$
+% 		\EndFor 
+% 		
+% 		\Statex
+% 	\end{algorithmic}
+% 	% \vspace{-0.4cm}%
+% \end{algorithm}
+% 
+%
+%\section{Algorithm}
+%Let $X_{j,t}^i=\boldsymbol{1}_{\{\hat{y}^{i}_t \neq \hat{y}^j_t\}}, j>i$ denote whether the predictions of sensors $i$ and $j$ agree or not in round $t$. Note that $X_{j,t}^i$ is observed whenever learner selects action $a_k, k>j$. Let $\hat{\mu}_{j,t}^i$ denote the empirical mean of the samples $\{X_{j,t}^t\}$ observed till time $s$, given by
+%\begin{equation}
+%\hat{\mu}_{j,s}^i= \frac{\sum_{t=1}^s X_{j,t}^i\boldsymbol{1}_{\{I_t\geq j\}}}{\sum_{k=j}^{K}N_k(s)}.
+%\end{equation}
+%
+%
+%{\bf Remarks: We discussed the strategy in Algorithm-1 (StAT-K). Consider the case of perfect knowledge of $\gamma_i$'s and assume $j^{th}$ action is optimal. Then we know that $\gamma_i - \gamma_j> \sum_{k=i+1}^{j} c_k$ for all $i<j$ and $\gamma_j - \gamma_i < \sum_{k=j+1}^{i} c_k$ for $j<i$. However, after estimating the $\gamma_i$'s and selecting the best action optimistically as in StAT-K does not lead to similar argument, i.e.,  suppose in round $t$, $I^{th}$ action is selected by StAT-K, then the following need not hold.}
+%
+%\[{\hat{\mu}_{I,t-1}^j + \sqrt{\frac{6\log t}{\sum_{k\geq I} N_{k}(t-1)}} > \displaystyle \sum_{k=j}^{I}c_k} \quad for \;\;  I>j\]
+%and
+%
+%\[{\hat{\mu}_{j,t-1}^I + \sqrt{\frac{6\log t}{\sum_{k\geq j} N_{k}(t-1)}} < \displaystyle \sum_{k=I+1}^{j}c_k} \quad for \;\; j> I\]
+%
+
