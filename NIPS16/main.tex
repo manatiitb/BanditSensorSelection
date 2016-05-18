@@ -32,6 +32,21 @@
 %\usepackage[ruled]{algorithm}
 %\usepackage{algpseudocode}
 
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\usepackage[backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
+% To remove todo notes, simply uncomment the following line and comment out the previous one
+% \usepackage[disable,backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
+
+% Comments by Csaba:
+\newcommand{\todoc}[2][]{\todo[color=Apricot!20,size=\tiny,#1]{Cs: #2}}
+% Comments by Manjesh:
+\newcommand{\todom}[2][]{\todo[color=Cerulean!20,size=\tiny,#1]{M: #2}}
+% Comments by Venkatesh:
+\newcommand{\todov}[2][]{\todo[color=Purple!20,size=\tiny,#1]{V: #2}}
+\usepackage[capitalize]{cleveref}
+
 
 \newtheorem{thm}{Theorem}
 \newtheorem{lemma}{Lemma}
@@ -47,7 +62,8 @@
 %\newcommand{\EE}[1]{\mathbb{E}[#1]}
 %\DeclareMathOperator{\sgn}{sgn}
 
-\title{Sensor Acquisition with no Feedback}
+%\title{Sensor Acquisition with no Feedback}
+\title{Unsupervised Sequential Sensor Acquisition}
 
 % The \author macro works with any number of authors. There are two
 % commands used to separate the names and addresses of multiple
@@ -100,20 +116,78 @@
 	\end{abstract}
 
 \section{Introduction}
-In many classification systems  such as medical diagnosis  and  homeland  security,  sequential decisions  are  often  warranted.   For each  instance,  an initial diagnostic test  is conducted and based on its results further tests maybe conducted. Tests have varying  costs for  acquisition,  and  these  costs  account  for delay,  throughput  or  monetary  value \footnote{As described in \cite{ML13_MultistageClassifier_TrapezSaligramaCastanon} security systems utilize a suite of sensors/tests such as X-rays, millimeter wave imagers (expensive \& low-throughput), magnetometers, video, IR imagers human search.  Security systems  must  maintain  a  throughput  constraint  in  order to  keep  pace  with  arriving  traffic.   In  clinical  diagnosis, doctors  in the context of breast cancer diagnosis utilize tests such as genetic markers, imaging (CT, ultrasound, elastography) and biopsy. Sensors providing imagery are scored by humans. The different sensing  modalities  have  diverse  costs,  in  terms  of  health risks (radiation exposure) and monetary expense.}. Apart from these natural scenarios the problem also arises in the context of wireless communication systems, where a cascade of error-correcting decoders of increasing block lengths are designed to overcome channel noise. 
+In many classification problems  such as medical diagnosis  and  homeland  security,  sequential decisions  are  often  warranted.   For each  instance,  an initial diagnostic test  is conducted and based on its result further tests maybe conducted in a fixed ordering, where ordering of the tests is often based on their cost.
+Given the outcomes of the test results at some stage,
+a classifier, which is part of the diagnostic architecture,
+produces a prediction of the unknown label of the instance to be classified.
+Apart from the above-mentioned natural scenarios, 
+the problem also arises in human engineered systems, such as in the context of wireless communication systems,
+where a cascade of error-correcting decoders of increasing block lengths are designed to overcome channel noise, 
+but using a larger block lengths incurs extra communication cost.
+In all these examples, tests have varying  costs for  acquisition, accounting for delay,  throughput  or  monetary  value.%
+\footnote{As described in \cite{ML13_MultistageClassifier_TrapezSaligramaCastanon} security systems utilize a suite of sensors/tests such as X-rays, millimeter wave imagers (expensive \& low-throughput), magnetometers, video, IR imagers human search.  Security systems  must  maintain  a  throughput  constraint  in  order to  keep  pace  with  arriving  traffic.   In  clinical  diagnosis, doctors  in the context of breast cancer diagnosis utilize tests such as genetic markers, imaging (CT, ultrasound, elastography) and biopsy. Sensors providing imagery are scored by humans. The different sensing  modalities  have  diverse  costs,  in  terms  of  health risks (radiation exposure) and monetary expense.}
+Was the probability of error known for each classifier that uses an initial segment of the tests, 
+a decision maker could optimally balance the cost of erroneous decisions and that of the sensor acquisitions'.
+\todoc{This assumes a cost associated with each error; should this be noted?}
+In the learning version of the problem, the misclassification probabilities are \emph{a prirori} unknown and a learner must learn the optimal balance based on some feedback available to him. 
+In the \emph{unsupervised} version considered here
+and which we call the unsupervised \emph{sequential sensor acquisition problem} (SAP),
+the learner only observes the outputs of the classifiers, but not the label to be predicted over multiple rounds
+in a stochastic, stationary environment.
+Can a learner still achieve the optimal balance in this case? Can a learner achieve this in any of the above
+practical problems?
+\todoc{Too provocative? Give a hint that we will add some conditions?}
 
+\if0
+In a sequential sensor acquisition problem (SAP) \todoc{This comes a little late.}
+ the goal is to acquire the tests/sensors that achieves the optimal cost-accuracy tradeoff.
+ We assume that the sensors/tests are organized into a diagnostic cascade architecture, where the ordering is based on costs/informativity of tests. Each stage in the cascade outputs a prediction of the underlying state of the instance (disease or disease-free, threat or no-threat etc.). We suppose that the classifiers (or predictors) corresponding to each node are part of the system and produce labeled outputs. This is often the case in diagnostic systems where a test ordering is a priori known and a report is produced by a human being or an automated mechanism corresponding to different sensor measurements. Thus our task in this paper is primarily to learn a decision rule to identify the collection of tests required for an instance. 
+\fi
 
-Our goal is essentially a sensor acquisition problem (SAP), namely, to acquire the tests/sensors that achieves the optimal cost-accuracy tradeoff for that instance. We assume that the sensors/tests are organized into a diagnostic cascade architecture, where the ordering is based on costs/informativity of tests. Each stage in the cascade outputs a prediction of the underlying state of the instance (disease or disease-free, threat or no-threat etc.). We suppose that the classifiers (or predictors) corresponding to each node are part of the system and produce labeled outputs. This is often the case in diagnostic systems where a test ordering is a priori known and a report is produced by a human being or an automated mechanism corresponding to different sensor measurements. Thus our task in this paper is primarily to learn a decision rule to identify the collection of tests required for an instance. 
+Our problem can be framed as a stochastic partial monitoring problem \citep{BaFoPaRaSze14},
+which itself is a generalization of multi-armed bandit problems, going back to \citet{Tho33}. 
+Recall that in a stochastic partial monitoring problem a decision maker needs to choose the action with the lowest 
+expected cost by repeatedly trying the actions and observing some feedback.
+The decision maker lacks the knowledge of some key information, such as in our case, the misclassification
+error rates of the classifiers, but had this information been available, the decision maker could calculate the
+expected costs of all the actions and could choose the best action. The feedback received by the decision
+maker in a given round depends stochastically on the unknown information and the action chosen.
+Bandit problems are a special case of partial monitoring, where the key missing information is the expected
+cost for each action (or arm), and the feedback is simply the noisy version of the expected cost of the action chosen.
+To cast our problem as a partial monitoring problem, \todoc{Do we need this? Or leave this to the reader, just saying that casting our problem as a partial monitoring problem is trivial?} 
+the key unknown information can be the misclassification error rates of the classifiers, an action is identified with 
+the subset of sensors selected, the cost of an action is the sum of the misclassification cost of the classifiers
+that uses the selected sensor subset outputs and the cost of acquiring these sensor outputs,
+while the observed feedback is the vector of predicted labels by each of the classifiers that use 
+the first, the first and second, etc., up to all sensor outputs from the sensors that were selected.
+Note that unlike in a conventional bandit problem, we do not get \emph{direct} 
+feedback of how well our action performed (either noisy or noiseless)\footnote{This problem naturally arises in the surveillance and medical domains. We can perform a battery of tests on an individual in an airport but can never be sure whether or not he/she poses a threat.}.
 
-Our problem can be framed as a version of a multi-armed bandit problem. Each arm of the bandit corresponds to a unique path from root to a node where the observation is a vector of outputs from tests acquired along that path. Nevertheless, our problem is unconventional. Unlike a conventional bandit problem, where feedback (reward) is observed corresponding to each action, we do not get feedback of how well our action performed (either noisy or noiseless)\footnote{This problem naturally arises in the surveillance and medical domains. We can perform a battery of tests on an individual in an airport but can never be sure whether or not he/she poses a threat.}.
+Absence of reward information associated with chosen actions is fundamentally challenging since we may not be able to infer potential optimal actions. As usual, in sequential learning under uncertainty, we pose the problem in terms of competitive optimality. In particular we consider a competitor who has the benefit of hindsight and can choose an optimal collection of tests for all the examples. Our goal is to learn the action, while our learning algorithm's performance is evaluated using their  cumulative regret with respect to the competitor.
+% is sub-linear (and optimal). 
 
-Absence of reward information associated with chosen actions is fundamentally challenging since we cannot infer potential optimal actions. We pose the problem in terms of competitive optimality. In particular we consider a competitor who has the benefit of hindsight and can choose an optimal collection of tests for all the examples. Our goal is to choose an action for each instance so that the cummulative regret with respect to the competitor is sub-linear (and optimal). 
+We first prove an (unsurprising) result that states 
+with no further assumptions, no learner can ``learn'', i.e., no learner can achieve sublinear regret.
+This negative result led us to introduce the notion of weak dominance on tests. 
+We show that weak dominance is fundamental, i.e., regardless of the algorithm, if this condition is not satisfied, we are left with a linear regret. On the other hand, we develop UCB style algorithms that show that we can realize optimal regret (sub-linear regret) guarantees when the condition is satisfied. 
+Thus, we identify weak dominance as the sharp necessary and sufficient condition for the learnability of
+our sensor acquisition problem.
 
-We first provide negative results for the problem. We introduce the notion of weak dominance on tests. We show that weak dominance is fundamental, i.e., regardless of the algorithm, if this condition is not satisfied, we are left with a linear regret. On the other hand we develop UCB style algorithms that show that we can realize optimal regret (sub-linear regret) guarantees when the condition is satisfied. This leads to a sharp necessary and sufficient condition for learning under no feedback. 
-
-The weak dominance condition amounts to a stochastic ordering of the tests on the diagnostic cascade. Conceptually, the weak dominance condition says that the child node tends to be relatively more accurate when the parent is correct.
+The weak dominance condition amounts to a stochastic ordering of the tests on the diagnostic cascade. 
+\todoc{I think I edited out ``cascade'' from the above text.}
+Conceptually, the weak dominance condition says that the child node tends to be relatively more accurate when the parent is correct. \todoc{I would prefer to be more explicit about what this condition is.}
 %The weak dominance condition is a somewhat stronger condition than stochastic dominance and ensures that the test accuracy associated with a child node when conditioned on the parent being correct improves over its unconditioned accuracy. 
-Under weak dominance we show that the learner can partially infer losses of the stages. In particular, we reduce the SAP problem to a stochastic multi-armed bandit with side observations, where bandit arms are identified by the nodes of the cascade. The payoff of an arm is given by loss from the corresponding stage, and side observation structure is defined by the feedback graph induced by the cascade. Empirically we verify that weak dominance condition naturally holds for several datasets including breast-cancer and diabetes datasets. A stronger dominance condition is also shown to hold by design, namely, for error-correcting code cascades in the context of communication systems.
+Under weak dominance we show that the learner can partially infer losses of the stages. 
+In particular, we reduce the SAP problem to a stochastic multi-armed bandit with side observations, 
+a problem introduced by \citet{MaSh11}.
+In the reduction, the bandit arms are identified by the nodes of the cascade. \todoc{Should we introduce cascade formally then above?}
+The payoff of an arm is given by loss from the corresponding stage, and side observation structure is defined by the feedback graph induced by the cascade. 
+The weak dominance condition occasionally can be shown to hold by design. For example, we do show that,
+in fact, a stronger dominance condition holds in the context of the communication systems 
+and error-correcting code cascades, implying the weak dominance condition there.
+Empirically, with the help of labelled data, 
+we verify that weak dominance condition naturally holds for several real-world problems,
+including diagnosing breast-cancer and diabetes.
 
 %     
 %Several papers including \cite{AISTATS13_SupervisedSequentialLearning_TrapezSaligram},\cite{ML13_MultistageClassifier_TrapezSaligramaCastanon}\cite{ICML13_CostSensitiveTreeClassification_XuKusnerChenWeinberger} have considered the problem of learning the best cost effective predictor/classifier using supervised learning methods. The general approach in these methods is to learn a decision function by minimizing an empirical risk objective over a training set. The objective functions in these methods are inherently non-convex and the authors resort to convex relaxations and experimental validations without any theoretical guarantees. However, in many applications gathering training samples may be infeasible, and moreover the labels may not be available at all. We consider an online version of this problem where the samples arrive sequentially and a learner has to decide which sensors to apply for prediction. For each sample, the learner only observes sensor predictions and true label is not revealed. 
@@ -136,34 +210,90 @@ Under weak dominance we show that the learner can partially infer losses of the 
 %reduction is straightforward, it gives ready policies with performance guarantees for SAP and their fundamental limitations .
 %
 
-Related Work: \cite{AISTATS13_SupervisedSequentialLearning_TrapezSaligram}\cite{ICML14_PredictionWithLimitedAdvice_LattimoreCrammerCzepes}
+Related Work.
+
+Supervised, batch learning, the problem is well studied.
+
+Related Work: \cite{AISTATS13_SupervisedSequentialLearning_TrapezSaligram}
+
+\cite{poczos2009}: Decide when to quit a cascade that leads to better decisions to maximize throughput against error rates. Full feedback about classification accuracy is assumed.
+
+\citet{ActiveClass-AIJ-s} consider the problem of PAC learning the best ``active classifier'',
+a classifier that decides about what tests to take given the results of previous tests
+to minimize total cost when both tests and misclassification errors are priced.
+They consider the batch, supervised setting. \todoc{I suspect they assume more than this:
+In our previous paper we had a sentence that said that
+``their model requires knowing a model of the actions in 
+advance'' (this would mean knowing the joint probabilities, I think).}
+
+The literature of learning active classifiers is large \todoc{Actually, much work exists, need to google this}
+(e.g., \citep{LCunderBudget-ECML05,ADORE-99,isukapalli01efficient-ICJAI}).
+
+
+Online learning.
+\cite{SBCA14:BanditsPaid}: The decision maker can opt to pay for additional observations of the costs associated with other arms. Not unsupervised.
+\citet{ZBGGySz13:CostlyFeatures}: Online learning with costly features and labels.
+In each round, learner has to decide which features to observe, known that each features costs 
+some money. The learner can also decide not to observe the label, but the learner always has the option
+to observe the label. Not unsupervised.
+
+Partial monitoring:
+General theory of \citet{BaFoPaRaSze14} 
+applies to the so-called finite problems (unknown ``key information'') is an element of the probability simplex.
+\citet{AgTeAn89:pmon} considers special case when the payoff is also observed (akin to the side-observation problem of \citet{MaSh11}).
 
 Structure of paper
 
-\section{Sensor Acquisition Problem}
+\section{Unsupervised Sensor Acquisition Problem}
 \label{sec:Setup}
 %The sensors are differentiated in terms of their prediction efficiency and cost. 
+
+\todoc[inline]{
+On \cref{wrap-fig:1}:
+Why is $Y_t$ the input of the first sensor?
+	Should $Y_t$ appear on the figure at all?
+	Should not each box take $Z_t$ as input?
+	Also, perhaps it should be explained that $Z_t$ is not available
+	to the learner. The dotted line should have an arrow at the end?
+	}
+
+
+\todoc[inline]{Starting with a specific example would be much better.}
+A learner has access to $K\geq 2$ sensors that provide predictions
+of an unknown label. It is assumed that the sensors form a cascade,
+i.e., they are  \emph{ordered} in terms of their prediction efficiency,
+later sensors are more accurate in predicting the unknown label.
+However, acquiring the output of later sensors comes at a fixed cost.
+The dilemma of the learner is that while he knows the ordering of the sensors,
+the accuracies of the sensors are unknown.
+The learner's task is to minimize the total prediction cost, which includes
+both the cost of acquiring the sensor outputs and the cost incurred due to imperfect
+sensor output.
+The learner knows the costs, but does not know how efficient the sensors are
+and learns only the output of the sensors.
+Learning happens in a sequential setting, where in each round the learner can decide
+sequentially (within the round) which sensor outputs to observe,
+while respecting the ordering of the sensors.
+The output of the last sensor selected serves as the prediction for the round.
+\todoc{It is not evident why not combine the output of the sensors.}
+
+Let $\{Z_t, Y_t\}_{{t>0}}$ denote a sequence generated according to an unknown distribution. $Z_t \in\mathcal{C} \subset  \mathcal{R}^d$, where $\mathcal{C}$ is a compact set, denotes a feature vector/context at time $t$ and $Y_t \in \{0,1\}$ its binary label. We denote output/prediction of the $i^{th}$ sensor as $\hat{Y}^i_t$ when its input is $Z_t$. The set of actions available to the learner is $\mathcal{A}=\{1,\ldots, K\}$, where  the action $k \in \mathcal{A}$ indicates acquiring predictions from sensors $1,\ldots, k$ and classifying using the prediction $\hat{Y}^k_t$. 
+
 
 \begin{wrapfigure}{r}{5cm}
 	\vspace{-.5cm}
 	\centering
 	\includegraphics[scale=.6]{SensorCascade.pdf}
-	\caption{Cascade of sensors}\label{wrap-fig:1}
+	\caption{Cascade of sensors
+	}\label{wrap-fig:1}
 	\vspace{-.5cm}
 \end{wrapfigure} 
-
-The learner has access to $K\geq 2$ sensors that are ordered in terms of their prediction efficiency. Specifically, we consider that the sensors form a cascade (order in which the sensors are selected is predetermined) and in each round the learner can sequentially select a subset of sensors in the cascade and stop at any depth.  
-
-
-
-Let $\{Z_t, Y_t\}_{{t>0}}$ denote a sequence generated according to an unknown distribution. $Z_t \in\mathcal{C} \subset  \mathcal{R}^d$, where $\mathcal{C}$ is a compact set, denotes a feature vector/context at time $t$ and $Y_t \in \{0,1\}$ its binary label. We denote output/prediction of the $i^{th}$ sensor as $\hat{Y}^i_t$ when its input is $Z_t$. The set of actions available to the learner is $\mathcal{A}=\{1,\ldots, K\}$, where  the action $k \in \mathcal{A}$ indicates acquiring predictions from sensors $1,\ldots, k$ and classifying using the prediction $\hat{Y}^k_t$. 
-
 
 
 
 The prediction error rate of the $i^{th}$ sensor is denoted as $\gamma_i:=\Pr\{Y_t\neq \hat{Y}^k_t\}$. The learner incurs an extra cost of $c_k\geq 0$ to acquire output of sensor $k$ after acquiring output of sensor $k-1$. The sensor cascade is depicted in the adjacent figure. In this section we assume that the error rate does not depend on the  context, and the treatment with contextual information is given in the supplementary. 
 
-Let $H_t(k)$ denote the feedback observed in round $t$ from action $k$. Since we observe predictions of all the first $k$ senors by playing action $k$, we get   $H_t(k)=\{\hat{Y}^1_t,\ldots,\hat{Y}^k_t\}$.
+Let $H_t(k)$ denote the feedback observed in round $t$ from action $k$. Since we observe predictions of all the first $k$ senors by playing action $k$, we get   $H_t(k)=(\hat{Y}^1_t,\ldots,\hat{Y}^k_t)$.
 The loss incurred in each round is defined in terms of the prediction error and the total cost involved. When the learner selects action $k$, loss is the prediction error of sensor $k$ plus sum of the costs incurred along the path ($c_1,\ldots,c_k$). Let $L_t: \mathcal{A}\rightarrow \mathcal{R}_+$ denote the loss function in round $t$. Then,
 \begin{equation}
 L_t(k)=\mathbf{1}_{\{\hat{Y}^k_t\neq Y_t\}}+\sum_{j=1}^k c_j.
