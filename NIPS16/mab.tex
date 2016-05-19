@@ -1,12 +1,12 @@
 %!TEX root =  main.tex
-A stochastic multi-armed bandit (MAB), denoted as $\phi:=(K, (\nu_k)_{1 \leq k \leq K})$, is a sequential learning problem where number of arms $K$ is known and each arm $i \in [K]$ gives rewards drawn according to an unknown distribution $\nu_k$. Let $X_{i,n}$ denote the random reward from arm $i$ in its $n$th play. For each arm $i\in [K]$, $\{X_{i,t}: t>0\}$ are independently and identically (i.i.d) distributed and for all $t>0$, $\{X_{i,t}, i \in [K]\}$ are independent. We note that in the standard MAB setting the learner observes only reward from the selected arm in each round and no information from the other arms is revealed. However, in many applications playing an arm reveals information about the other arms which can be exploited to improve learning performance. Let $\mathcal{N}_i$  denote neighborhood of $i$ such that playing arm $i$ reveals rewards of all arms $j \in \mathcal{N}_i$.  Given a set of neighborhood $\{\mathcal{N}_i, i\in [K]\}$, let $\phi_G:=(K, (\nu_k)_{1\leq k\leq K}, G)$ denote a MAB with side-information graph $G=(V,E)$, where $|V|=K$ and $(i,j)\in E$ if $j \in \mathcal{N}_i$. The side-observation graph is known to the learner and remains fixed during the play. To avoid cluttering, we henceforth drop subscript $G$ in $\phi_G$ and it should be clear from context if side-observations exists or not. 
+A stochastic multi-armed bandit (MAB), denoted as $\phi:=(K, (\nu_k)_{k \in [K]})$, is a sequential learning problem where number of arms $K$ is known and each arm $ik \in [K]$ gives rewards drawn according to an unknown distribution $\nu_k$. Let $X_{i,n}$ denote the random reward from arm $i$ in its $n$th play. For each arm $i\in [K]$, $\{X_{i,t}: t>0\}$ are independently and identically (i.i.d) distributed and for all $t>0$, $\{X_{i,t}, i \in [K]\}$ are independent. We note that in the standard MAB setting the learner observes only reward from the selected arm in each round and no information from the other arms is revealed. However, in many applications playing an arm reveals information about the other arms which can be exploited to improve learning performance. Let $\mathcal{N}_i$  denote neighborhood of $i$ such that playing arm $i$ reveals rewards of all arms $j \in \mathcal{N}_i$.  Given a set of neighborhood $\{\mathcal{N}_i, i\in [K]\}$, let $\phi_G:=(K, (\nu_k)_{1\leq k\leq K}, G)$ denote a MAB with side-information graph $G=(V,E)$, where $|V|=K$ and $(i,j)\in E$ if $j \in \mathcal{N}_i$. The side-observation graph is known to the learner and remains fixed during the play. To avoid cluttering, we henceforth drop subscript $G$ in $\phi_G$ and it should be clear from context if side-observations exists or not. 
 
 Let $\Pi^{\phi}$ denote a set of polices on $\phi$ that maps the past history into an arm in each round.. If the learner knows $\{\nu_k\}_{k \in [K]}$, then the optimal policy is to play the arm with highest mean. Given a policy $\pi \in \Pi^{\phi}$, its performance is measured with respect to the optimal policy and is defined in terms of expected cumulative regret (or simply regret) as follows ( only reward from the arm played contribute to the regret and not that from the side-observations):  Let $\pi$ selects arm $i_t$ in round $t$. After $T$ rounds, its regret is 
 \begin{equation}
 \label{eqn:BanditRegret}
 R^\phi_T(\pi)= T \mu_{i^*}- \sum_{t=1}^{T}\mu_{i_t},
 \end{equation} 
-where $\mu_i=\mathbb{E}[X_{i,n}]$ denotes mean of distribution  $\nu_i$ for all $i\in [K]$ and  $i^*= \arg\max_{i \in [K]} \mu_i$. Let $N^\phi_i(t)=\sum_{s=}^{t}\boldsymbol{1}\{i_s=i\}$ denote the number of pulls of arm $i$ till time $t$. Then, the regret of policy $\pi$ can be expressed 
+where $\mu_i=\mathbb{E}[X_{i,n}]$ denotes mean of distribution  $\nu_i$ for all $i\in [K]$ and  $i^*= \arg\max_{i \in [K]} \mu_i$. Let $N^\phi_i(t)$ denote the number of pulls of arm $i$ till time $t$. Then, the regret of policy $\pi$ can be expressed 
 \[R^\phi_T(\pi)=\sum_{i=1}^{K}(\mu_{i^*}-\mu_i)\mathbb{E}[N^\phi_i(T)].\]
 The goal is to learn a policy that minimizes the regret.  
 
@@ -38,6 +38,7 @@ $ where side observation graph is such that $i \in \mathcal{N}_i$ for all $i\in 
 %R^B_T(\pi)= \max_{1\leq i\leq K}\mathbb{E}\left[\sum_{t=1}^{T}X_{i,t}\right]- \mathbb{E}\left[\sum_{i=1}^{T}X_{k_t,N_{k_t}(t)}\right],
 %\end{equation} 
 \begin{equation}
+   \label{eqn:MABLowerBound}
 	\liminf_{T \rightarrow \infty} R^{\phi}_T(\pi)/\log T \geq \eta(G)
 	\end{equation}
 		where $\eta(G)$ is the optimal value of the following linear optimization
