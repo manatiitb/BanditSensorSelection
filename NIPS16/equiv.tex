@@ -2,17 +2,17 @@
 In this section we establish that SAP with strong dominance property is `regret equivalent' to an instance of MAB with side-information and the corresponding algorithm for MAB can be suitably imported to solve SAP efficiently.   
  \noindent
 \begin{definition}[Regret Equivalence]
-	Consider a SAP problem $\psi:=(K, \mathcal{A}, (\gamma_i,c_{i-1})_{i\in [K]})$ and a bandit problem with $\phi_G:=(N, (\nu_i)_{i \in [N]},G)$ side-information graph $G$. We say that $\psi$ is regret-equivalent to $\phi_G$ if given a policy $\pi$ for problem $\psi$, one can come up with a policy $\pi^\prime$ that uses $\pi$, such that the regret of $\pi^\prime$ on any instance of $\phi_G$ is the same as the regret of $\pi$ on some corresponding instance of $\psi$, and vice versa. 
+	Consider a SAP problem $\psi:=(K, P, c)$ and a bandit problem with $\phi_G:=(N, (\nu_i)_{i \in [N]},G)$ side-information graph $G$. We say that $\psi$ is regret-equivalent to $\phi_G$ if given a policy $\pi$ for problem $\psi$, one can come up with a policy $\pi^\prime$ that uses $\pi$, such that the regret of $\pi^\prime$ on any instance of $\phi_G$ is the same as the regret of $\pi$ on some corresponding instance of $\psi$, and vice versa. 
 \end{definition}	
-In the following we first consider the SAP with 2 sensors and then the general case with more than 2 sensors. The 2 sensors case helps to draw comparison with the well studied apple tasting problem and understand role of the dominance condition. 
+In the following we first consider SAP with $2$ sensors and then the general case with more than $2$ sensors. SAP with $2$ sensors is useful to draw comparison with the well studied apple tasting problem \cite{IC2000_AppleTasting_HelmboldLittlestoneLong} and understand role of the dominance property. 
 \subsection{SAP with two sensors}
-In SAP with two actions, feedback from action $i$ reveals no information about the loss incurred in that round. However feedback after action $2$ reveals (partial) information about the loss of both actions. This is because, suppose predictions of sensors disagree, i.e., ${\hat{Y}^1_t\neq\hat{Y}^2_t}$, then dominance property implies that the only possible event is $\hat{Y}^1_t \neq Y_t$ and $\hat{Y}^2_t=Y_t$. I.e., the true label is that predicted by sensor-2, hence loss incurred is just $c_1$ (prediction loss is zero). On the other hand if predictions agree, i.e., ${\hat{Y}^1_t = \hat{Y}^2_t}$, then the dominance property implies that either predictions of both are correct or both are incorrect. Though the true loss is not known in this case, the learner can infer some useful knowledge: in round $t$, if predictions of sensors agree, then $L_t(2)-L_t(1)=c_1>0$. And if predictions disagree, then dominance property implies that either $L_t(1)=1$ and $L_t(2)=c$ or $L_t(2)-L_t(1)=c_1<0$. Thus, each time learner plays action $2$, he gets to know whether or not he was better off by selecting the other action. This setup sounds similar to the standard apple tasting problem \cite{IC2000_AppleTasting_HelmboldLittlestoneLong}
-], but differs in terms of the information structure when action $2$ is played. r
+In SAP with two actions, feedback from action $1$ reveals no information about the loss incurred in a round. However feedback from action $2$ reveals (partial) information about the loss of both actions. To see this, let action $2$ is played in in round $t$. If predictions of sensors disagree, i.e., ${\hat{Y}^1_t\neq\hat{Y}^2_t}$, then due to dominance property the only possibility is $\hat{Y}^1_t \neq Y_t$ and $\hat{Y}^2_t=Y_t$. Hence $L_t(1)=1$ and $L_t(2)=c$. On the other hand, if predictions agree, i.e., ${\hat{Y}^1_t = \hat{Y}^2_t}$, then either predictions of both are correct or both are incorrect, hence $L_t(2)-L_t(1)=c_1>0$. Thus, each time learner plays action $2$, he gets to know loss of each action only in some instances. This sounds similar to the standard apple tasting problem \cite{IC2000_AppleTasting_HelmboldLittlestoneLong}
+]. 
 
 \noindent
-{\bf Apple tasting problem:} In the apple tasting problem, a learner gets a sequence of apples and some of them can be rotten. In each round, the learner can either accept or reject an apple. If an apple is accepted, the learner tastes it and incurs a penalty if it is rotten. If apple is rejectsed, he still incurs the penalty if it is rotten, but do not get to observe its quality. %Thus, each time the learner accepts an apple, he knows the penalty incurred for both the actions. However, no loss values is revealed if he rejects. 
+{\bf Apple tasting :} In this problem, a learner gets a sequence of apples and some of them can be rotten. In each round, the learner can either accept or reject an apple. If apple is rejected, learner incurs a penalty if it is rotten, but do not get to observe its quality. If an apple is accepted, the learner tastes it and incurs a penalty if it is rotten. In the latter case, learner observers quality of apple, hence knows loss incurred, and also the loss he would have incurred if it was rejected.  %Thus, each time the learner accepts an apple, he knows the penalty incurred for both the actions. However, no loss values is revealed if he rejects. 
 The goal of the learner is to taste more good apples. 
-The SAP setting is a more general version than the apple tasting problem--in any round, actions $1$ reveals no loss values. Action $2$  reveals only partial information about the losses, but not the exact losses as in the apple tasting problem. However, we next show that the partial information is enough to achieve optimal performance.  
+A SAP with dominance property is thus a more general version than the apple tasting problem as unlike in apple tasting problem only partial information on loss value are revealed.  We next show that SAP satisfying dominance property can be efficiently solved.  
 %
 %\begin{thm}
 %	\label{thm:2SAPRegret}
@@ -73,7 +73,7 @@ Given a SA-problem $\psi$,	there exists a policy $\pi\in \Pi^\psi$ such that
 	R^\psi_T(\pi)\leq \mathcal{O}(\xi(G^S)\log T + K^2) 	
 \end{equation}
 \end{proposition}
-This follows as one can obtain a policy for SAP from UCB-LP policy that uses side-observation graph $G^S$ as discussed in the proof of Theorem \ref{thm:K-SAPRegret}, and tche new policy maintains regret guarantee of UCB-LP.   
+This follows as one can obtain a policy for SAP from UCB-LP policy that uses side-observation graph $G^S$ as discussed in the proof of Theorem \ref{thm:K-SAPRegret}, and the new policy maintains regret guarantee of UCB-LP.   
 
 
 
