@@ -1,14 +1,6 @@
 %!TEX root =  main.tex
 %The sensors are differentiated in terms of their prediction efficiency and cost. 
 
-\todoc[inline]{
-On \cref{wrap-fig:1}:
-Why is $Y_t$ the input of the first sensor?
-	Should $Y_t$ appear on the figure at all?
-	Should not each box take $Z_t$ as input?
-	Also, perhaps it should be explained that $Z_t$ is not available
-	to the learner. The dotted line should have an arrow at the end?
-	}
 
 
 \todoc[inline]{Starting with a specific example would be much better.}
@@ -41,8 +33,8 @@ In round $t$ ($t=1,2,\dots$),
 the environment generates 
 $(Y_t,\hY_t^1,\dots,\hY_t^K)\in \{0,1\}^{K+1}$ from a distribution $P$ unknown to the learner.
 \todoc{Do we use anywhere that labels are binary? If not, why not present a general case?}
-Here, $Y_t$ is the unknown label to be predicted in round $t$, while $\hY_t^k$ is the output of sensor
-$k$, a prediction of $Y_t$.
+Here, $Y_t$ is the unknown label of context/instance $Z_t$ to be predicted in round $t$, while $\hY_t^k$ is the output of sensor
+$k$, a prediction of $Y_t$. We focus on the case where $Z_t$ is not available to the learner. The case where they are observed is briefly discussed in the supplementary. 
 At the cost of $c_1+ c_2 + \dots + c_k$,
 the learner can choose to acquire the outputs of the first $k$ sensors,
 where $k\in [K] := \{1,\dots,K\}$. 
@@ -62,7 +54,6 @@ L_t(k)=\mathbf{1}_{\{\hat{Y}^k_t\neq Y_t\}}+\sum_{j=1}^k c_j\,
 \end{align*}
 in round $t$.
 The feedback of learner for this round is then $H_t(k)=(\hat{Y}^1_t,\ldots,\hat{Y}^k_t)$.
-\todoc{Mention contextual case here, or later?}
 
 %Let $\{Z_t, Y_t\}_{{t>0}}$ denote a sequence generated according to an unknown distribution. $Z_t \in\mathcal{C} \subset  \mathcal{R}^d$, where $\mathcal{C}$ is a compact set, denotes a feature vector/context at time $t$ and $Y_t \in \{0,1\}$ its binary label. We denote output/prediction of the $i^{th}$ sensor as $\hat{Y}^i_t$ when its input is $Z_t$. The set of actions available to the learner is $\mathcal{A}=\{1,\ldots, K\}$, where  the action $k \in \mathcal{A}$ indicates acquiring predictions from sensors $1,\ldots, k$ and classifying using the prediction $\hat{Y}^k_t$. 
 
@@ -121,6 +112,6 @@ is selected till time $s$, i.e., $N_k(s)=\sum_{t=1}^s \boldsymbol{1}_{\{I_t=k\}}
 Then the expected regret can be expressed as \todoc{Why do we have this here? Add explanation or remove this.}
 \begin{eqnarray}
 \label{eqn:ExpRegretGap}
-R^\psi_T(\pi)&=& \sum_{k \in \mathcal{A}}\mathbb{E}[N_k(T)]\Delta_k\,.
+R^\psi_T(\pi)&=& \sum_{k \in [K]}\mathbb{E}[N_k(T)]\Delta_k\,.
 \end{eqnarray}\
 
