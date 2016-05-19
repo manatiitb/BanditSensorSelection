@@ -1,0 +1,79 @@
+%!TEX root =  main.tex
+A stochastic multi-armed bandit (MAB), denoted as $\phi:=(K, (\nu_k)_{1 \leq k \leq K})$, is a sequential learning problem where number of arms $K$ is known and each arm $i \in [K]$ gives rewards drawn according to an unknown distribution $\nu_k$. Let $X_{i,n}$ denote the random reward from arm $i$ in its $n$th play. For each arm $i\in [K]$, $\{X_{i,t}: t>0\}$ are independently and identically (i.i.d) distributed and for all $t>0$, $\{X_{i,t}, i \in [K]\}$ are independent. We note that in the standard MAB setting the learner observes only reward from the selected arm in each round and no information from the other arms is revealed. However, in many applications playing an arm reveals information about the other arms which can be exploited to improve learning performance. Let $\mathcal{N}_i$  denote neighborhood of $i$ such that playing arm $i$ reveals rewards of all arms $j \in \mathcal{N}_i$.  Given a set of neighborhood $\{\mathcal{N}_i, i\in [K]\}$, let $\phi_G:=(K, (\nu_k)_{1\leq k\leq K}, G)$ denote a MAB with side-information graph $G=(V,E)$, where $|V|=K$ and $(i,j)\in E$ if $j \in \mathcal{N}_i$. The side-observation graph is known to the learner and remains fixed during the play. To avoid cluttering, we henceforth drop subscript $G$ in $\phi_G$ and it should be clear from context if side-observations exists or not. 
+
+Let $\Pi^{\phi}$ denote a set of polices on $\phi$ that maps the past history into an arm in each round.. If the learner knows $\{\nu_k\}_{k \in [K]}$, then the optimal policy is to play the arm with highest mean. Given a policy $\pi \in \Pi^{\phi}$, its performance is measured with respect to the optimal policy and is defined in terms of expected cumulative regret (or simply regret) as follows ( only reward from the arm played contribute to the regret and not that from the side-observations):  Let $\pi$ selects arm $i_t$ in round $t$. After $T$ rounds, its regret is 
+\begin{equation}
+\label{eqn:BanditRegret}
+R^\phi_T(\pi)= T \mu_{i^*}- \sum_{t=1}^{T}\mu_{i_t},
+\end{equation} 
+where $\mu_i=\mathbb{E}[X_{i,n}]$ denotes mean of distribution  $\nu_i$ for all $i\in [K]$ and  $i^*= \arg\max_{i \in [K]} \mu_i$. Let $N^\phi_i(t)=\sum_{s=}^{t}\boldsymbol{1}\{i_s=i\}$ denote the number of pulls of arm $i$ till time $t$. Then, the regret of policy $\pi$ can be expressed 
+\[R^\phi_T(\pi)=\sum_{i=1}^{K}(\mu_{i^*}-\mu_i)\mathbb{E}[N^\phi_i(T)].\]
+The goal is to learn a policy that minimizes the regret.  
+
+%MAB problems have been extensively studied in the literature. The seminal paper of Lai \& Robbins 
+%\cite{AAM85_Asymptotically_LaiRobbins} showed that for any consistent policy (that plays sub-optimal arms only sup-polynomially many times in the time horizon) the regret grows logarithmically in time horizon. Specifically, for a class of parametric reward distributions, they showed that regret of any consistent policy satisfies
+%\begin{equation}
+%\label{eqn:MABLowerBound}
+%\liminf_{n \rightarrow \infty}\frac{ R^\phi_T(\pi)}{\log T} \geq \sum_{i\neq i^*} \frac{\mu_{i^*}-\mu_i}{D(\mu_{i^*}||\mu_i)},
+%\end{equation}
+%where  $D(p||q)$ is the KL-divergence of $p,q \in [0\; 1]$. Further, the authors in \cite{AAM85_Asymptotically_LaiRobbins}  provided an upper confidence bound (UCB) based policy that asymptotically achieves the lower bound for a class of parmetric reward distributions.
+% 
+%Auer et, al. \cite{ML02_FiniteTimeAnalysis_AuerBianchiFischer} proposed an anytime policy named UCB1, that is based on the UCB strategy and showed that it is optimal on any MAB with bounded rewards. Specifically, they showed that regret of UCB1 for any $T>K$ is upper bound as 
+%\begin{equation}
+%\label{eqn:UCB1UpperBound}
+%R^\phi_T(\mbox{UCB1})\leq \sum_{i\neq i^*} \frac{8\log n}{\mu_{i^*}-\mu_i} + (\pi^2/3 + 1)(\mu_{i^*}-\mu_i).
+%\end{equation}
+%Thus demonstrating the optimality of UCB1. Since the work of Auer et. al. several works have proposed improvised UCB based policies like, KL-UCB \cite{COLT11_TheKL-UCBAlgorithm_GarivierCappe}, MOSS \cite{JMLR2010_RegretBoundsAndMinimax_AudibertBubeck}.
+%
+%
+%\subsection{MAB With Side Information}
+%
+%
+%Let $\Pi^{\phi_G}$ denote the set of all policies on $\phi_G$ that map the past history (including the side-observations) to an action in each round. For any policy $\pi  \in \Pi^{\phi_G}$, we denote the regret over a period $T$ as $R^{\phi_G}_T(\pi)$ and is given by (\ref{eqn:BanditRegret}). Note that, in each round, 
+%only reward from the arm played contribute to the regret and not that from the side-observations. 
+\cite{Sigmetrics15_StochasticBanditsWithSideObservations_BuccapatnamEriyilmazShroff} establish that any policy $\pi \in \Pi^{\phi} 
+$ where side observation graph is such that $i \in \mathcal{N}_i$ for all $i\in [K]$ satisfies
+%\begin{equation}
+%\label{RegretBandit}
+%R^B_T(\pi)= \max_{1\leq i\leq K}\mathbb{E}\left[\sum_{t=1}^{T}X_{i,t}\right]- \mathbb{E}\left[\sum_{i=1}^{T}X_{k_t,N_{k_t}(t)}\right],
+%\end{equation} 
+\begin{equation}
+	\liminf_{T \rightarrow \infty} R^{\phi}_T(\pi)/\log T \geq \eta(G)
+	\end{equation}
+		where $\eta(G)$ is the optimal value of the following linear optimization
+	\begin{align}
+	& \mbox{LP1}:\; \;\displaystyle\min_{\{w_i\}}\sum_{i \in [K]}(\mu_{i^*}- \mu_i) w_i \nonumber\\
+	\label{eqn:LowerBoundLP}
+	& \mbox{subjected to} \sum_{j \in \mathcal{N}_i}w_i\geq 1/D(\mu_i || \mu_{i^*}) \mbox{ and } w_i \geq 0 \mbox{  for all } i\in [K],
+%	& w_i \geq 0 \mbox{ for all } i \in [K] \nonumber
+	\end{align}
+$D(\mu_i || \mu_{i^*})$ here denotes the Kullback-Leibler divergence between $\nu_i$ and $\nu_{i^*}$. 
+When $\mathcal{N}_i=\{i\}$ for all $i\in [K]$, it reduces to the classical lower bound of $\sum_{i\neq i^*}(\mu_{i^*}- \mu_i)/D(\mu_i || \mu_{i^*})$ established in \cite{AAM85_Asymptotically_LaiRobbins}. Further, \cite{Sigmetrics15_StochasticBanditsWithSideObservations_BuccapatnamEriyilmazShroff} also gave an UCB based strategy, named UCB-LP, that explores arms at a rate in proportion to the size of their neighborhood. Specifically, UCB-LP plays arms in proportions to the values $\{z_i^*, i\in [K]\}$ computed from the following linear optimization which is a relaxation of LP1. 
+
+	\begin{equation}
+	\label{eqn:LowerRelaxedBoundLP}
+	\mbox{LP2}: \displaystyle\min_{\{z_i\}}\sum_{i \in [K]} z_i 
+	 \mbox{ subjected to } \sum_{j \in \mathcal{N}_i}z_i\geq 1 \mbox{ and } z_i \geq 0 \mbox{  for all } i\in [K]
+	%	&  \mbox{ for all } i \in [K] \nonumber
+	\end{equation}
+%	\begin{align}
+%	& LP2: \displaystyle\min_{\{z_i\}}\sum_{i \in [K]} z_i \nonumber\\
+%	\label{eqn:LowerRelaxedBoundLP}
+%	& \mbox{subjected to} \sum_{j \in \mathcal{N}_i}z_i\geq 1 \mbox{ and } z_i \geq 0 \mbox{  for all } i\in [K]
+%%	&  \mbox{ for all } i \in [K] \nonumber
+%	\end{align}
+
+The regret of UCB-LP is upper bounded by 
+\begin{equation}
+\label{eqn:UCBLPUpperBound}
+\mathcal{O}\left(\sum_{i\in [K]} z_i^* \log T\right) +\mathcal{O}(K\delta),
+\end{equation}
+where $\delta= \max_{i \in [K]}|\mathcal{K}_i|$ and $\{z_i^*\}$ are the optimal values of $LP2$. 
+\begin{definition}[Domination number \cite{Sigmetrics15_StochasticBanditsWithSideObservations_BuccapatnamEriyilmazShroff}]
+	Given a graph $G=(V,E)$, a subset $W\subset V$ is a dominant set if for each $v\in V$ there exists $u \in W$ such that $(u,v)\in E$. The size of the smallest dominant set is called weak domination number and is denoted as $\xi(G)$. 
+\end{definition} 	
+Since any dominating set is a feasible solution of LP2, we get $\sum_{i\in [K]}z_i^*\leq \xi(G)$, and the regret of UCB-LP is $\mathcal{O}(\xi(G)\log T)$. 
+%\subsection{Special case: 1-armed bandit}
+%In the MAB problem when all the arms have a fixed reward except for one, we get 1-armed bandit. 
+%The learner knows the arms that give fixed reward the goal is to identify the quality of the arm that gives stochastic reward as fast as possible. A straightforward modification of UCB1 achieves optimal regret of $\Theta(\log T)$.
+  
