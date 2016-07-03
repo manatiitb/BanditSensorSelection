@@ -1,4 +1,4 @@
-function out=UCB(settings)
+function out=UCBbsc(settings)
 
 p=settings.p;                             % input label distribution, probability of 0
 p1=settings.p1;                            % error prob of sensor 1
@@ -7,14 +7,14 @@ c=settings.c;
 T=settings.T;                           % number of rounds
 iterations=settings.iterations;
 
-hold on;
+Regs=zeros(T,iterations);
+
 for i=1:1:iterations
     
     opt=max(p1-p2,c);               % optimal actions
     loss=zeros(T,1);
     N2=0;                           % counts of arm-2 pulls
     ltot=0;
-    Regs=zeros(T,1);
     
     for t=1:1:T
         if t==1
@@ -44,8 +44,7 @@ for i=1:1:iterations
         end
     end
     regret =  repmat(opt, size(loss))-loss;
-    Reg = cumsum(regret,1);
-    Regs=Regs+Reg;
+    Regs(:,i) = cumsum(regret,1);
 end        
-out= Regs/iterations;
+out= Regs;
     
