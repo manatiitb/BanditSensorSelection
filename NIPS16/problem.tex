@@ -3,7 +3,6 @@
 
 
 
-\todoc[inline]{Starting with a specific example would be much better.}
 A learner has access to $K\geq 2$ sensors that provide predictions
 of an unknown label. \todoc{We agreed with Venkatesh, that in the intro, he will explain that
 the classifiers themselves are a kind of intelligent sensors. So the sensors mentioned here
@@ -27,14 +26,33 @@ sequentially (within the round) which sensor outputs to observe,
 while respecting the ordering of the sensors.
 The output of the last sensor selected serves as the prediction for the round.
 
+
+\begin{wrapfigure}{r}{5cm}
+	\vspace{-.5cm}
+	\centering
+	\includegraphics[scale=.6]{SensorCascade.pdf}
+	\caption{Cascade of sensors.
+	Each sensor predicts a label $Y_t$ (not shown) associated
+	with a random instance $Z_t$. The output of sensor $k$
+	can be acquired at the additional cost $c_{k-1}>0$ after 
+	the output of sensor has been acquired. Sensors with higher indices
+	have a smaller probability of missing the true label.
+	}\label{wrap-fig:1}
+	\vspace{-.5cm}
+\end{wrapfigure} 
+
 The formal specification of the learning problem is as follows:
 Learning happens sequentially.
 In round $t$ ($t=1,2,\dots$), 
 the environment generates 
 $(Y_t,\hY_t^1,\dots,\hY_t^K)\in \{0,1\}^{K+1}$ from a distribution $P$ unknown to the learner.
 \todoc{Do we use anywhere that labels are binary? If not, why not present a general case?}
-Here, $Y_t$ is the unknown label of context/instance $Z_t$ to be predicted in round $t$, while $\hY_t^k$ is the output of sensor
-$k$, a prediction of $Y_t$. We focus on the case where $Z_t$ is not available to the learner. The case where they are observed is briefly discussed in the supplementary. 
+Here, $Y_t$ is the unknown label 
+%of context/instance $Z_t$ to be predicted
+ in round $t$, while $\hY_t^k$ is the output of sensor
+$k$, a prediction of $Y_t$. 
+%We focus on the case where $Z_t$ is not available to the learner. 
+%The case where they are observed is briefly discussed in the supplementary. 
 At the cost of $c_1+ c_2 + \dots + c_k$,
 the learner can choose to acquire the outputs of the first $k$ sensors,
 where $k\in [K] := \{1,\dots,K\}$. 
@@ -56,16 +74,6 @@ in round $t$.
 The feedback of learner for this round is then $H_t(k)=(\hat{Y}^1_t,\ldots,\hat{Y}^k_t)$.
 
 %Let $\{Z_t, Y_t\}_{{t>0}}$ denote a sequence generated according to an unknown distribution. $Z_t \in\mathcal{C} \subset  \mathcal{R}^d$, where $\mathcal{C}$ is a compact set, denotes a feature vector/context at time $t$ and $Y_t \in \{0,1\}$ its binary label. We denote output/prediction of the $i^{th}$ sensor as $\hat{Y}^i_t$ when its input is $Z_t$. The set of actions available to the learner is $\mathcal{A}=\{1,\ldots, K\}$, where  the action $k \in \mathcal{A}$ indicates acquiring predictions from sensors $1,\ldots, k$ and classifying using the prediction $\hat{Y}^k_t$. 
-
-
-\begin{wrapfigure}{r}{5cm}
-	\vspace{-.5cm}
-	\centering
-	\includegraphics[scale=.6]{SensorCascade.pdf}
-	\caption{Cascade of sensors
-	}\label{wrap-fig:1}
-	\vspace{-.5cm}
-\end{wrapfigure} 
 
 \if0
 The prediction error rate of the $i^{th}$ sensor is denoted as $\gamma_i:=\Pr\{Y_t\neq \hat{Y}^k_t\}$. The learner incurs an extra cost of $c_k\geq 0$ to acquire output of sensor $k$ after acquiring output of sensor $k-1$. The sensor cascade is depicted in the adjacent figure. In this section we assume that the error rate does not depend on the  context, and the treatment with contextual information is given in the supplementary. 
