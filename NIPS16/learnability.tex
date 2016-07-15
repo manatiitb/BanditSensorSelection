@@ -1,4 +1,130 @@
 %!TEX root =  main.tex
+\newcommand{\SA}{\mathrm{SA}}
+\newcommand{\SD}{\mathrm{SD}}
+\newcommand{\WD}{\mathrm{WD}}
+\newcommand{\TSA}{\Theta_{\SA}}
+\newcommand{\Alg}{\mathfrak{A}}
+\newcommand{\TSD}{\Theta_{\SD}}
+\newcommand{\TWD}{\Theta_{\WD}}
+Let $\TSA$ be the set of all sensor acquisition problems. \todoc{Shall we define ``proper'' problems?}
+Thus, $\theta = (P,c)\in \TSA$ such that if $Y\sim P$ then $\gamma_k(\theta):=\Prob{Y\ne Y^k}$ 
+is a decreasing sequence.
+Given a subset $\Theta\subset \TSA$, we say that $\Theta$ is \emph{learnable} 
+if there exists a learning algorithm $\Alg$ such that
+for any $\theta\in \Theta$, the expected regret $\EE{ \Regret_n(\Alg,\theta) }$ 
+of algorithm $\Alg$ on instance $\theta$ is sublinear.
+A subset $\Theta$ is said to be a maximal learnable problem class if it is learnable and for any $\Theta'\subset \TSA$ superset
+of $\Theta$, $\Theta'$ is not learnable.
+In this section we study two special learnable problem classes, $\TSD\subset \TWD$, where the instances in $\TSD$ are easier to identify in practice, while $\TWD$ can be seen as a maximal extension of $\TSD$.
+
+Let us start with some definitions.
+Given an instance $\theta = (P,c)\in \TSA$, we can decompose $P$ into the joint distribution $P_S$ of the sensor outputs $S = (Y^1,\dots,Y^k)$ and the conditional distribution of the state of the environment, given the sensor outputs, $P_{Y|S}$.
+Specifically, letting $(Y,S)\sim P$, for $s\in \{0,1\}^K$ and $y\in \{0,1\}$, $P_S(s) = \Prob{S = s}$ and $P_{Y|S}(y|s) = \Prob{Y=y|S=s}$. We denote this by $P = P_S \otimes P_{Y|S}$.
+A learner who observes the output of all sensors for long enough is able to identify $P_S$ with arbitrary precision, while $P_{Y|S}$ remains hidden from the learner. This leads to the following simple statement whose proof is left as an exercise:
+\begin{proposition}
+\label{prop:learnablemap}
+$\Theta\subset \TSA$ is learnable if and only if there exists a map $a: M_1( \{0,1\}^K ) \to [K]$ such that 
+for any $\theta= (P,c)$, if $P = P_S \otimes P_{Y|S}$ then $a(P_S)$ is an optimal action in $\theta$.
+\end{proposition}
+
+A class of sensor acquisition problems that contains instances that satisfy the so-called \emph{strong dominance} condition 
+will be shown to be learnable:
+\begin{definition}[Strong Dominance]
+	An instance $\theta = (P,c)\in \TSA$  is said to satisfy the \emph{strong dominance property} if 
+	it holds in the instance that if a sensor predicts correctly
+	then all the sensors in the subsequent stages of the cascade also predict correctly, i.e., 
+	for any $i\in [K]$,
+	\begin{equation}
+	\label{eqn:DominanceCondition}
+	Y^i=Y \,\, \Rightarrow\,\, Y^{i+1}= \dots =  Y^K = Y
+	\end{equation}
+	almost surely (a.s.)
+	where $(Y,Y^1,\dots,Y^K)\sim P$.
+\end{definition}
+Let $\TWD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
+\begin{thm}
+The set $\TWD$ is learnable.
+\end{thm}
+\begin{proof}
+We construct a map as required by~\cref{prop:learnablemap}.
+Take an instance $\theta = (P,c)\in \TWD$ and let $P = P_S \otimes P_{Y|S}$ be its decomposition
+as defined above.
+Let $\gamma_i = \Prob{Y^i \ne Y}$, $(Y,Y^1,\dots,Y^K)\sim P$, $C_i = c_1+\dots+c_i$.
+For identifying an optimal action in $\theta$, it clearly suffices
+to know the sign of $\gamma_i + C_i - (\gamma_j +C_j)$ for all pairs $i,j\in [K]^2$.
+Since $C_i - C_j$ is known, it remains to study $\gamma_i-\gamma_j$.
+Without loss of generality (WLOG) let $i<j$.
+Then, 
+\begin{align*}
+0 & \le \gamma_i  - \gamma_j = \Prob{Y^i\ne Y} - \Prob{Y^j\ne Y} \\
+& = \cancel{\Prob{Y^i\ne Y, Y^i=Y^j}} + \Prob{ Y^i\ne Y, Y^i\ne Y^j } - \\
+& - \left\{ 
+       \cancel{\Prob{Y^j\ne Y, Y^i=Y^j}} + \Prob{ Y^j\ne Y, Y^i\ne Y^j }\right\}\\
+& = \Prob{ Y^i\ne Y, Y^i \ne Y^j } + \Prob{Y^i=Y,Y^i\ne Y^j}       \\
+& - \left\{ 
+	  \Prob{ Y^j \ne Y, Y^i\ne Y^j } + \Prob{ Y^i=Y,Y^i\ne Y^j}
+	 \right\}\\
+& \stackrel{\footnotesize (a)}{=} \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y } \,,
+\numberthis
+\label{eq:keyidentity}
+\end{align*}
+where in $(a)$ we used that $\Prob{ Y^j \ne Y, Y^i\ne Y^j } =  \Prob{ Y^j\ne Y,Y^i= Y}$ and also
+$\Prob{ Y^i=Y,Y^i\ne Y^j} = \Prob{ Y^j\ne Y,Y^i= Y}$ because $Y,Y^i,Y^j$ only take on two possible values.
+Now, since $\theta$ satisfies the strong dominance condition, $ \Prob{ Y^j\ne Y, Y^i = Y } = 0$.
+Thus,
+\begin{align*}
+\gamma_i - \gamma_j = \Prob{ Y^j \ne Y^i }\,,
+\end{align*}
+which is a function of $P_S$ only.
+Thus, a map as required by~\cref{prop:learnablemap} exists.
+\end{proof}
+The proof motivates the following definition:
+\begin{definition}[Weak Dominance]
+	An instance $\theta = (P,c)\in \TSA$  is said to satisfy the \emph{weak dominance property} if 
+	it holds that for any $i<j\in [K]$,
+\begin{align}\label{eq:wd}
+	C_i-C_j \notin [ \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y }, \Prob{ Y^j \ne Y^i } ]\,,
+\end{align}
+where $(Y,Y^1,\dots,Y^K)\sim P$ and $C_i = c_1+\dots+c_i$, $i\in [K]$.
+\end{definition}
+\todoc[inline]{Note that it is NOT enough to consider $j=i+1$ (i.e., immediate successors) in the definition.
+This is because one may need to compare all pairs to find the optimal decision -- comparing successors is not enough.
+To see why, consider an instance when $\gamma_1,\gamma_2,\gamma_3$ are given by $0.2,0.2,0$, while
+$(C_1,C_2,C_3 )= (0,0.1,0.1)$.
+Then, the costs of the actions are $(0.2,0.3,0.1)$. In particular, the first index where we see the total cost grow does not give
+the optimal action. Similarly, the last index would not work either.
+}
+Let $\TWD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the weak dominance condition } \}$.
+Note that $\TSD\subset \TWD$.
+\begin{thm}
+The set $\TWD$ is a maximal learnable set.
+\end{thm}
+\begin{proof}
+That $\TWD$ is learnable follows from \eqref{eq:keyidentity} combined with~\eqref{eq:wd}.
+In particular, fixing $i<j\in [K]$, if $C_j-C_i<\Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y }$ then
+\begin{align*}
+\gamma_i+C_i-(\gamma_j+C_j) 
+% =    (\gamma_i-\gamma_j) - (C_j-C_i) 
+ = \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y } - (C_j-C_i)  >  0\,.
+\end{align*}
+On the other hand, if $C_j-C_i>\Prob{Y^j\ne Y^i}$,
+\begin{align*}
+\gamma_i+C_i-(\gamma_j+C_j) 
+% =    (\gamma_i-\gamma_j) - (C_j-C_i) 
+& = \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y } - (C_j-C_i) \\
+ & <  -2 \Prob{ Y^j\ne Y, Y^i = Y } \le 0 \,.
+\end{align*}
+In particular, for an instance satisfying the weak dominance condition we see that
+$\gamma_i+C_i-(\gamma_j+C_j) <0$ holds if and only if $C_j-C_i>\Prob{Y^j\ne Y^i}$, a condition
+that can be verified given the knowledge of $P_S$ alone (where recall that $P = P_S \otimes P_{Y|S}$).
+Thus, a map as required by \cref{prop:learnablemap} exists. Note also that this map is uniquely defined for all instances
+where the optimal action is unique.
+That $\TWD$ is maximal follows because if we add an instance $\theta\in \TSA \setminus \TWD$ 
+\todoc[inline]{There is a problem with the definition of maximality. A set can always be ``lucky''..
+Non-unique optimal actions also cause problems.}
+\end{proof}
+
+\todoc[inline]{Old text}
 In the SA-Problem feedback $H_t(\cdot)$ does not reveal any information about the true label $Y_t$ in any round $t$. Hence the loss values are not known, and we are in a hopeless situation where linear regret is unavoidable. In this section we explore conditions that lead to policies that are Hannan consistent \cite{Hannan1957_HannanConsistency_Hannan}, i.e, a policy $\pi\in \Pi^\psi$ such that $R_T^\psi (\pi)/T \rightarrow 0$.
 
 To fix ideas let us consider SA-Problem with $2$ sensors. We enumerate all possible $8$ tuples $(Y, \hat{Y}^1, \hat{Y}^2)$ as shown in Table \ref{tab:SensorOutcomes}, and write probability of $i$th tuple $i=1,2,\cdots 8$ as $p_{i-1}$.  From Table \ref{tab:SensorOutcomes}, we have  $\gamma_1=p_2+p_3+p_4+p_5$ and $\gamma_2=p_1+p_3+p_4+p_6$, thus
