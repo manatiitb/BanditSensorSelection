@@ -11,7 +11,7 @@ The learner's goal in round $t$ is to figure out
 the hidden, stochastic state $Y_t\in \{0,1\}$ of the environment based on the sensor outputs $(\Yt^{k})_{k\in [K]}$.
 The dilemma of the learner is which sensors to use for predicting this state.
 The learner knows that the sensors are ordered from least to most accurate:
-Letting $\gamma_i  =\Prob{\Yt{i}\ne \Yt}$ be the probability of sensor $i$ being wrong,
+Letting $\gamma_i  =\Prob{\Yt^{i}\ne \Yt}$ be the probability of sensor $i$ being wrong,
 $\gamma_1\ge \gamma_2 \ge \dots \ge \gamma_K$.
 The learner in each round can decide to observe the outputs of the first $A_t\in \A$ sensors
 at the cost of $\sum_{i=1}^{A_t} c_i$.
