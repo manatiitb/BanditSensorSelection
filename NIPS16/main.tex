@@ -23,7 +23,7 @@
 %\usepackage[english]{babel}
 %\usepackage{cite}
 %\usepackage{verbatim}
-\usepackage{amsmath}
+\usepackage{amsmath,amsthm}
 \usepackage{amssymb,amsbsy,epsfig,float}
 \usepackage{graphicx,wrapfig,lipsum}
 %\usepackage{graphicx}
@@ -32,6 +32,8 @@
 %\usepackage[ruled]{algorithm}
 %\usepackage{algpseudocode}
 \usepackage{subfigure} 
+\usepackage[makeroom]{cancel}
+\usepackage{xspace}
 
 \usepackage{color}
 \usepackage[usenames,dvipsnames]{xcolor}
@@ -51,6 +53,7 @@
 
 \usepackage[capitalize]{cleveref}
 
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
 \newtheorem{thm}{Theorem}
 \newtheorem{lemma}{Lemma}
@@ -121,6 +124,10 @@
 
 \section{Introduction}
 \input{intro1}
+
+\section{Background}
+\label{sec:background}
+\input{background}
 
 \section{Unsupervised Sensor Acquisition Problem}
 \label{sec:Setup}

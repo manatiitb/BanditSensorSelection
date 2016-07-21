@@ -6,3 +6,10 @@ BanditSensorSelectionv2.log
 BanditSensorSelectionv2.pdf
 
 BanditSensorSelectionv2.synctex.gz
+*.aux
+NIPS16/main.log
+*.out
+NIPS16/main.pdf
+*.gz(busy)
+NIPS16/main.synctex.gz
+*.log
