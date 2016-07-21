@@ -1,9 +1,14 @@
 %!TEX root =  main.tex
 \newcommand{\one}[1]{\mathbb{I}_{\{#1\}}}s
+\newcommand{\Pside}{\P_{\mathrm{side}}\xspace}
+\newcommand{\PSAP}{\P_{\mathrm{SAP}}\xspace}
+\renewcommand{\P}{\mathcal{P}}
+
 In this section we establish that SAP with strong dominance property is `regret equivalent' to an instance of MAB with side-information and the corresponding algorithm for MAB can be suitably imported to solve SAP efficiently.   
 
+\todoc[inline]{I am thinking that maybe we should skip this general section
+and just do the specific reduction as shown below.}
 We start with the concept of regret equivalence, which we define for classes of partial monitoring problems.
-\renewcommand{\P}{\mathcal{P}}
 First, we need some extra notation: Recall that at the end of \cref{sec:background} we agreed that 
 a partial monitoring problem can be specified as a 3-tuple $(\A,\Y,\Theta)$ where the elements of $\Theta$ are pairs $(p,r)$,
 where for each $a\in \A$ action, $p(\cdot;a)$ is a probability distribution over $\Y$ and $r: \A \to \R$.
@@ -68,17 +73,22 @@ From the two claims it follows that $\Regret_T(\pi_1,\theta_1)
 regret equivalent.
 \end{proof}
 
+\todo[inline]{Here is the actual reduction. Maybe let's just keep this part?}
 Let us now show how to reduce SAP under strong dominance to a specific 
 bandit with side-observations.
-Let $\P$ be the set of SAPs with action set $\A = [K]$.
-The corresponding bandit problems will have the same action set, for action $k\in [K]$,
-the neighborhood set is $N(k) = [k]$.
-Now take any instance $(P,c)\in \P$ and let $(Y,Y^1,\dots,Y^K) \sim P$.
-Then we let the reward distribution for arm $k$ a shifted Bernoulli distribution.
-In particular, the reward for arm $k$ follows the distribution of 
-$-\one{Y^k\ne Y^1} - (c_1+\dots+c_k)$.
-The rewards for different arms are defined to be independent of each other.
-\todo[inline]{
+Let $\PSAP$ be the set of SAPs with action set $\A = [K]$.
+The corresponding bandit problems will have the same action set,
+while for action $k\in [K]$ the neighborhood set is $N(k) = [k]$.
+Take any instance $(P,c)\in \PSAP$ and let $(Y,Y^1,\dots,Y^K) \sim P$.
+We let the reward distribution for arm $k$ in the corresponding bandit problem
+be a shifted Bernoulli distribution.
+In particular, the cost of arm $k$ follows the distribution of 
+$\one{Y^k\ne Y^1} + (c_1+\dots+c_k)$ (we use costs here to avoid flipping signs).
+The costs for different arms are defined to be independent of each other.
+Let $\Pside$ denote the set of resulting bandit problems and let $f:\PSAP \to \Pside$
+be the map that transforms SAP instances to bandit instances by following the
+transformation that was just described.
+\todoc[inline]{
 Ok, so if they are independent of each other, then the joint distributions will not be 
 same as if they were not independent of each other.
 Independence may lose information (e.g., may increase variance?).
@@ -91,12 +101,54 @@ bandits with side observations must allow this -- complicating things a bit in t
 Another executive decision we should make is whether we like to see both costs and 
 rewards.
 }
-
+Now let $\pi\in \Pi(\Pside)$ be a policy for $\Pside$.
+Policy $\pi$ can also be used on any $(P,c)$ instance in $\PSAP$ in an obvious way:
+In particular, given the history of actions and observations $A_1,U_1,\dots,A_t,U_t$
+in $\theta=(P,c)$ where $U_s = (Y_s,Y_s^1,\dots,Y_s^{A_s})$ such that 
+the distribution of $U_s$ given that $A_s=a$ is $P$ marginalized to $\Y^{a}$,
+the next action to be taken is 
+$A_{t+1}\sim \pi(\cdot| A_1, V_1,\dots,A_t,V_t)$, where
+$V_s = (\one{Y_s^1\ne Y_s^2}+c_1,\dots,\one{Y_s^1\ne Y_s^{A_s}}+c_1+\dots+c_{A_s})$. Let the resulting policy be denoted by $\pi'$.
+A simple direct calculation shows that the regret of $\pi'$ on $f(\theta)\in \Pside$
+is the same as the regret of $\pi$ on $\theta$. \todoc[inline]{We should probably add this
+calculation?}
+Thus $\Regret_T^*(\PSAP)\le \Regret_T^*(\Pside)$.
+Now note that this reasoning can also be repeated in the other ``direction'': 
+For this, first note that the map $f$ has a right inverse $g$ 
+(thus, $f\circ g$ is the identity over $\Pside$)
+and if $\pi'$ is a policy for $\PSAP$, 
+then $\pi'$ can be ``used''  on any instance $\theta\in \Pside$
+via the ``inverse'' of the above policy-transformation:
+given the history $(A_1,V_1,\dots,A_t,V_t)$ where $V_s
+= (B_s^1+c_1,\dots,B_ s^{A_s}+c_1+\dots+c_s)$,
+let $A_{t+1} \sim \pi( \cdot| A_1,U_1,\dots,A_t,U_t)$ where
+$U_s = (B_s^1,\dots,B_s^{A_s})$.
+It can be seen that this transformation makes the regret of the two policies
+on the respective instances the same.
+Hence, $\Regret_T^*(\Pside)\le \Regret_T^*(\PSAP)$.
+In summary, we get the following result:
+\begin{proposition}
+Let $\PSAP$ be the set of SAP instances over $\A$ which satisfy the strong 
+dominance condition
+and let $\Pside$ be as above the set of bandits with side observations that 
+can be obtained from instances in $\PSAP$ using $f$.
+Then $\Regret_T^*(\PSAP) = \Regret_T^*(\Pside)$. 
+\end{proposition}
+\todoc[inline]{So this could in theory be used for upper and lower bounds.. 
+However, $\Pside$ is really special (because of the fixed costs) -- hence it is unclear 
+whether existing lower bounds, for example, would apply.
+The next step could be to describe policies for bandits
+with side observation starting from our paper with Yifan.
+We have two types of policies.
+One is asymptotically optimal, the other is minimax optimal.
+Can we have a single policy in our special problem that would be simultanously 
+optimal in both cases? What happens when only weak dominance
+is satisfied?}
 
 \if0
 At the price of abusing notation 
 we simplify the notation by dropping the indices from $f_{\A}, f_{\Y}$ and $f_{\Theta}$ (the identity of the appropriate map can be inferred from its argument).
-Pick any policy $\pi_1\in \Pi_1$.
+Pick any policy $\pi_1\in \Pi_1$.s
 First we define the policy corresponding to $\pi_1$.
 Recall that a policy maps histories to distributions over actions.
 Taking a history $(a_1,y_1,\dots,a_t,y_t)\in (\A_2\times \Y_2)^t$ ($t\ge 0$),
