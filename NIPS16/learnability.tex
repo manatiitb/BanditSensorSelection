@@ -20,9 +20,12 @@ In this section we study two special learnable problem classes, $\TSD\subset \TW
 Let us start with some definitions.
 Given an instance $\theta = (P,c)\in \TSA$, we can decompose $P$ into the joint distribution $P_S$ of the sensor outputs $S = (Y^1,\dots,Y^k)$ and the conditional distribution of the state of the environment, given the sensor outputs, $P_{Y|S}$.
 Specifically, letting $(Y,S)\sim P$, for $s\in \{0,1\}^K$ and $y\in \{0,1\}$, $P_S(s) = \Prob{S = s}$ and $P_{Y|S}(y|s) = \Prob{Y=y|S=s}$. We denote this by $P = P_S \otimes P_{Y|S}$.
-A learner who observes the output of all sensors for long enough is able to identify $P_S$ with arbitrary precision, while $P_{Y|S}$ remains hidden from the learner. This leads to the following simple statement whose proof is left as an exercise:
+A learner who observes the output of all sensors for long enough is able to identify $P_S$ with arbitrary precision, while $P_{Y|S}$ remains hidden from the learner.
+A problem set $\Theta$ is said to be complete if $\{P_S\,:\, \exists P\in \Theta \text{ s.t. } P = P_S \otimes P_{Y|S} \}=M_1( \{0,1\}^K )$, i.e., all distributions over the sensor outputs are possible under some problem instance in $\Theta$.
+ This leads to the following simple statement whose proof is left as an exercise:
 \begin{proposition}
 \label{prop:learnablemap}
+Let $\Theta \subset \TSA$ be complete. Then,
 $\Theta\subset \TSA$ is learnable if and only if there exists a map $a: M_1( \{0,1\}^K ) \to [K]$ such that 
 for any $\theta= (P,c)$, if $P = P_S \otimes P_{Y|S}$ then $a(P_S)$ is an optimal action in $\theta$.
 \end{proposition}
