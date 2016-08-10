@@ -1,2 +1,118 @@
 %!TEX root =  main.tex
-\todoc[inline]{Add algorithm here.}
+\newcommand{\set}{\leftarrow}
+\newcommand{\hgamma}{\hat{\gamma}}
+The reduction of the previous section suggests that one can play in an SAP instance by utilizing 
+an algorithm developed for stochastic bandits with side-observation.
+In this paper we make use of Algorithm~1 of \citet{WGySz:NIPS15}. \todoc{Note the bug in the other paper.}
+While this algorithm was proposed for stochastic bandits with Gaussian side observations, 
+as noted in the above paper, the algorithm is also suitable for problems where the payoff distributions are subgaussian.
+As Bernoulli random variables are $\sigma^2=1/4$-subgaussian (after centering),
+the algorithm is also applicable in our case.
+
+\begin{wrapfigure}{L}{0.55\textwidth}
+\vspace{-0.4cm}
+\begin{minipage}{0.54\textwidth}
+\begin{algorithm}[H]
+\caption{} %ALG1}
+\label{alg:asym}
+\begin{algorithmic}[1]
+\STATE Inputs: $\alpha>0$ and $\beta: \N \to [0,\infty)$.
+\STATE Play action $K$ and observe the sensor outputs $Y^1,\dots,Y^K$.
+\STATE Set $\hgamma \set (0,\one{Y^1\ne Y^2},\dots,\one{Y^1\ne Y^K})$.
+\STATE Initialize the exploration count: $n_e \set 0$.
+\STATE Initialize the allocation counts: $N_i = \one{i=K}$, $i\in [K]$.
+\FOR{$t=2,3,...$}
+	\IF{$\frac{N}{4\alpha \log t}\in C(\hgamma)$} \label{alg:check}
+		\STATE Set $I \set \argmin_{k\in [K]} c_k(\hgamma)$. \label{alg:greedy}
+%		\STATE Set $n_e(t+1)=n_e(t)$.
+	\ELSE
+		\IF{$\min_{i\in \iset{K}}m_i(N)<\beta(n_e)/K$} \label{alg:starve}
+			\STATE Set $I = \argmin_{i\in \iset{K}}m_i(N)$. \label{alg:forced}
+		\ELSE
+			\STATE Set $I$ to some $i$ for which \label{alg:plan} \\
+			$\qquad$ $N_i(t)< u_i^*(\hgamma)4\alpha\log t$.
+		\ENDIF
+		\STATE Increment exploration count: $n_e \set n_e+1$.
+	\ENDIF
+	\STATE Play $I$ and observe the sensor outputs $Y^1,\dots,Y^{I}$.
+	\STATE For $i\in [I_t]$, set\\
+	$\qquad$ $\hgamma_i \set (1-1/t) \hgamma_i + 1/t \,\one{Y^1\ne Y^i}$.
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+\end{minipage}
+\vspace{-0.3cm}
+\end{wrapfigure}
+
+For the convenience of the reader, we give the algorithm resulting from applying the reduction to Algorithm~1 
+of \citet{WGySz:NIPS15} in an explicit form.
+For specifying the algorithm we need some extra notation.
+Given a SAP instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\ne Y^k}$ where $(Y,Y^1,\dots,Y^K)\sim P$ and $k\in [K]$.
+Since $c$ is assumed to be known, we will denote the dependence of the various quantities below
+on $\gamma = (\gamma_1,\dots,\gamma_K)$ only.
+Denote the expected cost of choosing action $k$ by $c_k(\gamma) = \gamma_k + \sum_{i=1}^k c_i$ 
+(note that the notation is slightly changed compared to what we used before). \todoc{Perhaps unify the notation?}
+Let $c^*(\gamma) = \min_{k\in [K]} c_k(\gamma)$ be the optimal expected cost and let 
+$d_k(\gamma) = c_k(\gamma) - c^*(\gamma)$ be the expected excess cost of using action $k$,
+$d^*(\gamma) = \min\{ d_k(\gamma)\,:\, k\in [K], d_k(\gamma)>0 \}$ be the smallest positive expected excess cost,
+$d^*_k(\gamma) = \max(d^*(\gamma),d_k(\gamma))$.
+Note that $d_k^*(\gamma) = d_k(\gamma)>0$ for any suboptimal
+action $k$, while $d_k^*(\gamma) = d^*(\gamma)$ for the optimal action.
+
+Define $C(\gamma) = \{ u\in [0,\infty)^K\,:\, u_1 + \dots + u_j \ge \frac{2\sigma^2}{(d_j^*(\gamma))^2}, j\in [K] \}$
+as the set of ``sufficiently informative'' (fractional)  allocation counts 
+(these ``counts'' guarantee that the observations are sufficient to distinguish all suboptimal actions from the optimal action; note that $\sigma^2=1/4$).
+Further, let $n^*(\gamma)$
+be the allocation count that minimizes the total expected excess cost over the set of sufficiently informative allocation counts:
+In particular,  we let $u^*(\gamma) = \argmin_{u\in C(\gamma)} \ip{ u, d(\gamma) }$ 
+with the understanding that for any optimal action $k$, $u_k^*(\gamma) = \min \{ u_k \,: u\in C(\gamma) \}$ (here, $\ip{x,y} = \sum_i x_i y_i$ is the standard inner product of vectors $x,y$).
+For an allocation count $u\in [0,\infty)^K$ let $m(u)\in \N^K$ be the number observations made at each sensor:
+$m_j(u) = \sum_{i=1}^j u_i$.
+
+The idea of the algorithm shown as \cref{alg:asym} is as follows:
+The algorithm keeps track of an estimate $\hgamma$ of $\gamma$, which is initialized by pulling arm $K$ as this arm
+gives information about all the other arms.
+In each round, the algorithm first checks whether given the current estimate $\hgamma$ and the current confidence level (where the confidence level is gradually increased over time), the current allocation count $N\in \N^K$
+is sufficiently informative (cf. line \ref{alg:check}). If this holds, the action that is optimal under $\hgamma$ is chosen 
+(cf. line \ref{alg:greedy}). If the check fails, we need to explore.
+The idea of the exploration is that it tries to ensure that the ``optimal plan'' -- assuming $\hgamma$ is the ``correct'' parameter -- is followed (line \ref{alg:plan}). However, this is only reasonable, if all components of $\gamma$ are relatively well-estimated.
+Thus, first the algorithm checks whether any of the components of $\gamma$ has a chance of being
+extremely poorly estimated (line \ref{alg:starve}). Note that the requirement here is that a significant, but still altogether diminishing fraction of the \emph{exploration rounds} is spent on estimating each components: In the long run, the fraction of exploration rounds amongst all rounds itself is diminishing; hence the forced exploration of line \ref{alg:forced} overall has a small impact on the regret, while it allows to stabilize the algorithm.
+
+\newcommand{\gap}{d}
+\newcommand{\norm}[1]{\|#1\|}
+For $\theta = (P,c)\in \TWD$, let $\gamma(\theta)$ be the error probabilities for the various sensors.
+The following result follows from Theorem~6 of \cite{WGySz:NIPS15}:
+\begin{thm}
+Let $\epsilon>0$, $\alpha>2$ arbitrary and choose any non-decreasing $\beta(n)$ that satisfies $0\le \beta(n)\le n/2$ and $\beta(m+n)\le \beta(m)+\beta(n)$ for $m,n\in \N$.
+Then, 
+for any
+$\theta = (P,c)\in \TWD$, letting $\gamma = \gamma(\theta)$
+the expected regret of \cref{alg:asym} after $T$ steps satisfies 
+\todoc{Actually, needs to be checked.. I also replaced $\gap_{\max}(\theta)$ with $1$.}
+\begin{align*}
+ R_T(\theta,c)
+ & \le \big( 2K+2+4K/(\alpha-2) \big) + 4K\sum_{s=0}^T \exp \Big( -\frac{8\beta(s)\epsilon^2}{2K} \Big) \\
+& + 2 \beta\Big( 4\alpha\log T\sum_{i\in \iset{K}} u_i^*(\gamma,\epsilon)+K \Big)
+   + 4\alpha\log T \sum_{i\in \iset{K}} u_i^*(\gamma,\epsilon)\gap_i(\gamma) \,,
+\end{align*}
+where $u_i^*(\gamma,\epsilon) = \sup\{u_i^*(\gamma')\,:\, \norm{\gamma'-\gamma}_{\infty}\le \epsilon \}$.
+\label{thm:alg1-ub1}
+\end{thm}  
+Further specifying $\beta(n)$ and using the continuity of $u^*(\cdot)$ at $\theta$, it immediately follows that Algorithm~\ref{alg:asym} achieves asymptotically optimal performance: \todoc{I just copy\&pasted this.
+We don't actually have a lower bound..}
+\begin{corollary}
+\label{cor:alg1-asym-opt}
+ Suppose the conditions of Theorem~\ref{thm:alg1-ub1} hold. Assume, furthermore, that $\beta(n)$ satisfies $\beta(n) = o(n)$ and $\sum_{s=0}^\infty \exp \left( -\frac{\beta(s)\epsilon^2}{2K\sigma^2} \right)<\infty$ for any $\epsilon>0$, then for any $\theta$ such that $u^*(\theta)$ is unique, 
+\[
+\limsup_{T\rightarrow \infty} R_T(\theta,c)/\log T \le 4\alpha \inf_{u\in C_\theta} \ip{u,\gap(\gamma(\theta))}\,.
+\]
+\end{corollary}
+Note that any $\beta(n) = an^b$ with $a\in (0,\frac{1}{2}]$, $b\in (0,1)$ satisfies the requirements in Theorem~\ref{thm:alg1-ub1} and Corollary~\ref{cor:alg1-asym-opt}.
+%Also note that the algorithms presented in \cite{CaKvLe12,BuErSh14} do not achieve this asymptotic bound.
+
+
+
+
+
+\clearpage
