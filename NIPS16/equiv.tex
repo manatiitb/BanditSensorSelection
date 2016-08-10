@@ -4,7 +4,7 @@
 \newcommand{\PSAP}{\P_{\mathrm{SAP}}\xspace}
 \renewcommand{\P}{\mathcal{P}}
 
-In this section we establish that SAP with strong dominance property is `regret equivalent' to an instance of MAB with side-information and the corresponding algorithm for MAB can be suitably imported to solve SAP efficiently.   
+In this section we establish that SAP with weak dominance property is `regret equivalent' to an instance of MAB with side-information and the corresponding algorithm for MAB can be suitably imported to solve SAP efficiently.   
 
 \if0
 \todoc[inline]{I am thinking that maybe we should skip this general section
@@ -91,7 +91,8 @@ regret equivalent.
 Let $\PSAP$ be the set of SAPs with action set $\A = [K]$.
 The corresponding bandit problems will have the same action set,
 while for action $k\in [K]$ the neighborhood set is $N(k) = [k]$.
-Take any instance $(P,c)\in \PSAP$ and let $(Y,Y^1,\dots,Y^K) \sim P$.
+Take any instance $(P,c)\in \PSAP$ and let $(Y,Y^1,\dots,Y^K) \sim P$ be the 
+unobserved state of environment in round $s$.
 We let the reward distribution for arm $k$ in the corresponding bandit problem
 be a shifted Bernoulli distribution.
 In particular, the cost of arm $k$ follows the distribution of 
@@ -113,39 +114,44 @@ bandits with side observations must allow this -- complicating things a bit in t
 Another executive decision we should make is whether we like to see both costs and 
 rewards.
 }
+
 Now let $\pi\in \Pi(\Pside)$ be a policy for $\Pside$.
 Policy $\pi$ can also be used on any $(P,c)$ instance in $\PSAP$ in an obvious way:
-In particular, given the history of actions and observations $A_1,U_1,\dots,A_t,U_t$
-in $\theta=(P,c)$ where $U_s = (Y_s,Y_s^1,\dots,Y_s^{A_s})$ such that 
+In particular, given the history of actions and states $A_1,U_1,\dots,A_t,U_t$
+in $\theta=(P,c)$ where $U_s = (Y_s,Y_s^1,\dots,Y_s^{K})$ such that 
 the distribution of $U_s$ given that $A_s=a$ is $P$ marginalized to $\Y^{a}$,
 the next action to be taken is 
 $A_{t+1}\sim \pi(\cdot| A_1, V_1,\dots,A_t,V_t)$, where
 $V_s = (\one{Y_s^1\ne Y_s^2}+c_1,\dots,\one{Y_s^1\ne Y_s^{A_s}}+c_1+\dots+c_{A_s})$. Let the resulting policy be denoted by $\pi'$.
-A simple direct calculation shows that the regret of $\pi'$ on $f(\theta)\in \Pside$
+The following can be checked by simple direct calculation:
+\begin{proposition}
+If $\theta \in \TWD$, then the regret of $\pi'$ on $f(\theta)\in \Pside$
 is the same as the regret of $\pi$ on $\theta$. \todoc[inline]{We should probably add this
 calculation?}
-Thus $\Regret_T^*(\PSAP)\le \Regret_T^*(\Pside)$.
+\end{proposition}
+This implies that $\Regret_T^*(\TWD)\le \Regret_T^*(f(\TWD))$.
+
 Now note that this reasoning can also be repeated in the other ``direction'': 
 For this, first note that the map $f$ has a right inverse $g$ 
 (thus, $f\circ g$ is the identity over $\Pside$)
 and if $\pi'$ is a policy for $\PSAP$, 
 then $\pi'$ can be ``used''  on any instance $\theta\in \Pside$
 via the ``inverse'' of the above policy-transformation:
-given the history $(A_1,V_1,\dots,A_t,V_t)$ where $V_s
-= (B_s^1+c_1,\dots,B_ s^{A_s}+c_1+\dots+c_s)$,
-let $A_{t+1} \sim \pi( \cdot| A_1,U_1,\dots,A_t,U_t)$ where
-$U_s = (B_s^1,\dots,B_s^{A_s})$.
-It can be seen that this transformation makes the regret of the two policies
-on the respective instances the same.
-Hence, $\Regret_T^*(\Pside)\le \Regret_T^*(\PSAP)$.
-In summary, we get the following result:
+Given the sequence $(A_1,V_1,\dots,A_t,V_t)$ where 
+$V_s= (B_s^1+c_1,\dots,B_ s^{K}+c_1+\dots+c_s)$ is the vector of costs for round $s$
+with $B_s^k$ being a Bernoulli with parameter $\gamma_k$,
+let $A_{t+1} \sim \pi'( \cdot| A_1,W_1,\dots,A_t,W_t)$ where
+$W_s = (B_s^1,\dots,B_s^{A_s})$. Let the resulting policy be denoted by $\pi$.
+Then the following holds:
 \begin{proposition}
-Let $\PSAP$ be the set of SAP instances over $\A$ which satisfy the strong 
-dominance condition
-and let $\Pside$ be as above the set of bandits with side observations that 
-can be obtained from instances in $\PSAP$ using $f$.
-Then $\Regret_T^*(\PSAP) = \Regret_T^*(\Pside)$. 
+Let $\theta \in f(\TWD)$. Then the regret of policy $\pi$ on $\theta\in f(\TWD)$ is the same
+as the regret of policy $\pi'$ on instance $f^{-1}(\theta)$.
 \end{proposition}
+Hence, $\Regret_T^*(f(\TWD))\le \Regret_T^*(\TWD)$.
+In summary, we get the following result:
+\begin{corollary}
+$\Regret_T^*(\TWD) = \Regret_T^*(f(\TWD))$. 
+\end{corollary}
 \todoc[inline]{So this could in theory be used for upper and lower bounds.. 
 However, $\Pside$ is really special (because of the fixed costs) -- hence it is unclear 
 whether existing lower bounds, for example, would apply.

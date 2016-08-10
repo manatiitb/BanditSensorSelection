@@ -12,6 +12,9 @@
 % to compile a camera-ready version, add the [final] option, e.g.:
 % \usepackage[final]{nips_2016}
 
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 \usepackage{hyperref}       % hyperlinks
@@ -50,6 +53,11 @@
 \newcommand{\todov}[2][]{\todo[color=Purple!20,size=\tiny,#1]{V: #2}}
 
 \newcommand{\hY}{\hat{Y}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\htheta}{\hat{\theta}}
+\newcommand{\iset}[1]{[#1]}
+\DeclareMathOperator{\argmin}{argmin}
+\newcommand{\ip}[1]{\langle #1 \rangle} % inner product
 
 \usepackage[capitalize]{cleveref}
 
@@ -64,6 +72,7 @@
 \newtheorem{remark}{Remark}
 \newtheorem{definition}{Definition}
 \newtheorem{assumption}{Assumption}
+\newtheorem{corollary}{Corollary}
 %\newcommand{\one}[1]{\boldsymbol{1}_{#1}}
 %\newcommand{\Prob}[1]{\Pr\{#1\}}
 %\newcommand{\EE}[1]{\mathbb{E}[#1]}
