@@ -1,12 +1,5 @@
 %!TEX root =  main.tex
-\newcommand{\SA}{\mathrm{SA}}
-\newcommand{\SD}{\mathrm{SD}}
-\newcommand{\WD}{\mathrm{WD}}
-\newcommand{\TSA}{\Theta_{\SA}}
-\newcommand{\Alg}{\mathfrak{A}}
-\newcommand{\TSD}{\Theta_{\SD}}
-\newcommand{\TWD}{\Theta_{\WD}}
-Let $\TSA$ be the set of all sensor acquisition problems. \todoc{Shall we define ``proper'' problems?}
+Let $\TSA$ be the set of all stochastic, cascaded sensor acquisition problems.
 Thus, $\theta = (P,c)\in \TSA$ such that if $Y\sim P$ then $\gamma_k(\theta):=\Prob{Y\ne Y^k}$ 
 is a decreasing sequence.
 Given a subset $\Theta\subset \TSA$, we say that $\Theta$ is \emph{learnable} 
@@ -15,24 +8,58 @@ for any $\theta\in \Theta$, the expected regret $\EE{ \Regret_n(\Alg,\theta) }$
 of algorithm $\Alg$ on instance $\theta$ is sublinear.
 A subset $\Theta$ is said to be a maximal learnable problem class if it is learnable and for any $\Theta'\subset \TSA$ superset
 of $\Theta$, $\Theta'$ is not learnable.
-In this section we study two special learnable problem classes, $\TSD\subset \TWD$, where the instances in $\TSD$ are easier to identify in practice, while $\TWD$ can be seen as a maximal extension of $\TSD$.
+In this section we study two special learnable problem classes, $\TSD\subset \TWD$, where the regularity properties of the instances in $\TSD$ are more intuitive, while $\TWD$ can be seen as a maximal extension of $\TSD$.
 
 Let us start with some definitions.
 Given an instance $\theta = (P,c)\in \TSA$, we can decompose $P$ into the joint distribution $P_S$ of the sensor outputs $S = (Y^1,\dots,Y^k)$ and the conditional distribution of the state of the environment, given the sensor outputs, $P_{Y|S}$.
 Specifically, letting $(Y,S)\sim P$, for $s\in \{0,1\}^K$ and $y\in \{0,1\}$, $P_S(s) = \Prob{S = s}$ and $P_{Y|S}(y|s) = \Prob{Y=y|S=s}$. We denote this by $P = P_S \otimes P_{Y|S}$.
-A learner who observes the output of all sensors for long enough is able to identify $P_S$ with arbitrary precision, while $P_{Y|S}$ remains hidden from the learner.
+A learner who observes the output of all sensors for long enough is able to identify 
+$P_S$ with arbitrary precision, while $P_{Y|S}$ remains hidden from the learner.
 %A problem set $\Theta$ is said to be complete if $\{P_S\,:\, \exists P\in \Theta \text{ s.t. } P = P_S \otimes P_{Y|S} \}=M_1( \{0,1\}^K )$, i.e., all distributions over the sensor outputs are possible under some problem instance in $\Theta$.
- This leads to the following simple statement whose proof is left as an exercise:
-\begin{proposition}
+ This leads to the following statement:
+\begin{prop}
 \label{prop:learnablemap}
 %Let $\Theta \subset \TSA$ be complete. Then,
-A subset $\Theta\subset \TSA$ is learnable if and only if there exists a map $a: M_1( \{0,1\}^K ) \to [K]$ such that 
-for any $\theta= (P,c)$, if $P = P_S \otimes P_{Y|S}$ then $a(P_S)$ is an optimal action in $\theta$.
-\end{proposition}
+A subset $\Theta\subset \TSA$ is learnable 
+if and only if there exists a map $a: M_1( \{0,1\}^K )\times \R_+^K \to [K]$ such that 
+for any $\theta= (P,c)\in \Theta$ 
+with decomposition $P = P_S \otimes P_{Y|S}$, $a(P_S,c)$ is an optimal action in $\theta$.
+\end{prop}
+\begin{proof}
+$\Rightarrow$: Let $\Alg$ be an algorithm that achieves sublinear regret
+and pick  an instance  $\theta = (P,c)\in\Theta$. Let $P = P_S \otimes P_{Y|S}$.
+The regret $\Regret_n(\Alg,\theta)$ of $\Alg$ on instance $\theta$ can be written in the form
+\begin{align*}
+\Regret_n(\Alg,\theta) = \sum_{k\in [K]} \EEi{P_S}{N_k(n)} \Delta_k(\theta)\,,
+\end{align*}
+where $N_k(n)$ is the number of times action $k$ is chosen by $\Alg$ during the $n$ rounds while
+$\Alg$ interacts with $\theta$, $\Delta_k(\theta) = c(k,\theta) - c^*(\theta)$ is the immediate regret
+and $\EEi{P_S}{\cdot}$ denotes the expectation under the distribution induced by $P_S$.
+In particular, $N_k(n)$ hides dependence on the iid sequence $Y_1,\dots,Y_n \sim P_S$ 
+that we are taking the expectation over here. 
+Since the regret is sublinear, for any $k$ suboptimal action, $\EEi{P_S}{N_k(n)} = o(n)$. 
+Define $a(P_S,c) = \min \{ k\in [K]\,;\, \EEi{P_S}{N_k(n)} = \Omega(n) \,\}$. Then, $a$ is well-defined as the distribution of $N_k(n)$ for any $k$ depends only on $P_S$ and $c$. Furthermore, $a(P_S,c)$ selects an optimal action.
+
+$\Leftarrow$: Let $a$ be the map in the statement and let $f:\N_+\to\N_+$ be such that $1\le f(n)\le n$ for any  $n\in \N$,
+$f(n)/\log(n) \to n$ as $n\to \infty$ and $f(n)/n \to 0$ as $n\to \infty$ (say, $f(n) = \lceil \sqrt{n} \rceil$).
+Consider the algorithm that chooses $I_t = K$ for the first $f(n)$ steps, after which it estimates $\hat{P}_S$ by
+frequency counting and then uses $I_t = a(\hat{P}_S,c)$ in the remaining $n-f(n)$ trials. 
+Pick any $\theta = (P,c)\in \Theta$ so that $P = P_S \otimes P_{Y|S}$. 
+Note that by Hoeffding's inequality, 
+$\sup_{y\in \{0,1\}^K} |\hat{P}_S(y)  - P_S(y)| \le \sqrt{\frac{K\log(4n)}{2f(n)}}$ holds with probability $1-1/n$.
+Let $n_0$ be the first index such that for any $n\ge n_0$,
+$\sqrt{\frac{K\log(4n)}{2f(n)}}\le \Delta^*(\theta) \doteq \min_{k:\Delta_k(\theta)>0} \Delta_k(\theta)$.
+Such an index $n_0$ exists by our assumptions that $f$ grows faster than $n \mapsto \log(n)$.
+For $n\ge n_0$, the expected regret of $\Alg$ is at most $n \times 1/n + f(n) (1-1/n) \le 1+f(n) = o(n)$.
+\end{proof}
+An action selection map  $a: M_1( \{0,1\}^K )\times \R_+^K \to [K]$ is said to be \emph{sound} for an instance 
+$\theta\in \TSA$ with $\theta = (P_S\otimes P_{Y|S},c)$ if $a(P_S,c)$ selects an optimal action in $\theta$.
+With this terminology, the previous proposition says that a set of instances $\Theta$ is learnable if and only if there exists a
+sound action selection map for all the instances in $\Theta$.
 
 A class of sensor acquisition problems that contains instances that satisfy the so-called \emph{strong dominance} condition 
 will be shown to be learnable:
-\begin{definition}[Strong Dominance]
+\begin{defi}[Strong Dominance]
 	An instance $\theta = (P,c)\in \TSA$  is said to satisfy the \emph{strong dominance property} if 
 	it holds in the instance that if a sensor predicts correctly
 	then all the sensors in the subsequent stages of the cascade also predict correctly, i.e., 
@@ -43,23 +70,21 @@ will be shown to be learnable:
 	\end{equation}
 	almost surely (a.s.)
 	where $(Y,Y^1,\dots,Y^K)\sim P$.
-\end{definition}
-Let $\TWD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
+\end{defi}
+Let $\TSD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
 \begin{thm}
-The set $\TWD$ is learnable.
+\label{thm:tsdlearnable}
+The set $\TSD$ is learnable.
 \end{thm}
+We start with a proposition that will be useful beyond the proof of this result.
+In this proposition, $\gamma_i = \gamma_i(\theta)$ for $\theta=(P,c)\in \TSA$ and $(Y,Y^1,\dots,Y^K) \sim P$.
+\begin{prop}\label{prop:gammadiff}
+For any $i,j\in [K]$, $\gamma_i - \gamma_j = \Prob{Y^i\ne Y^j} - 2\Prob{ Y^j \ne Y, Y^i=Y}$.
+\end{prop}
 \begin{proof}
-We construct a map as required by~\cref{prop:learnablemap}.
-Take an instance $\theta = (P,c)\in \TWD$ and let $P = P_S \otimes P_{Y|S}$ be its decomposition
-as defined above.
-Let $\gamma_i = \Prob{Y^i \ne Y}$, $(Y,Y^1,\dots,Y^K)\sim P$, $C_i = c_1+\dots+c_i$.
-For identifying an optimal action in $\theta$, it clearly suffices
-to know the sign of $\gamma_i + C_i - (\gamma_j +C_j)$ for all pairs $i,j\in [K]^2$.
-Since $C_i - C_j$ is known, it remains to study $\gamma_i-\gamma_j$.
-Without loss of generality (WLOG) let $i<j$.
-Then, 
+We have:
 \begin{align*}
-0 & \le \gamma_i  - \gamma_j = \Prob{Y^i\ne Y} - \Prob{Y^j\ne Y} \\
+\MoveEqLeft 0  \le \gamma_i  - \gamma_j = \Prob{Y^i\ne Y} - \Prob{Y^j\ne Y} \\
 & = \cancel{\Prob{Y^i\ne Y, Y^i=Y^j}} + \Prob{ Y^i\ne Y, Y^i\ne Y^j } - \\
 & - \left\{ 
        \cancel{\Prob{Y^j\ne Y, Y^i=Y^j}} + \Prob{ Y^j\ne Y, Y^i\ne Y^j }\right\}\\
@@ -67,63 +92,194 @@ Then,
 & - \left\{ 
 	  \Prob{ Y^j \ne Y, Y^i\ne Y^j } + \Prob{ Y^i=Y,Y^i\ne Y^j}
 	 \right\}\\
-& \stackrel{\footnotesize (a)}{=} \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y } \,,
-\numberthis
-\label{eq:keyidentity}
+& \stackrel{\footnotesize (a)}{=} \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y }\,,
 \end{align*}
 where in $(a)$ we used that $\Prob{ Y^j \ne Y, Y^i\ne Y^j } =  \Prob{ Y^j\ne Y,Y^i= Y}$ and also
-$\Prob{ Y^i=Y,Y^i\ne Y^j} = \Prob{ Y^j\ne Y,Y^i= Y}$ because $Y,Y^i,Y^j$ only take on two possible values.
-Now, since $\theta$ satisfies the strong dominance condition, $ \Prob{ Y^j\ne Y, Y^i = Y } = 0$.
-Thus,
-\begin{align*}
-\gamma_i - \gamma_j = \Prob{ Y^j \ne Y^i }\,,
-\end{align*}
-which is a function of $P_S$ only.
-Thus, a map as required by~\cref{prop:learnablemap} exists.
+$\Prob{ Y^i=Y,Y^i\ne Y^j} = \Prob{ Y^j\ne Y,Y^i= Y}$
+which hold because $Y,Y^i,Y^j$ only take on two possible values.
 \end{proof}
-The proof motivates the following definition:
-\begin{definition}[Weak Dominance]
-	An instance $\theta = (P,c)\in \TSA$  is said to satisfy the \emph{weak dominance property} if 
-	it holds that for any $i<j\in [K]$,
-\begin{align}\label{eq:wd}
-	C_i-C_j \notin [ \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y }, \Prob{ Y^j \ne Y^i } ]\,,
+\begin{proof}[Proof of \cref{thm:tsdlearnable}]
+We construct a map as required by~\cref{prop:learnablemap}.
+Take an instance $\theta = (P,c)\in \TSD$ and let $P = P_S \otimes P_{Y|S}$ be its decomposition as before.
+Let $\gamma_i = \Prob{Y^i \ne Y}$, $(Y,Y^1,\dots,Y^K)\sim P$, $C_i = c_1+\dots+c_i$.
+For identifying an optimal action in $\theta$, it clearly suffices
+to know the sign of $\gamma_i + C_i - (\gamma_j +C_j) = \gamma_i-\gamma_j + (C_i-C_j)$ for all pairs $i,j\in [K]^2$.
+Without loss of generality (WLOG) let $i<j$. By \cref{prop:gammadiff},
+$\gamma_i - \gamma_j = \Prob{ Y^i \ne Y^j } -2 \Prob{ Y^j\ne Y, Y^i = Y }$.
+Now, since $\theta$ satisfies the strong dominance condition, $ \Prob{ Y^j\ne Y, Y^i = Y } = 0$.
+Thus, $\gamma_i - \gamma_j = \Prob{ Y^i \ne Y^j }$
+which is a function of $P_S$ only.
+Since $(C_i)_i$ are known, a map as required by~\cref{prop:learnablemap} exists.
+\end{proof}
+The proof motivates the definition of weak dominance, a concept that we develop next through a series of smaller
+propositions. In these propositions, as before $(Y,Y^1,\dots,Y^K) \sim P$ where $P\in M_1(\{0,1\}^{K+1})$,
+ $\gamma_i = \Prob{Y^i \ne Y}$, $i\in [K]$, and $C_i = c_1 + \cdots + c_i$.
+We start with a corollary of \cref{prop:gammadiff}
+\begin{cor}
+\label{cor:gammadiff}
+Let $i<j$. Then $0\le \gamma_i -\gamma_j \le \Prob{Y^i\ne Y^j}$.
+\end{cor}
+\begin{prop}
+\label{prop:ilej}
+Let $i<j$. Assume 
+\begin{align}
+\label{eq:cond1}
+C_j - C_i \not\in [\gamma_i - \gamma_j, \Prob{Y^i\ne Y^j} )\,.
 \end{align}
-where $(Y,Y^1,\dots,Y^K)\sim P$ and $C_i = c_1+\dots+c_i$, $i\in [K]$.
-\end{definition}
-\todoc[inline]{Note that it is NOT enough to consider $j=i+1$ (i.e., immediate successors) in the definition.
-This is because one may need to compare all pairs to find the optimal decision -- comparing successors is not enough.
-To see why, consider an instance when $\gamma_1,\gamma_2,\gamma_3$ are given by $0.2,0.2,0$, while
-$(C_1,C_2,C_3 )= (0,0.1,0.1)$.
-Then, the costs of the actions are $(0.2,0.3,0.1)$. In particular, the first index where we see the total cost grow does not give
-the optimal action. Similarly, the last index would not work either.
-}
-Let $\TWD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the weak dominance condition } \}$.
-Note that $\TSD\subset \TWD$.
-\begin{thm}
-The set $\TWD$ is a maximal learnable set.
-\end{thm}
+Then $\gamma_i + C_i \le \gamma_j + C_j$ if and only if $C_j - C_i \ge \Prob{Y^i\ne Y^j}$.
+\end{prop}
 \begin{proof}
-That $\TWD$ is learnable follows from \eqref{eq:keyidentity} combined with~\eqref{eq:wd}.
-In particular, fixing $i<j\in [K]$, if $C_j-C_i<\Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y }$ then
+\noindent $\Rightarrow$: From the premise, it follows that $C_j - C_i \ge \gamma_i - \gamma_j$.
+Thus, by~\eqref{eq:cond1}, $C_j - C_i \ge \Prob{Y^i\ne Y^j}$.
+\noindent $\Leftarrow$: We have $C_j - C_i \ge \Prob{Y^i \ne Y^j} \ge \gamma_i -\gamma_j$, where the last
+inequality is by \cref{cor:gammadiff}.
+\end{proof}
+\begin{prop}
+\label{prop:jlei}
+Let $j<i$. Assume
+\begin{align}
+\label{eq:cond2}
+C_i - C_j \not\in (\gamma_j - \gamma_i, \Prob{Y^i \ne Y^j} ]\,.
+\end{align}
+Then, $\gamma_i + C_i \le \gamma_j + C_j$ if and only if $C_i - C_j \le \Prob{Y^i \ne Y^j}$.
+\end{prop}
+\begin{proof}
+\noindent $\Rightarrow$: The condition $\gamma_i + C_i \le \gamma_j + C_j$ implies that $\gamma_j -\gamma_i \ge C_i - C_j$.
+By \cref{cor:gammadiff} we get $\Prob{Y^i \ne Y^j} \ge C_i - C_j$.
+\noindent $\Leftarrow$: Let $C_i - C_j \le \Prob{Y^i \ne Y^j}$. Then, by \eqref{eq:cond2}, $C_i - C_j \le \gamma_j - \gamma_i$.
+\end{proof}
+These results motivate the following definition:
+\begin{defi}[Weak Dominance]
+	An instance $\theta = (P,c)\in \TSA$  is said to satisfy the \emph{weak dominance property} if 
+	for $i = a^*(\theta)$,
+	\begin{align}
+	\label{eq:wd} \forall j>i\,\,: \,\, C_j - C_i \ge \Prob{Y^i\ne Y^j}\,.
+	\end{align}
+We denote the set of all instances in $\TSA$ that satisfies this condition by $\TWD$.	
+\end{defi}
+Note that $\TSD\subset \TWD$ since for any $\theta\in \TSD$, any $j>i = a^*(\theta)$, on the one hand $C_j - C_i \ge \gamma_i - \gamma_j$, while on the other hand, by the strong dominance property, $\Prob{Y^i\ne Y^j} = \gamma_i - \gamma_j$.
+We propose the following action selector $\awd: M_1(\{0,1\}^K) \times \R_+^K \to [K]$:
+\begin{defi}\label{def:awd}
+For $(P_S,c) \in M_1(\{0,1\}^K) \times \R_+^K$ let $\awd(P_S,c)$ denote the smallest index $i\in [K]$ such that
+\begin{subequations}
+\begin{align}
+\forall j<i \,\,:\,\, C_i - C_j < \Prob{ Y^i \ne Y^j }\,, \label{eq:wd1}\\ 
+\forall j>i \,\,:\,\, C_j - C_i \ge \Prob{ Y^i \ne Y^j }\,, \label{eq:wd2}
+\end{align}
+\end{subequations}
+where $C_i = c_1+\cdots + c_i$, $i\in [K]$ and $(Y^1,\dots,Y^K) \sim P_S$.
+(If no such index exists, $\awd$ is undefined, i.e., $\awd$ is a partial function.)
+\end{defi}
+\begin{prop}
+\label{prop:awdwelldef}
+For any $\theta = (P,c)\in \TWD$ with $P = P_S\otimes P_{Y|S}$, $\awd(P_S,c)$ is well-defined.
+\end{prop}
+\begin{proof}
+Let $\theta\in \TWD$, $i = a^*(\theta)$. Obviously, \eqref{eq:wd2} holds by the definition of $\TWD$.
+Thus, the only question is whether \eqref{eq:wd1} also holds.
+We prove this by contadiction:
+Thus, assume that \eqref{eq:wd1} does not hold, i.e., for some $j<i$, $C_i-C_j \ge \Prob{Y^i \ne Y^j}$. Then, by \cref{cor:gammadiff}, $\Prob{ Y^i \ne Y^j} \ge \gamma_j - \gamma_i$, hence $\gamma_j + C_j \le \gamma_i + C_i$, which contradicts the definition of $i$, thus finishing the proof.
+\end{proof}
+\begin{prop}
+\label{prop:awdsound}
+The map $\awd$ is sound over $\TWD$: In particular, for any
+$\theta = (P,c)\in \TWD$ with $P = P_S\otimes P_{Y|S}$, $\awd(P_S,c)= a^*(\theta)$.
+\end{prop}
+\begin{proof}
+Take any $\theta\in \TWD$ and let $\theta = (P,c)$ with $P = P_S\otimes P_{Y|S}$, $i = \awd(P_S,c)$, $j = a^*(\theta)$.
+If $i=j$, there is nothing to be proven. Hence, first assume that $j>i$. Then, by~\eqref{eq:wd2}, $C_j - C_i \ge \Prob{Y^i \ne Y^j}$.
+By \cref{cor:gammadiff}, $\Prob{Y^i \ne Y^j } \ge \gamma_i - \gamma_j$. Combining these two inequalities we get that
+$\gamma_i + C_i \le \gamma_j + C_j$, which contradicts with the definition of $j$.
+Now, assume that $j<i$. Then, by~\eqref{eq:wd}, $C_i - C_j \ge \Prob{Y^i \ne Y^j}$.
+However, by~\eqref{eq:wd1}, $C_i -C_j < \Prob{Y^i \ne Y^j}$, thus $j<i$ cannot hold either and we must have $i=j$.
+\end{proof}
+\begin{cor}\label{cor:twdlearnable}
+The set $\TWD$ is learnable.
+\end{cor}
+\begin{proof}
+By \cref{prop:awdwelldef}, $\awd$ is well-defined over $\TWD$, while by \cref{prop:awdsound}, $\awd$ is sound over $\TWD$.
+By \cref{prop:learnablemap}, $\TWD$ is learnable, as witnessed by $\awd$. \todoc{We should add definitions for these concepts..
+namely, $\awd$ well-defined over $\TWD$, $\awd$ sound over $\TWD$, etc.}
+\end{proof}
+\begin{prop}
+\label{prop:awdcorrectimplieswd}
+Let $\theta \in \TSA$, $\theta = (P,c)$, $P = P_S\otimes P_{Y|S}$ be such that $\awd$ is defined for $P_S,c$
+and $\awd(P_S,c) = a^*(\theta)$. Then $\theta \in \TWD$.
+\end{prop}
+\begin{proof}
+Immediate from the definitions.
+\end{proof}
+An immediate corollary of the previous proposition is as follows:
+\begin{cor}\label{cor:awdoutsideincorrect}
+Let $\theta \in \TSA$, $\theta = (P,c)$, $P = P_S \otimes P_{Y|S}$. 
+Assume that $\awd$ is defined for $(P_S,c)$ and $\theta \not\in \TWD$. Then $\awd(P_S,c) \ne a^*(\theta)$.
+\end{cor}
+The next proposition states that $\awd$ is essentially the only sound action selector map defined for
+ all instances derived from instances of $\TWD$:
+\begin{prop}\label{prop:awdunique}
+Take any action selector map $a: M_1( \{0,1\}^K ) \times \R_+^K \to [K]$ which is sound over $\TWD$.
+Then, for any $(P_S,c)$ such that $\theta = (P_S\otimes P_{Y|S},c)\in \TWD$ with some $P_{Y|S}$,
+ $a(P_S,c) = \awd(P_S,c)$.
+\end{prop}
+\begin{proof}
+Pick any $\theta = (P_S\otimes P_{Y|S},c)\in \TWD$. If $A^*(\theta)$ is a singleton, then clearly $a(P_S,c) = \awd(P_S,c)$ since both are sound over $\TWD$.
+Hence, assume that $A^*(\theta)$ is not a singleton.
+Let $i = a^*(\theta) = \min A^*(\theta)$ and let $j = \min A^*(\theta) \setminus \{ i \}$.
+We argue that $P_{Y|S}$ can be changed so that on the new instance $i$ is still an optimal action, while
+$j$ is not an optimal action, while the new instance $\theta' = (P_S \otimes P_{Y|S}', c)$ is in $\TWD$.
+
+The modification is as follows:
+Consider any $y^{-j} \doteq (y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$.
+For $y,y^j\in \{0,1\}$, define 
+$q(y|y^j) = P_{Y|S}(y|y^1, \dots, y^{j-1}, y^j, y^{j+1},\dots, y^K)$
+and similarly let
+$q'(y|y^j) = P_{Y|S}'(y|y^1, \dots, y^{j-1}, y^j, y^{j+1},\dots, y^K)$
+Then, we let $q'(0|0) = 0$ and $q'(0|1) = q(0|0) + q(0|1)$,
+while we let  $q'(1|1) = 0$ and $q'(1|0) = q(1|1) + q(1|0)$.
+This makes $P_{Y|S}'$ well-defined ($P_{Y|S}'(\cdot|y^1,\dots,y^K)$ is a distribution for any $y^1,\dots,y^K$).
+Further, we claim that the transformation has the property that 
+it leaves $\gamma_p$ unchanged for $p\ne j$, while $\gamma_j$ is guaranteed to decrease.
+To see why $\gamma_p$ is left unchanged for $p\ne j$ note that
+$\gamma_p = \sum_{y^p}  P_{Y^p}(y^p) P_{Y|Y^p}(1-y^p|y^p)$.
+Clearly, $P_{Y^p}$ is left unchanged.
+Introducing $y^{-k}$ to denote a tuple where the $k$th component is left out,
+$P_{Y|Y^p}(1-y^p|y^p) = \sum_{y^{-p,-j}} P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )
++P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )$
+and by definition,
 \begin{align*}
-\gamma_i+C_i-(\gamma_j+C_j) 
-% =    (\gamma_i-\gamma_j) - (C_j-C_i) 
- = \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y } - (C_j-C_i)  >  0\,.
+\MoveEqLeft P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )\\
+&\quad +P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )\\
+&
+=
+P_{Y|Y^1,\dots,Y^K}'( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )\\
+&\quad+P_{Y|Y^1,\dots,Y^K}'( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )\,,
 \end{align*}
-On the other hand, if $C_j-C_i>\Prob{Y^j\ne Y^i}$,
-\begin{align*}
-\gamma_i+C_i-(\gamma_j+C_j) 
-% =    (\gamma_i-\gamma_j) - (C_j-C_i) 
-& = \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y } - (C_j-C_i) \\
- & <  -2 \Prob{ Y^j\ne Y, Y^i = Y } \le 0 \,.
-\end{align*}
-In particular, for an instance satisfying the weak dominance condition we see that
-$\gamma_i+C_i-(\gamma_j+C_j) <0$ holds if and only if $C_j-C_i>\Prob{Y^j\ne Y^i}$, a condition
-that can be verified given the knowledge of $P_S$ alone (where recall that $P = P_S \otimes P_{Y|S}$).
-Thus, a map as required by \cref{prop:learnablemap} exists. Note also that this map is uniquely defined for all instances
-where the optimal action is unique.
-That $\TWD$ is maximal follows because if we add an instance $\theta\in \TSA \setminus \TWD$ 
-\todoc[inline]{There is a problem with the definition of maximality. A set can always be ``lucky''..
-Non-unique optimal actions also cause problems.}
+where the equality holds because ``$q'(y|0)+q'(y|1) = q(y|0) + q(y|1)$''.
+Thus, $P_{Y|Y^p}(1-y^p|y^p) = P_{Y|Y^p}'(1-y^p|y^p)$ as claimed.
+That $\gamma_j$ is non-increasing follows with an analogue calculation.
+In fact, this shows that $\gamma_j$ is strictly decreased
+if for any $(y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$, either $q(0|0)$ or $q(1|1)$ was positive.
+If these are never positive, this means that $\gamma_j=1$. 
+But then $j$ cannot be optimal since $c_j>0$.
+Since $j$ was optimal, $\gamma_j$ is guaranteed to decrease.
+
+Finally, it is clear that the new instance is still in $\TWD$ since  $a^*(\theta)$ is left unchanged.
+\end{proof}
+The next result shows that
+the set $\TWD$ is essentially a maximal learnable set in $\mathrm{dom}(\awd)$:
+\begin{thm}
+Let $a: M_1(\{0,1\}^K) \times \R_+^K \to [K]$ be an action selector map
+such that $a$ is sound over the instances of $\TWD$.
+Then there is no instance $\theta = (P_S\otimes P_{Y|S},c)\in \TSA\setminus \TWD$ such that 
+$(P_S,c)\in \mathrm{dom}(\awd)$, the optimal action of $\theta$ is unique
+\todoc{It would be nice to remove this uniqueness assumption, but I don't see how this could be made to work.}
+ and $a(P_S,c) = a^*(\theta)$.
+\end{thm}
+Note that $\mathrm{dom}(\awd)\setminus \{ (P_S,c) \,:\, \exists P_{Y|S} \textrm{ s.t. } (P_S \otimes P_{Y|S},c) \in \TWD \} \ne \emptyset$, i.e., the theorem statement is non-vacuous.
+In particular, for $K=2$, consider $(Y,Y^1,Y^2)$ such that $Y$ and $Y^1$ are independent and $Y^2 = 1-Y^1$, we can see that the resulting instance gives rise to $P_S$ which is in the domain of $\awd$ for any $c\in \R_+^K$ (because here $\gamma_1 = \gamma_2 = 1/2$, thus $\gamma_1 - \gamma_2 = 0$ while $\Prob{Y^1\ne Y^2}=1$).
+\begin{proof}
+Let $a$ as in the theorem statement. By~\cref{prop:awdunique}, $\awd$ is the unique sound action-selector map over $\TWD$.
+Thus, for any $\theta = (P_S\otimes P_{Y|S},c)\in \TWD$, $\awd(P_S,c) = a(P_S,c)$.
+Hence, the result follows from \cref{cor:awdoutsideincorrect}.
 \end{proof}
 

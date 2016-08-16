@@ -1,9 +1,41 @@
 %!TEX root =  main.tex
 %The sensors are differentiated in terms of their prediction efficiency and cost. 
+\newcommand{\ind}[1]{\mathbb{I}\{#1\}}
+
+\todoc[inline]{I compressed the problem spec. We don't want the reader to get bored.}
+The formal problem specification of the unsupervised, stochastic, 
+cascaded sensor acquisition problem 
+\todoc{I added stochastic and cascaded. Later we may want to consider alternatives,
+thus it will be useful to have these so that we can distinguish between the problem defined here and those
+future alternatives.}
+is as follows: 
+A problem instance is specified by a pair $\theta = (P,c)$, where $P$ is
+a distribution over the $K+1$ dimensional hypercube, and $c$ is a $K$-dimensional, nonnegative valued vector
+of costs.
+While $c$ is known to the learner from the start, $P$ is initially unknown.
+The instance parameters specify the learner-environment interaction as follows:
+In each round for $t=1,2,\dots$, 
+the environment generates a $K+1$-dimensional binary vector
+$Y = (Y_t,Y_t^1,\dots,Y_t^K)$ chosen at random from $P$.
+Here, $Y_t^i$ is the output of sensor $i$, while $Y_t$ is a (hidden) label to be guessed by the learner.
+Simultaneously, the learner chooses an index $I_t\in [K]$ and observes the sensor outputs $Y_t^1,\dots,Y_t^{I_t}$.
+The sensors are known to be ordered from least accurate to most accurate, 
+i.e., $\gamma_k \doteq \Prob{Y_t\ne Y_t^k}$ is decreasing with $k$ increasing.
+\todoc{Add proper figure.}
+Knowing this, the learner's choice of $I_t$ also indicates that he/she chooses $I_t$ to predict the unknown label $Y_t$.
+Observing sensors is costly: The cost of choosing $I_t$ is $C_{I_t} \doteq c_1 + \dots + c_{I_t}$.
+The total cost suffered by the learner in round $t$ is thus $C_{I_t} + \ind{Y_t \ne Y_t^{I_t}}$.
+The goal of the learner is to compete with the best choice given the hindsight of the values $(\gamma_k)_k$.
+The expected regret of learner up to the end of round $n$ is 
+$\Regret_n =( \sum_{t=1}^n \EE{ C_{I_t} +\ind{Y_t \ne Y_t^{I_t} }} )- n \min_k (C_k + \gamma_k)$.
+For future reference, we let $c(k,\theta) = \EE{ C_{k} +\ind{Y_t \ne Y_t^{k} }}  (= C_k + \gamma_k)$ and $c^*(\theta) = \min_k c(k,\theta)$. Thus, $\Regret_n =( \sum_{t=1}^n \EE{ c(I_t,\theta) }) - n c^*(\theta)$.
+In what follows, we shall denote by $\cA^*(\theta)$ the set of optimal actions of $\theta$
+and we let $a^*(\theta)$ denote the optimal action that has the smallest index. Thus,
+in particular, $a^*(\theta) = \min \cA^*(\theta)$. 
+Note that if $i<j$ are optimal actions, then any action in the interval $[i,j] (=[i,j]\cap \N)$ is also optimal.
 
 
-
-
+\if0
 A learner has access to $K\geq 2$ sensors that provide predictions
 of an unknown label. 
  It is assumed that the sensors form a cascade (cf. \cref{wrap-fig:1}),
@@ -102,4 +134,4 @@ Then the expected regret can be expressed as
 \label{eqn:ExpRegretGap}
 R^\psi_T(\pi)&=& \sum_{k \in [K]}\mathbb{E}[N_k(T)]\Delta_k\,.
 \end{eqnarray}\
-
+\fi
