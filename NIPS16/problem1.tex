@@ -89,17 +89,19 @@ The goal of the learner is to learn a policy that minimizes the expected total l
 {\bf Optimal action in hindsight: } For any $t$, we have 
 \begin{equation}
 \label{eqn:OptimalAction}
-\mathbb{E}[L_t(k)]=\Pr\{Y_t\neq \hat{Y}^k_t\}+\sum_{j=1}^kc_j=\gamma_k +\sum_{j=1}^k c_j\,,
+\mathbb{E}[L_t(k)]=\Pr\{Y_t\neq \hat{Y}^k_t\}+\sum_{j=1}^kc_j=\gamma_k +C_k\,,
 \end{equation}
-where $\gamma_k=\Pr\{Y_t\neq \hat{Y}^k_t\}$ is the misclassification error rate of sensor $k$.
-Let $k^*=\arg\min_{k\in [K]} \gamma_k + \sum_{i\le  k}c_i$. 
-Then the optimal policy is to play action $k^*$ in each round. 
-If an action $i$ is played in any round then it adds $\Delta_k:=\gamma_k + \sum_{i\le k}c_i -( \gamma_{k^*} + \sum_{i\le k^*}c_i)$ to the expected regret. 
+where $\gamma_k:=\Pr\{Y_t\neq \hat{Y}^k_t\}$ is the misclassification error rate of sensor $k$ and $C_k := c_1+\dots+c_k$ denotes the total cost for selecting the first $k$ sensors.
+Since $c$ is assumed to be known, we will denote the dependence of the various quantities below
+on $\gamma = (\gamma_1,\dots,\gamma_K)$ only.
+Denote the expected cost of choosing action $k$ by $l_k(\gamma) = \gamma_k + C_k$. Let $k^* = \arg\min_{k\in [K]} l_k(\gamma)$ be the optimal action and let 
+$\Delta_k(\gamma) = l_k(\gamma) - c^*(\gamma)$ be the expected excess cost of using action $k$.
+
+The optimal policy is to play action $k^*$ in each round. If an action $i$ is played in any round then it adds $\Delta_i(\gamma)$ to the expected regret. 
 Let $N_k(s)$ denote the number of times action $k$ 
 is selected till time $s$, i.e., $N_k(s)=\sum_{t=1}^s \boldsymbol{1}_{\{I_t=k\}}$. 
 Then the expected regret can be expressed as
 \begin{eqnarray}
 \label{eqn:ExpRegretGap}
-R^\psi_T(\pi)&=& \sum_{k \in [K]}\mathbb{E}[N_k(T)]\Delta_k\,.
-\end{eqnarray}\
-
+R^\psi_T(\pi)&=& \sum_{k \in [K]}\mathbb{E}[N_k(T)]\Delta_k(\gamma)\,.
+\end{eqnarray}
