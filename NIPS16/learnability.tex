@@ -44,15 +44,15 @@ will be shown to be learnable:
 	almost surely (a.s.)
 	where $(Y,Y^1,\dots,Y^K)\sim P$.
 \end{definition}
-Let $\TWD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
+Let $\TSD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
 \begin{thm}
-The set $\TWD$ is learnable.
+The set $\TSD$ is learnable.
 \end{thm}
 \begin{proof}
 We construct a map as required by~\cref{prop:learnablemap}.
 Take an instance $\theta = (P,c)\in \TWD$ and let $P = P_S \otimes P_{Y|S}$ be its decomposition
 as defined above.
-Let $\gamma_i = \Prob{Y^i \ne Y}$, $(Y,Y^1,\dots,Y^K)\sim P$, $C_i = c_1+\dots+c_i$.
+Let $\gamma_i = \Prob{Y^i \ne Y}$, $(Y,Y^1,\dots,Y^K)\sim P$.
 For identifying an optimal action in $\theta$, it clearly suffices
 to know the sign of $\gamma_i + C_i - (\gamma_j +C_j)$ for all pairs $i,j\in [K]^2$.
 Since $C_i - C_j$ is known, it remains to study $\gamma_i-\gamma_j$.
