@@ -90,13 +90,13 @@ regret equivalent.
 %bandit with side-observations.
 Let $\PSAP$ be the set of SAPs with action set $\A = [K]$.
 The corresponding bandit problems will have the same action set,
-while for action $k\in [K]$ the neighborhood set is $N(k) = [k]$.
+while for action $k\in [K]$ the neighborhood set is $\mathcal{N}(k) = [k]$.
 Take any instance $(P,c)\in \PSAP$ and let $(Y,Y^1,\dots,Y^K) \sim P$ be the 
 unobserved state of environment in round $s$.
 We let the reward distribution for arm $k$ in the corresponding bandit problem
 be a shifted Bernoulli distribution.
 In particular, the cost of arm $k$ follows the distribution of 
-$\one{Y^k\ne Y^1} + (c_1+\dots+c_k)$ (we use costs here to avoid flipping signs).
+$\one{Y^k\ne Y^1} + C_k$ (we use costs here to avoid flipping signs).
 The costs for different arms are defined to be independent of each other.
 Let $\Pside$ denote the set of resulting bandit problems and let $f:\PSAP \to \Pside$
 be the map that transforms SAP instances to bandit instances by following the
@@ -122,7 +122,7 @@ in $\theta=(P,c)$ where $U_s = (Y_s,Y_s^1,\dots,Y_s^{K})$ such that
 the distribution of $U_s$ given that $A_s=a$ is $P$ marginalized to $\Y^{a}$,
 the next action to be taken is 
 $A_{t+1}\sim \pi(\cdot| A_1, V_1,\dots,A_t,V_t)$, where
-$V_s = (\one{Y_s^1\ne Y_s^2}+c_1,\dots,\one{Y_s^1\ne Y_s^{A_s}}+c_1+\dots+c_{A_s})$. Let the resulting policy be denoted by $\pi'$.
+$V_s = (\one{Y_s^1\ne Y_s^1}+C_1,\dots,\one{Y_s^1\ne Y_s^{A_s}}+C_{A_s})$. Let the resulting policy be denoted by $\pi'$.
 The following can be checked by simple direct calculation:
 \begin{proposition}
 If $\theta \in \TWD$, then the regret of $\pi'$ on $f(\theta)\in \Pside$
@@ -138,7 +138,7 @@ and if $\pi'$ is a policy for $\PSAP$,
 then $\pi'$ can be ``used''  on any instance $\theta\in \Pside$
 via the ``inverse'' of the above policy-transformation:
 Given the sequence $(A_1,V_1,\dots,A_t,V_t)$ where 
-$V_s= (B_s^1+c_1,\dots,B_ s^{K}+c_1+\dots+c_s)$ is the vector of costs for round $s$
+$V_s= (B_s^1+C_1,\dots,B_ s^{K}+C_s)$ is the vector of costs for round $s$
 with $B_s^k$ being a Bernoulli with parameter $\gamma_k$,
 let $A_{t+1} \sim \pi'( \cdot| A_1,W_1,\dots,A_t,W_t)$ where
 $W_s = (B_s^1,\dots,B_s^{A_s})$. Let the resulting policy be denoted by $\pi$.
