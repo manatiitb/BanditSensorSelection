@@ -37,6 +37,7 @@
 \usepackage{subfigure} 
 \usepackage[makeroom]{cancel}
 \usepackage{xspace}
+\usepackage{mathtools}
 
 \usepackage{color}
 \usepackage[usenames,dvipsnames]{xcolor}
@@ -58,21 +59,61 @@
 \newcommand{\iset}[1]{[#1]}
 \DeclareMathOperator{\argmin}{argmin}
 \newcommand{\ip}[1]{\langle #1 \rangle} % inner product
+\newcommand{\SA}{\mathrm{SA}}
+\newcommand{\SD}{\mathrm{SD}}
+\newcommand{\WD}{\mathrm{WD}}
+\newcommand{\TSA}{\Theta_{\SA}}
+\newcommand{\Alg}{\mathfrak{A}}
+\newcommand{\TSD}{\Theta_{\SD}}
+\newcommand{\TWD}{\Theta_{\WD}}
+\newcommand{\awd}{a_{\mathrm{wd}}}
+\def\ddefloop#1{\ifx\ddefloop#1\else\ddef{#1}\expandafter\ddefloop\fi}
+
+% \bA, \bB, ...
+\def\ddef#1{\expandafter\def\csname b#1\endcsname{\ensuremath{\mathbf{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+
+% \bbA, \bbB, ...
+\def\ddef#1{\expandafter\def\csname bb#1\endcsname{\ensuremath{\mathbb{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+
+% \cA, \cB, ...
+\def\ddef#1{\expandafter\def\csname c#1\endcsname{\ensuremath{\mathcal{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+
+% \vA, \vB, ..., \va, \vb, ...
+\def\ddef#1{\expandafter\def\csname v#1\endcsname{\ensuremath{\boldsymbol{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\ddefloop
+
+% \valpha, \vbeta, ...,  \vGamma, \vDelta, ...,
+\def\ddef#1{\expandafter\def\csname v#1\endcsname{\ensuremath{\boldsymbol{\csname #1\endcsname}}}}
+\ddefloop {alpha}{beta}{gamma}{delta}{epsilon}{varepsilon}{zeta}{eta}{theta}{vartheta}{iota}{kappa}{lambda}{mu}{nu}{xi}{pi}{varpi}{rho}{varrho}{sigma}{varsigma}{tau}{upsilon}{phi}{varphi}{chi}{psi}{omega}{Gamma}{Delta}{Theta}{Lambda}{Xi}{Pi}{Sigma}{varSigma}{Upsilon}{Phi}{Psi}{Omega}\ddefloop
+
+\newcommand{\Y}{\mathcal{Y}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\EE}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\EEi}[2]{\mathbb{E}_{#1}\left[#2\right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left(#1\right)}
+\newcommand{\Regret}{\mathfrak{R}}
+\newcommand{\R}{\mathbb{R}} % reals
+\newcommand{\Yti}{Y_t^i}
+\newcommand{\Yt}{Y_t}
+\newcommand{\X}{\mathcal{X}}
+
 
 \usepackage[capitalize]{cleveref}
 
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
 \newtheorem{thm}{Theorem}
-\newtheorem{lemma}{Lemma}
-\newtheorem{proposition}{Proposition}
-\newtheorem{corol}{Corollary}
-\newtheorem{example}{Example}
-\newtheorem{condition}{Condition}
-\newtheorem{remark}{Remark}
-\newtheorem{definition}{Definition}
-\newtheorem{assumption}{Assumption}
-\newtheorem{corollary}{Corollary}
+\newtheorem{lem}{Lemma}
+\newtheorem{prop}{Proposition}
+\newtheorem{cor}{Corollary}
+\newtheorem{ex}{Example}
+\newtheorem{cond}{Condition}
+\newtheorem{rem}{Remark}
+\newtheorem{defi}{Definition}
+\newtheorem{ass}{Assumption}
 %\newcommand{\one}[1]{\boldsymbol{1}_{#1}}
 %\newcommand{\Prob}[1]{\Pr\{#1\}}
 %\newcommand{\EE}[1]{\mathbb{E}[#1]}
@@ -128,7 +169,8 @@
 	\maketitle
 	
 	\begin{abstract}
-			Sequential sensor acquisition problems (SAP) arise in many application domains including medical-diagnostics, security and surveillance. SAP architecture is organized as a cascaded network of ``intelligent'' sensors that produce decisions upon acquisition. Sensors must be acquired sequentially and comply with the architecture. Our task is to identify the sensor with optimal accuracy-cost tradeoff. We formulate SAP as a version of the stochastic partial monitoring problem with side information and {\it unusual} reward structure.  Actions correspond to choice of sensor and the chosen sensor's parents decisions are available as side information. Nevertheless, what is atypical, is that we do not observe the reward/feedback, which a learner often uses to reject suboptimal actions. Unsurprisingly, with no further assumptions, we show that no learner can achieve sublinear regret. This negative result leads us to introduce the notion of weak dominance on cascade structures. Weak dominance supposes that a child node in the cascade has higher accuracy whenever its parent's predictions are correct. We then empirically verify this assumption on real datasets. We show that weak dominance is fundamental. We get linear regret if this condition is not satisfied and sublinear regret if it is. Our proof is based on reducing SAP to a special case of multi-armed bandit problems with side information.
+			Sequential sensor acquisition problems (SAP) arise in many application domains including medical-diagnostics, security and surveillance. SAP architecture is organized as a cascaded network of ``intelligent'' sensors that produce decisions upon acquisition. Sensors must be acquired sequentially and comply with the architecture. Our task is to identify the sensor with optimal accuracy-cost tradeoff. We formulate SAP as a version of the stochastic partial monitoring problem with side information and {\it unusual} reward structure.  Actions correspond to choice of sensor and the chosen sensor's parents decisions are available as side information. Nevertheless, what is atypical, is that we do not observe the reward/feedback, which a learner often uses to reject suboptimal actions. Unsurprisingly, with no further assumptions, we show that no learner can achieve sublinear regret. This negative result leads us to introduce the notion of weak dominance on cascade structures. Weak dominance supposes that a child node in the cascade has higher accuracy whenever its parent's predictions are correct. \todoc{The story is a bit more complicated. The abstract will need a rewrite once we settle on the results.}
+			We then empirically verify this assumption on real datasets. We show that weak dominance is fundamental. We get linear regret if this condition is not satisfied and sublinear regret if it is. Our proof is based on reducing SAP to a special case of multi-armed bandit problems with side information.
 %		We propose a sensor acquisition problem (SAP) wherein sensors (and sensing tests) are organized into a cascaded architecture and the goal is to choose a test with the optimal cost-accuracy tradeoff for a given instance. We consider the case where we obtain no feedback in terms of rewards for our chosen actions apart from test observations. Absence of feedback raises fundamentally new challenges since one cannot infer potentially optimal tests. We pose the problem in terms of competitive optimality with the goal of minimizing cumulative regret against optimally chosen actions in hindsight. In this context we introduce the notion of weak dominance and show that it is necessary and sufficient for realizing sub-linear regret. Weak dominance on a cascade supposes that a child node in the cascade has higher accuracy when its parent node makes correct predictions. When weak dominance holds we show that we can reduce SAP to a corresponding multi-armed bandit problem with side observations. Empirically we verify that weak dominance holds for many datasets.
 	\end{abstract}
 
@@ -158,13 +200,8 @@
 \label{sec:Experiments}
 \input{exp}
 
-<<<<<<< HEAD
-%\section{Conclude}
-%\input{conclude}
-=======
 \section{Conclusions}
 \input{conclude}
->>>>>>> d9f82acea5e2f2873b3bb5da16891afb116c7f9f
 
 \newpage
 

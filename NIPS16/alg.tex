@@ -74,13 +74,13 @@ extremely poorly estimated (line \ref{alg:starve}). Note that the requirement he
 
 \newcommand{\gap}{d}
 \newcommand{\norm}[1]{\|#1\|}
-For $\theta = (P,c)\in \TWD$, let $\gamma(\theta)$ be the error probabilities for the various sensors.
+For $\theta = (P,c)\in \TSD$, let $\gamma(\theta)$ be the error probabilities for the various sensors.
 The following result follows from Theorem~6 of \cite{WGySz:NIPS15}:
 \begin{thm}
 Let $\epsilon>0$, $\alpha>2$ arbitrary and choose any non-decreasing $\beta(n)$ that satisfies $0\le \beta(n)\le n/2$ and $\beta(m+n)\le \beta(m)+\beta(n)$ for $m,n\in \N$.
 Then, 
 for any
-$\theta = (P,c)\in \TWD$, letting $\gamma = \gamma(\theta)$
+$\theta = (P,c)\in \TSD$, letting $\gamma = \gamma(\theta)$
 the expected regret of \cref{alg:asym} after $T$ steps satisfies 
 \todoc{Actually, needs to be checked.. I also replaced $\gap_{\max}(\theta)$ with $1$.}
 \begin{align*}
@@ -94,13 +94,13 @@ where $u_i^*(\gamma,\epsilon) = \sup\{u_i^*(\gamma')\,:\, \norm{\gamma'-\gamma}_
 \end{thm}  
 Further specifying $\beta(n)$ and using the continuity of $u^*(\cdot)$ at $\theta$, it immediately follows that Algorithm~\ref{alg:asym} achieves asymptotically optimal performance: \todoc{I just copy\&pasted this.
 We don't actually have a lower bound..}
-\begin{corollary}
+\begin{cor}
 \label{cor:alg1-asym-opt}
  Suppose the conditions of Theorem~\ref{thm:alg1-ub1} hold. Assume, furthermore, that $\beta(n)$ satisfies $\beta(n) = o(n)$ and $\sum_{s=0}^\infty \exp \left( -\frac{\beta(s)\epsilon^2}{2K\sigma^2} \right)<\infty$ for any $\epsilon>0$, then for any $\theta$ such that $u^*(\theta)$ is unique, 
 \[
 \limsup_{T\rightarrow \infty} R_T(\theta,c)/\log T \le 4\alpha \inf_{u\in C_\theta} \ip{u,\gap(\gamma(\theta))}\,.
 \]
-\end{corollary}
+\end{cor}
 Note that any $\beta(n) = an^b$ with $a\in (0,\frac{1}{2}]$, $b\in (0,1)$ satisfies the requirements in Theorem~\ref{thm:alg1-ub1} and Corollary~\ref{cor:alg1-asym-opt}.
 %Also note that the algorithms presented in \cite{CaKvLe12,BuErSh14} do not achieve this asymptotic bound.
 

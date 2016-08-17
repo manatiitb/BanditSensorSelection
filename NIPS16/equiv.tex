@@ -4,7 +4,7 @@
 \newcommand{\PSAP}{\P_{\mathrm{SAP}}\xspace}
 \renewcommand{\P}{\mathcal{P}}
 
-In this section we establish that SAP with weak dominance property is `regret equivalent' to an instance of MAB with side-information and the corresponding algorithm for MAB can be suitably imported to solve SAP efficiently.   
+In this section we establish that SAP with strong dominance property is `regret equivalent' to an instance of MAB with side-information and the corresponding algorithm for MAB can be suitably imported to solve SAP efficiently.   
 
 \if0
 \todoc[inline]{I am thinking that maybe we should skip this general section
@@ -21,9 +21,9 @@ Now let $\P_1 = (\A_1,\Y_1,\Theta_1)$, $\P_1 = (\A_2,\Y_2,\Theta_2)$ be partial 
 We say that \emph{$P_1$ is $P_2$-hard}, 
 denoted by $P_1 \succeq P_2$, if for any $\pi_1\in \Pi(\P_1)$ policy of $\P_1$ there exists a policy $\pi_2\in \Pi(\P_2)$ of $\P_2$
 such that for any $\theta_2\in \Theta_2$ there exists an instance $\theta_1\in \Theta_1$ such that $\Regret_T(\pi_1,\theta_1)\ge \Regret_T(\pi_2,\theta_2)$. An immediate corollary of the definition, justifying the definition, is the following:
-\begin{proposition}
+\begin{prop}
 If $\P_1\succeq \P_2$ then $\Regret_T^*(\P_1)\ge \Regret_T^*(\Pi_2)$.
-\end{proposition}
+\end{prop}
 \begin{proof}
 Fix some $\epsilon>0$ and 
 let $\pi_1^*\in \Pi(\P_1)$ be an $\epsilon$-minimax-optimal policy of $\P_1$: 
@@ -50,12 +50,12 @@ It follows immediately that if $\P_1,\P_2$ are regret equivalent then they have 
 A simple way of guaranteeing that a problem $\P_1$ is $\P_2$-hard if we can transform problem instances of $\P_2$ into 
 problem instances of $\P_1$ while keeping the reward differences between the action-rewards the same (i.e., allowing the reward to be shifted by a constant).
 Formally, we have the following proposition:
-\begin{proposition}
+\begin{prop}
 Let $\P_i = (\A_i,\Y_i,\Theta_i)$, $i=1,2$ be partial monitoring problems.
 Then, $\P_1\succeq \P_2$ holds if there exists $f_{\A}:\A_2\to \A_1$, $f_{\Y}: \Y_2 \to \Y_1$ bijections and $f_{\Theta}:\Theta_2\to \Theta_1$ such that if $(p,r) = f_{\Theta}(p',r')$ for some $(p',r')\in \Theta_2$ then
 for any $a',a''\in \A_2$, $y'\in \Y$,
 $p'(y';a') = p(f_\Y(y'),f_\A(a'))$ and $r'(a')-r'(a'') = r(f_\A(a')) - r(f_\A(a''))$.
-\end{proposition}
+\end{prop}
 \begin{proof}
 The proof follows directly from two simple observations 
 that hold for any instance $\theta_2 = (p',r')$ of $\P_2$: 
@@ -124,12 +124,12 @@ the next action to be taken is
 $A_{t+1}\sim \pi(\cdot| A_1, V_1,\dots,A_t,V_t)$, where
 $V_s = (\one{Y_s^1\ne Y_s^1}+C_1,\dots,\one{Y_s^1\ne Y_s^{A_s}}+C_{A_s})$. Let the resulting policy be denoted by $\pi'$.
 The following can be checked by simple direct calculation:
-\begin{proposition}
-If $\theta \in \TWD$, then the regret of $\pi'$ on $f(\theta)\in \Pside$
+\begin{prop}
+If $\theta \in \TSD$, then the regret of $\pi'$ on $f(\theta)\in \Pside$
 is the same as the regret of $\pi$ on $\theta$. \todoc[inline]{We should probably add this
 calculation?}
-\end{proposition}
-This implies that $\Regret_T^*(\TWD)\le \Regret_T^*(f(\TWD))$.
+\end{prop}
+This implies that $\Regret_T^*(\TSD)\le \Regret_T^*(f(\TSD))$.
 
 Now note that this reasoning can also be repeated in the other ``direction'': 
 For this, first note that the map $f$ has a right inverse $g$ 
@@ -143,15 +143,15 @@ with $B_s^k$ being a Bernoulli with parameter $\gamma_k$,
 let $A_{t+1} \sim \pi'( \cdot| A_1,W_1,\dots,A_t,W_t)$ where
 $W_s = (B_s^1,\dots,B_s^{A_s})$. Let the resulting policy be denoted by $\pi$.
 Then the following holds:
-\begin{proposition}
-Let $\theta \in f(\TWD)$. Then the regret of policy $\pi$ on $\theta\in f(\TWD)$ is the same
+\begin{prop}
+Let $\theta \in f(\TSD)$. Then the regret of policy $\pi$ on $\theta\in f(\TSD)$ is the same
 as the regret of policy $\pi'$ on instance $f^{-1}(\theta)$.
-\end{proposition}
-Hence, $\Regret_T^*(f(\TWD))\le \Regret_T^*(\TWD)$.
+\end{prop}
+Hence, $\Regret_T^*(f(\TSD))\le \Regret_T^*(\TSD)$.
 In summary, we get the following result:
-\begin{corollary}
-$\Regret_T^*(\TWD) = \Regret_T^*(f(\TWD))$. 
-\end{corollary}
+\begin{cor}
+$\Regret_T^*(\TSD) = \Regret_T^*(f(\TSD))$. 
+\end{cor}
 \todoc[inline]{So this could in theory be used for upper and lower bounds.. 
 However, $\Pside$ is really special (because of the fixed costs) -- hence it is unclear 
 whether existing lower bounds, for example, would apply.
