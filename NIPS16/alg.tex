@@ -48,14 +48,7 @@ For the convenience of the reader, we give the algorithm resulting from applying
 of \citet{WGySz:NIPS15} in an explicit form.
 For specifying the algorithm we need some extra notation.
 Given a SAP instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\ne Y^k}$ where $(Y,Y^1,\dots,Y^K)\sim P$ and $k\in [K]$.
-Since $c$ is assumed to be known, we will denote the dependence of the various quantities below
-on $\gamma = (\gamma_1,\dots,\gamma_K)$ only.
-Denote the expected cost of choosing action $k$ by $c_k(\gamma) = \gamma_k + \sum_{i=1}^k c_i$ 
-(note that the notation is slightly changed compared to what we used before). \todoc{Perhaps unify the notation?}
-Let $c^*(\gamma) = \min_{k\in [K]} c_k(\gamma)$ be the optimal expected cost and let 
-$d_k(\gamma) = c_k(\gamma) - c^*(\gamma)$ be the expected excess cost of using action $k$,
-$d^*(\gamma) = \min\{ d_k(\gamma)\,:\, k\in [K], d_k(\gamma)>0 \}$ be the smallest positive expected excess cost,
-$d^*_k(\gamma) = \max(d^*(\gamma),d_k(\gamma))$.
+
 Note that $d_k^*(\gamma) = d_k(\gamma)>0$ for any suboptimal
 action $k$, while $d_k^*(\gamma) = d^*(\gamma)$ for the optimal action.
 
