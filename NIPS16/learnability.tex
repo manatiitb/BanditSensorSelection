@@ -290,17 +290,23 @@ $\TWD$ is not uniformly learnable:
 $\Regret_n^*(\TWD) = \Omega(n)$.
 \end{thm}
 \begin{proof}
-Consider the case when $K=2$ and $C_2 - C_1 = 1/4$. \todoc{The theorem statement should be refined or this text..}
-We will consider two instances, $\theta,\theta'\in \TWD$ such that in instance $\theta$, 
-action $k=1$ is optimal with an action gap $c(2,\theta) - c(1,\theta) = 1/4$, 
-while for instance $\theta'$, $k=2$ is the optimal action and the action gap is $c(1,\theta) - c(2,\theta) = \epsilon$
-where $0<\epsilon<1/8$ is optimal.
-Further, $P_S(\theta)$ and $P_S(\theta')$ differ by $\epsilon$. 
+We first consider the case when $K=2$ and arbitrarily choose $C_2 - C_1 = 1/4$. 
+\todoc{The theorem statement should be refined or this text..}
+We will consider two instances, $\theta,\theta'\in \TWD$ such that for instance $\theta$, 
+action $k=1$ is optimal with an action gap of $c(2,\theta) - c(1,\theta) = 1/4$ between the cost of the second and the first
+action,  while for instance $\theta'$, $k=2$ is the optimal action and the action gap is $c(1,\theta) - c(2,\theta) = \epsilon$
+where $0<\epsilon<3/8$.
+Further, the entries in $P_S(\theta)$ and $P_S(\theta')$ differ by at most $\epsilon$. 
 From this, a standard reasoning gives that no algorithm can achieve sublinear minimax regret over $\TWD$ because any
 algorithm is only able to identify $P_S$. \todoc{Add notation of $P_S(\theta)$ early on. Probably a good idea to add $P_S(\Theta)$ as a notation too for the ``projection'' of $\Theta$ to $P_S$. Also, we should probably remove $c$ from the instance definition;
 in every case we are reasoning for a fixed $c$, hence it is superfluous to keep $c$ in the instance definition.}
 
-The constructions of $\theta$ and $\theta'$ are shown in \cref{tab:nonunif}.
+The constructions of $\theta$ and $\theta'$ are shown in \cref{tab:nonunif}:
+The entry in a cell gives the probability of the event as specified by the column and row labels.
+For example, in instance $\theta$, $3/8$ is the probability of $Y=Y^1=Y^2$, 
+while the probability of $Y^1=Y\ne Y^2$ is $1/8$. Note that the cells with zero actually 
+correspond to impossible events, i.e., these cannot be assigned a positive probability.
+The rationale of a redundant (and hence sparse) table is so that probabilities of certain events of interest, such as $Y^1\ne Y^2$ are easier to determine based on the table. The reader should also verify that the positive probabilities correspond to events that are possible.
 \bgroup
 \def\arraystretch{1.5}
 \begin{table}[]
@@ -309,18 +315,18 @@ The constructions of $\theta$ and $\theta'$ are shown in \cref{tab:nonunif}.
 \begin{tabular}{|c|c|c|c|}
 \hline
 \multicolumn{2}{|c|}{Instance $\theta$}  & $Y^1=Y^2$     & $Y^1\ne Y^2$  \\ \hline
-\multirow{2}{*}{$Y^1= Y$}   & $Y^2= Y$   & $\frac{1}{8}$ & $0$           \\ \cline{2-4} 
-                            & $Y^2\ne Y$ & $\frac{1}{8}$ & $\frac{1}{8}$ \\ \hline
-\multirow{2}{*}{$Y^1\ne Y$} & $Y^2= Y$   & $\frac{2}{8}$ & $0$           \\ \cline{2-4} 
-                            & $Y^2\ne Y$ & $\frac{2}{8}$ & $\frac{1}{8}$ \\ \hline
+\multirow{2}{*}{$Y^1= Y$}   & $Y^2= Y$   & $\frac{3}{8}$ & $0$           \\ \cline{2-4} 
+                            & $Y^2\ne Y$ & $0$ & $\frac{1}{8}$ \\ \hline
+\multirow{2}{*}{$Y^1\ne Y$} & $Y^2= Y$   & $0$ & $\frac{1}{8}$           \\ \cline{2-4} 
+                            & $Y^2\ne Y$ & $\frac{3}{8}$ & $0$ \\ \hline
 \end{tabular}
 \begin{tabular}{|c|c|c|c|}
 \hline
 \multicolumn{2}{|c|}{Instance $\theta'$}  & $Y^1=Y^2$     & $Y^1\ne Y^2$  \\ \hline
-\multirow{2}{*}{$Y^1= Y$}   & $Y^2= Y$   & $\frac{1}{8}-\epsilon$ & $0$           \\ \cline{2-4} 
-                            & $Y^2\ne Y$ & $0$ & $\frac{1}{8}+\epsilon$ \\ \hline
-\multirow{2}{*}{$Y^1\ne Y$} & $Y^2= Y$   & $\frac{3}{8}$ & $0$           \\ \cline{2-4} 
-                            & $Y^2\ne Y$ & $\frac{2}{8}-\epsilon$ & $\frac{1}{8}+\epsilon$ \\ \hline
+\multirow{2}{*}{$Y^1= Y$}   & $Y^2= Y$   & $\frac{3}{8}-\epsilon$ & $0$           \\ \cline{2-4} 
+                            & $Y^2\ne Y$ & $0$ & $0$ \\ \hline
+\multirow{2}{*}{$Y^1\ne Y$} & $Y^2= Y$   & $0$ & $\frac{2}{8}+\epsilon$           \\ \cline{2-4} 
+                            & $Y^2\ne Y$ & $\frac{3}{8}$ & $0$ \\ \hline
 \end{tabular}
 
 \label{tab:nonunif}
@@ -329,4 +335,48 @@ The constructions of $\theta$ and $\theta'$ are shown in \cref{tab:nonunif}.
 \caption{The construction of two problem instances for the proof of \cref{thm:nonunif}.}
 \end{table}
 \egroup
+
+We need to verify the following:
+{\em (i)} $\theta,\theta'\in \TWD$;
+{\em (ii)} the optimality of the respective actions in the respective instances;
+{\em (iii)} the claim concerning the size of the action gaps;
+{\em (iv)} that $P_S(\theta)$ and $P_S(\theta')$ are close.
+Details of the calculations to support {\em (i)}--{\em (iii)} can be found in \cref{tab:nonunif2}.
+The row marked by $(*)$ supports that the instances are proper SAP instances.
+In the row marked by $(**)$, there is no requirement for $\theta'$ because 
+in $\theta'$ action two is optimal, and hence there is no action with larger index 
+than the optimal action, hence $\theta'\in \TWD$ automatically holds.
+To verify the closeness of $P_S(\theta)$ and $P_S(\theta')$ we actually 
+would need to first specify $P_S$ (the tables do not fully specify these).
+However, it is clear the only restriction we put on $P_S$ are the value of $\Prob{Y^1\ne Y^2}$ (and
+that of $\Prob{Y^1=Y^2}$) and these values are within an $\epsilon$ distance of each other.
+Hence, $P_S$ can also be specified to satisfy this.
+\bgroup
+\def\arraystretch{1.5}
+\begin{table}[]
+\centering
+%\hspace*{-0.1in}
+\begin{tabular}{|c|c|c|}
+\hline
+                                                    & $\theta$                & $\theta'$ \\ \hline
+$\gamma_1 = \Prob{Y^1\ne Y}$ & $\frac{1}{4}$           & $\frac{5}{8}+\epsilon$ \\ \hline
+$\gamma_2 = \Prob{Y^2\ne Y}$ & $\frac{1}{4}$           & $\frac{3}{8}$ \\ \hline
+$\gamma_2 \le \gamma_1 \mbox{}^{(*)}$        & \checkmark           & \checkmark \\ \hline
+$c(1,\cdot)$                                 & $\frac{1}{4}$           & $\frac{5}{8}+\epsilon$ \\ \hline
+$c(2,\cdot)$                                 & $\frac{2}{4}$           & $\frac{5}{8}$ \\ \hline
+$a^*(\cdot)$                                 & $k=1$                   & $k=2$ \\ \hline
+$\Prob{Y^1\ne Y^2}$                   & $\frac{1}{4}$         & $\frac{1}{4}+\epsilon$ \\ \hline
+$\theta \in \TWD  \mbox{}^{(**)}$                        & $\frac{1}{4}\ge \frac14$ \checkmark & \checkmark \\ \hline
+$|c(1,\cdot)-\c(2,\cdot)|$              & $\frac{1}{4}$         & $\epsilon$ \\ \hline
+\end{tabular}
+\label{tab:nonunif2}
+\vspace*{0.1in}
+\caption{Calculations for the proof of \cref{thm:nonunif}.}
+\end{table}
+\egroup
+For {\em (ii)}, we calculate $\gamma_1 = \Prob{Y^1\ne Y}$ 
+and $\gamma_2 = \Prob{Y^2\ne Y}$ in the two instances.
+In particular, in instance $\theta$, $\Prob{Y^1\ne Y} = 1/4$ and $\Prob{Y^2\ne Y} = 1/4$.
+
+
 \end{proof}
