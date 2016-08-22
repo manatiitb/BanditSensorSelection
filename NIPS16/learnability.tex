@@ -52,6 +52,7 @@ $\sqrt{\frac{K\log(4n)}{2f(n)}}\le \Delta^*(\theta) \doteq \min_{k:\Delta_k(\the
 Such an index $n_0$ exists by our assumptions that $f$ grows faster than $n \mapsto \log(n)$.
 For $n\ge n_0$, the expected regret of $\Alg$ is at most $n \times 1/n + f(n) (1-1/n) \le 1+f(n) = o(n)$.
 \end{proof}
+
 An action selection map  $a: M_1( \{0,1\}^K )\times \R_+^K \to [K]$ is said to be \emph{sound} for an instance 
 $\theta\in \TSA$ with $\theta = (P_S\otimes P_{Y|S},c)$ if $a(P_S,c)$ selects an optimal action in $\theta$.
 With this terminology, the previous proposition says that a set of instances $\Theta$ is learnable if and only if there exists a
@@ -282,4 +283,50 @@ Let $a$ as in the theorem statement. By~\cref{prop:awdunique}, $\awd$ is the uni
 Thus, for any $\theta = (P_S\otimes P_{Y|S},c)\in \TWD$, $\awd(P_S,c) = a(P_S,c)$.
 Hence, the result follows from \cref{cor:awdoutsideincorrect}.
 \end{proof}
+While $\TWD$ is learnable, it is not uniformly learnable, i.e., the minimax regret $\Regret_n^*(\TWD) = \inf_{\Alg} \sup_{\theta\in \TWD} \Regret_n(\Alg,\theta)$ over $\TWD$ grows linearly:
+\begin{thm}
+\label{thm:nonunif}
+$\TWD$ is not uniformly learnable:
+$\Regret_n^*(\TWD) = \Omega(n)$.
+\end{thm}
+\begin{proof}
+Consider the case when $K=2$ and $C_2 - C_1 = 1/4$. \todoc{The theorem statement should be refined or this text..}
+We will consider two instances, $\theta,\theta'\in \TWD$ such that in instance $\theta$, 
+action $k=1$ is optimal with an action gap $c(2,\theta) - c(1,\theta) = 1/4$, 
+while for instance $\theta'$, $k=2$ is the optimal action and the action gap is $c(1,\theta) - c(2,\theta) = \epsilon$
+where $0<\epsilon<1/8$ is optimal.
+Further, $P_S(\theta)$ and $P_S(\theta')$ differ by $\epsilon$. 
+From this, a standard reasoning gives that no algorithm can achieve sublinear minimax regret over $\TWD$ because any
+algorithm is only able to identify $P_S$. \todoc{Add notation of $P_S(\theta)$ early on. Probably a good idea to add $P_S(\Theta)$ as a notation too for the ``projection'' of $\Theta$ to $P_S$. Also, we should probably remove $c$ from the instance definition;
+in every case we are reasoning for a fixed $c$, hence it is superfluous to keep $c$ in the instance definition.}
 
+The constructions of $\theta$ and $\theta'$ are shown in \cref{tab:nonunif}.
+\bgroup
+\def\arraystretch{1.5}
+\begin{table}[]
+\centering
+%\hspace*{-0.1in}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\multicolumn{2}{|c|}{Instance $\theta$}  & $Y^1=Y^2$     & $Y^1\ne Y^2$  \\ \hline
+\multirow{2}{*}{$Y^1= Y$}   & $Y^2= Y$   & $\frac{1}{8}$ & $0$           \\ \cline{2-4} 
+                            & $Y^2\ne Y$ & $\frac{1}{8}$ & $\frac{1}{8}$ \\ \hline
+\multirow{2}{*}{$Y^1\ne Y$} & $Y^2= Y$   & $\frac{2}{8}$ & $0$           \\ \cline{2-4} 
+                            & $Y^2\ne Y$ & $\frac{2}{8}$ & $\frac{1}{8}$ \\ \hline
+\end{tabular}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\multicolumn{2}{|c|}{Instance $\theta'$}  & $Y^1=Y^2$     & $Y^1\ne Y^2$  \\ \hline
+\multirow{2}{*}{$Y^1= Y$}   & $Y^2= Y$   & $\frac{1}{8}-\epsilon$ & $0$           \\ \cline{2-4} 
+                            & $Y^2\ne Y$ & $0$ & $\frac{1}{8}+\epsilon$ \\ \hline
+\multirow{2}{*}{$Y^1\ne Y$} & $Y^2= Y$   & $\frac{3}{8}$ & $0$           \\ \cline{2-4} 
+                            & $Y^2\ne Y$ & $\frac{2}{8}-\epsilon$ & $\frac{1}{8}+\epsilon$ \\ \hline
+\end{tabular}
+
+\label{tab:nonunif}
+\vspace*{0.1in}
+
+\caption{The construction of two problem instances for the proof of \cref{thm:nonunif}.}
+\end{table}
+\egroup
+\end{proof}
