@@ -18,25 +18,25 @@ the algorithm is also applicable in our case.
 \begin{algorithmic}[1]
 \STATE Inputs: $\alpha>0$ and $\beta: \N \to [0,\infty)$.
 \STATE Play action $K$ and observe the sensor outputs $Y^1,\dots,Y^K$.
-\STATE Set $\hgamma \set (0,\one{Y^1\ne Y^2},\dots,\one{Y^1\ne Y^K})$.
+\STATE Set $\hgamma(1) \set (0,\one{Y^1\ne Y^2},\dots,\one{Y^1\ne Y^K})$.
 \STATE Initialize the exploration count: $n_e \set 0$.
-\STATE Initialize the allocation counts: $N_i = \one{i=K}$, $i\in [K]$.
+\STATE Initialize the allocation counts: $N_i(1) = \one{i=K}$, $i\in [K]$.
 \FOR{$t=2,3,...$}
-	\IF{$\frac{N}{4\alpha \log t}\in C(\hgamma)$} \label{alg:check}
-		\STATE Set $I \set \argmin_{k\in [K]} c_k(\hgamma)$. \label{alg:greedy}
+	\IF{$\frac{N(t-1)}{4\alpha \log t}\in C(\hgamma(t-1))$} \label{alg:check}
+		\STATE Set $I_t \set \argmin_{k\in [K]} c(k,\hgamma(t-1))$. \label{alg:greedy}
 %		\STATE Set $n_e(t+1)=n_e(t)$.
 	\ELSE
-		\IF{$\min_{i\in \iset{K}}m_i(N)<\beta(n_e)/K$} \label{alg:starve}
-			\STATE Set $I = \argmin_{i\in \iset{K}}m_i(N)$. \label{alg:forced}
+		\IF{$\min_{i\in \iset{K}}m_i(N(t-1))<\beta(n_e)/K$} \label{alg:starve}
+			\STATE Set $I_t = \argmin_{i\in \iset{K}}m_i(N(t-1))$. \label{alg:forced}
 		\ELSE
-			\STATE Set $I$ to some $i$ for which \label{alg:plan} \\
-			$\qquad$ $N_i(t)< u_i^*(\hgamma)4\alpha\log t$.
+			\STATE Set $I_t$ to some $i$ for which \label{alg:plan} \\
+			$\qquad$ $N_i(t-1)< u_i^*(\hgamma(t-1))4\alpha\log t$.
 		\ENDIF
 		\STATE Increment exploration count: $n_e \set n_e+1$.
 	\ENDIF
-	\STATE Play $I$ and observe the sensor outputs $Y^1,\dots,Y^{I}$.
+	\STATE Play $I_t$ and observe the sensor outputs $Y^1,\dots,Y^{I_t}$.
 	\STATE For $i\in [I_t]$, set\\
-	$\qquad$ $\hgamma_i \set (1-1/t) \hgamma_i + 1/t \,\one{Y^1\ne Y^i}$.
+	$\quad$ $\hgamma_i(t) \set (1-1/t) \hgamma_i(t-1) + 1/t \,\one{Y^1\ne Y^i}$.
 \ENDFOR
 \end{algorithmic}
 \end{algorithm}
@@ -47,26 +47,23 @@ the algorithm is also applicable in our case.
 For the convenience of the reader, we give the algorithm resulting from applying the reduction to Algorithm~1 
 of \citet{WGySz:NIPS15} in an explicit form.
 For specifying the algorithm we need some extra notation.
-Given a SAP instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\ne Y^k}$ where $(Y,Y^1,\dots,Y^K)\sim P$ and $k\in [K]$.
+Recall that given a SAP instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\ne Y^k}$ where $(Y,Y^1,\dots,Y^K)\sim P$ and $k\in [K]$. Let $k^*=\arg\min_k \gamma_k +C_k$ denote the optimal action and $\Delta_k(\theta)=\gamma_k+C_k-\gamma_{k^*}+C_{k^*}$ the sub-optimality gap of arm $k$. Further, let $\Delta^*(\theta) = \min\{\Delta_k(\theta), k\neq k^* \}$ denote the smallest positive sub-optimality gap and define $\Delta_k^*(\theta) =\max\{\Delta_k(\theta), \Delta^*(\theta)\}$.
 
-Note that $d_k^*(\gamma) = d_k(\gamma)>0$ for any suboptimal
-action $k$, while $d_k^*(\gamma) = d^*(\gamma)$ for the optimal action.
-
-Define $C(\gamma) = \{ u\in [0,\infty)^K\,:\, u_1 + \dots + u_j \ge \frac{2\sigma^2}{(d_j^*(\gamma))^2}, j\in [K] \}$
+Since cost vector $c$ is fixed, in the following we use parameter $\gamma$ in place $\theta$ to denote the problem instance.
+Define $C(\gamma) = \{ u\in [0,\infty)^K\,:\, u_1 + \dots + u_j \ge \frac{2\sigma^2}{(\Delta_j^*(\theta))^2}, j\in [K] \}$
 as the set of ``sufficiently informative'' (fractional)  allocation counts 
 (these ``counts'' guarantee that the observations are sufficient to distinguish all suboptimal actions from the optimal action; note that $\sigma^2=1/4$).
-Further, let $n^*(\gamma)$
+Further, let $u^*(\gamma)$
 be the allocation count that minimizes the total expected excess cost over the set of sufficiently informative allocation counts:
-In particular,  we let $u^*(\gamma) = \argmin_{u\in C(\gamma)} \ip{ u, d(\gamma) }$ 
+In particular,  we let $u^*(\gamma) = \argmin_{u\in C(\gamma)} \ip{ u, \Delta(\theta) }$ 
 with the understanding that for any optimal action $k$, $u_k^*(\gamma) = \min \{ u_k \,: u\in C(\gamma) \}$ (here, $\ip{x,y} = \sum_i x_i y_i$ is the standard inner product of vectors $x,y$).
-For an allocation count $u\in [0,\infty)^K$ let $m(u)\in \N^K$ be the number observations made at each sensor:
-$m_j(u) = \sum_{i=1}^j u_i$.
+For an allocation count $u\in [0,\infty)^K$ let $m(u)\in \N^K$ denote total sensor observations, where $m_j(u) = \sum_{i=1}^j u_i$ corresponds to observations of sensor $j$.
 
 The idea of the algorithm shown as \cref{alg:asym} is as follows:
-The algorithm keeps track of an estimate $\hgamma$ of $\gamma$, which is initialized by pulling arm $K$ as this arm
+The algorithm keeps track of an estimate $\hgamma(t)$ of $\gamma$ in each round, which is initialized by pulling arm $K$ as this arm
 gives information about all the other arms.
-In each round, the algorithm first checks whether given the current estimate $\hgamma$ and the current confidence level (where the confidence level is gradually increased over time), the current allocation count $N\in \N^K$
-is sufficiently informative (cf. line \ref{alg:check}). If this holds, the action that is optimal under $\hgamma$ is chosen 
+In each round, the algorithm first checks whether given the current estimate $\hgamma(t)$ and the current confidence level (where the confidence level is gradually increased over time), the current allocation count $N(t)\in \N^K$
+is sufficiently informative (cf. line \ref{alg:check}). If this holds, the action that is optimal under $\hgamma(t)$ is chosen 
 (cf. line \ref{alg:greedy}). If the check fails, we need to explore.
 The idea of the exploration is that it tries to ensure that the ``optimal plan'' -- assuming $\hgamma$ is the ``correct'' parameter -- is followed (line \ref{alg:plan}). However, this is only reasonable, if all components of $\gamma$ are relatively well-estimated.
 Thus, first the algorithm checks whether any of the components of $\gamma$ has a chance of being
