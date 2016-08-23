@@ -1,3 +1,2 @@
-Statistic for BSC : is [0.200 0.100 0.261 0.080 0.100] 
-Statistic for Diab: is [0.288 0.219 0.219 0.075 0.106] 
-Statistic for Hear: is [0.305 0.169 0.237 0.051 0.073] 
+Statistic for BSC : is [0.200 0.100 0.260 0.080 0.100] 
+Statistic for Diab: is [0.301 0.247 0.233 0.089 0.127] 
