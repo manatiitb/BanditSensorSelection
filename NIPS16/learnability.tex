@@ -23,7 +23,7 @@ $P_S$ with arbitrary precision, while $P_{Y|S}$ remains hidden from the learner.
 A subset $\Theta\subset \TSA$ is learnable 
 if and only if there exists a map $a: M_1( \{0,1\}^K )\times \R_+^K \to [K]$ such that 
 for any $\theta= (P,c)\in \Theta$ 
-with decomposition $P = P_S \otimes P_{Y|S}$, $a(P_S,c)$ is an optimal action in $\theta$.
+with decomposition $P = P_S \otimes P_{Y|S}$, $a(P_S)$ is an optimal action in $\theta$.
 \end{prop}
 \begin{proof}
 $\Rightarrow$: Let $\Alg$ be an algorithm that achieves sublinear regret
@@ -70,16 +70,13 @@ will be shown to be learnable:
 	\end{equation}
 	almost surely (a.s.)
 	where $(Y,Y^1,\dots,Y^K)\sim P$.
-<<<<<<< HEAD
-\end{definition}
-Let $\TSD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
-\begin{thm}
-=======
 \end{defi}
+Let $\TSD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
+%\begin{thm}
+
 Let $\TSD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
 \begin{thm}
 \label{thm:tsdlearnable}
->>>>>>> 7ec48a671514c7e5a1d1b3c7c8ff259af505fdaa
 The set $\TSD$ is learnable.
 \end{thm}
 We start with a proposition that will be useful beyond the proof of this result.
@@ -88,7 +85,7 @@ In this proposition, $\gamma_i = \gamma_i(\theta)$ for $\theta=(P,c)\in \TSA$ an
 For any $i,j\in [K]$, $\gamma_i - \gamma_j = \Prob{Y^i\ne Y^j} - 2\Prob{ Y^j \ne Y, Y^i=Y}$.
 \end{prop}
 \begin{proof}
-<<<<<<< HEAD
+
 We construct a map as required by~\cref{prop:learnablemap}.
 Take an instance $\theta = (P,c)\in \TWD$ and let $P = P_S \otimes P_{Y|S}$ be its decomposition
 as defined above.
