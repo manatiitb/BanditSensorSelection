@@ -2,6 +2,7 @@ data=load('heart.newdata.txt');
 data(data(:,14)>0,14)=1;
 Xmeas = data(:,[1:13]); Y = data(:,14);
 P = cvpartition(Y,'Holdout',0.2);
+
 svmStruct2 = fitcsvm(Xmeas(P.training,:),Y(P.training),'KernelFunction','linear','BoxConstraint',.01);
 Ccostly = predict(svmStruct2,Xmeas(P.test,:));
 errRate2 = sum(Y(P.test)~= Ccostly)/P.TestSize;
