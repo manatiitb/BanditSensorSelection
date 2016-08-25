@@ -49,8 +49,11 @@ of \citet{WGySz:NIPS15} in an explicit form.
 For specifying the algorithm we need some extra notation.
 Recall that given a SAP instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\ne Y^k}$ where $(Y,Y^1,\dots,Y^K)\sim P$ and $k\in [K]$. Let $k^*=\arg\min_k \gamma_k +C_k$ denote the optimal action and $\Delta_k(\theta)=\gamma_k+C_k-\gamma_{k^*}+C_{k^*}$ the sub-optimality gap of arm $k$. Further, let $\Delta^*(\theta) = \min\{\Delta_k(\theta), k\neq k^* \}$ denote the smallest positive sub-optimality gap and define $\Delta_k^*(\theta) =\max\{\Delta_k(\theta), \Delta^*(\theta)\}$.
 
-Since cost vector $c$ is fixed, in the following we use parameter $\gamma$ in place $\theta$ to denote the problem instance.
-Define $C(\gamma) = \{ u\in [0,\infty)^K\,:\, u_1 + \dots + u_j \ge \frac{2\sigma^2}{(\Delta_j^*(\theta))^2}, j\in [K] \}$
+Since cost vector $c$ is fixed, in the following we use parameter $\gamma$ in place of $\theta$ to denote the problem instance.
+For an instance $\gamma$, let $\pi(1,\gamma)$ denote the index of the optimal action $(\pi(1,\gamma) = \min_j C_j+\gamma_j)$,
+$\pi(2,\gamma)$ denote the index of the second best action $(\pi(2,\gamma) = \min_{j\ne \pi(1,\gamma)} C_j +\gamma_j)$ and
+more generally let $\pi(k,\gamma)$ be the index of the $k$th best action.
+Define $C(\gamma) = \{ u\in [0,\infty)^K\,:\, u_{\pi(1,\gamma)} + \dots + u_{\pi(j,\gamma)} \ge \frac{2\sigma^2}{(\Delta_j^*(\theta))^2}, j\in [K] \}$
 as the set of ``sufficiently informative'' (fractional)  allocation counts 
 (these ``counts'' guarantee that the observations are sufficient to distinguish all suboptimal actions from the optimal action; note that $\sigma^2=1/4$).
 Further, let $u^*(\gamma)$
