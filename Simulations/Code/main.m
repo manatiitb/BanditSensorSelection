@@ -1,12 +1,15 @@
 global settings;
 settings=[];
 
-settings.p=0;
-settings.p1=0;                            % error prob of sensor 1
-settings.p2=0;                            % error prob of sensor 2
-settings.svmStruct1=[];
-settings.svmStruct2=[];
+settings.K=5;                           %number of arms
+settings.p=zeros(settings.K,1);         %stores error probabilities of each arm
+settings.bsc=0;
+for i=1:1:settings                      %svmClassifier for each of the sensor
+    settings.svmStuct(i)=[];
+end
 settings.data=[];
+settings.FeaLen=zeros(settings.K,1);   %stores feature lenghts to train each classifier (sensor) 
+settings.costs=zeros(settings.K,1);    %stores total cost of each stage
 settings.T=100000;                           % number of rounds
 settings.iterations=10;
 
