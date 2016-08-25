@@ -26,11 +26,11 @@ the algorithm is also applicable in our case.
 		\STATE Set $I_t \set \argmin_{k\in [K]} c(k,\hgamma(t-1))$. \label{alg:greedy}
 %		\STATE Set $n_e(t+1)=n_e(t)$.
 	\ELSE
-		\IF{$\min_{i\in \iset{K}}m_i(N(t-1))<\beta(n_e)/K$} \label{alg:starve}
-			\STATE Set $I_t = \argmin_{i\in \iset{K}}m_i(N(t-1))$. \label{alg:forced}
+		\IF{$N_K(t-1)<\beta(n_e)/K$} \label{alg:starve}
+			\STATE Set $I_t =K$. \label{alg:forced}
 		\ELSE
 			\STATE Set $I_t$ to some $i$ for which \label{alg:plan} \\
-			$\qquad$ $N_i(t-1)< u_i^*(\hgamma(t-1))4\alpha\log t$.
+			$\quad$ $N_i(t-1)< u_i^*(\hgamma(t-1))4\alpha\log t$.
 		\ENDIF
 		\STATE Increment exploration count: $n_e \set n_e+1$.
 	\ENDIF
