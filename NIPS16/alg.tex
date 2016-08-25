@@ -53,7 +53,7 @@ Since cost vector $c$ is fixed, in the following we use parameter $\gamma$ in pl
 %For an instance $\gamma$, let $\pi(1,\gamma)$ denote the index of the optimal action $(\pi(1,\gamma) = \min_j C_j+\gamma_j)$, $\pi(2,\gamma)$ denote the index of the second best action $(\pi(2,\gamma) = \min_{j\ne \pi(1,\gamma)} C_j +\gamma_j)$ and more generally let $\pi(k,\gamma)$ be the index of the $k$th best action.
 A (fractional) allocation count $u\in [0,\infty)^K$ determines for each action $i$ how many times the
 action is selected.
-Thanks to the cascade structure, using an action $i$ implies observing the output of all the sensors with index $j$ less than equal to $i$. Hence, a sensor $i$ gets observed $u_i+u_{i+1}+\dots+u_K$ times.
+Thanks to the cascade structure, using an action $i$ implies observing the output of all the sensors with index $j$ less than equal to $i$. Hence, a sensor $j$ gets observed $u_j+u_{j+1}+\dots+u_K$ times.
 We call an allocation count ``sufficiently informative'' if (with some level of confidence)
 it holds that {\em (i)} for each suboptimal choice, 
 the number of observations for the corresponding sensor is sufficiently large to distinguish
