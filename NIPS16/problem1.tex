@@ -32,10 +32,14 @@ For future reference, we let $c(k,\theta) = \EE{ C_{k} +\ind{Y_t \ne Y_t^{k} }} 
 In what follows, we shall denote by $\cA^*(\theta)$ the set of optimal actions of $\theta$
 and we let $a^*(\theta)$ denote the optimal action that has the smallest index. Thus,
 in particular, $a^*(\theta) = \min \cA^*(\theta)$. 
-Note that if $i<j$ are optimal actions, then any action in the interval $[i,j] (=[i,j]\cap \N)$ is also optimal. We can express optimal actions from the viewpoint of marginal costs and marginal error. We note this here for later reference. 
-In particular an action $i$ is optimal if for all $j > i$ the marginal increase in cost $C_j - C_i$ is larger than the marginal decrease in error, $\gamma_i - \gamma_j$:
+Note that even if $i<j$ are optimal actions, there can be suboptimal actions in the interval $[i,j] (=[i,j]\cap \N)$
+(e.g., $\gamma_1=0.3$, $C_1=0$, $\gamma_2=0.25$, $C_2=0.1$, $\gamma_3=0$, $C_3=0.3$. 
+Next, for future reference note that one 
+can express optimal actions from the viewpoint of marginal costs and marginal error. 
+In particular an action $i$ is optimal if for all $j > i$ the marginal increase in cost, $C_j - C_i$, 
+is larger than the marginal decrease in error, $\gamma_i - \gamma_j$:
 \begin{equation} \label{eqn:interp_opt}
-\underbrace{C_j - C_i}_{\text{Marginal Cost}} \geq \gamma_i - \gamma_j = \underbrace{ E \left [ \ind{Y_t \ne Y_t^i} - \ind{Y_t \ne Y_t^j} \right ]}_{\text{Marginal Decrease in Error}},\,\,\, \forall \, j \geq i
+\underbrace{C_j - C_i}_{\text{Marginal Cost}} \geq \gamma_i - \gamma_j = \underbrace{ E \left [ \ind{Y_t \ne Y_t^i} - \ind{Y_t \ne Y_t^j} \right ]}_{\text{Marginal Decrease in Error}},\,\,\, \forall \, j \geq i\,.
 \end{equation}
 
 

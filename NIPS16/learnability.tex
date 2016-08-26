@@ -96,9 +96,6 @@ to know the sign of $\gamma_i + C_i - (\gamma_j +C_j)$ for all pairs $i,j\in [K]
 Since $C_i - C_j$ is known, it remains to study $\gamma_i-\gamma_j$.
 Without loss of generality (WLOG) let $i<j$.
 Then, 
-=======
-We have:
-%>>>>>>> 7ec48a671514c7e5a1d1b3c7c8ff259af505fdaa
 \begin{align*}
 \MoveEqLeft 0  \le \gamma_i  - \gamma_j = \Prob{Y^i\ne Y} - \Prob{Y^j\ne Y} \\
 & = \cancel{\Prob{Y^i\ne Y, Y^i=Y^j}} + \Prob{ Y^i\ne Y, Y^i\ne Y^j } - \\
@@ -175,11 +172,11 @@ We denote the set of all instances in $\TSA$ that satisfies this condition by $\
 \end{defi}
 Note that $\TSD\subset \TWD$ since for any $\theta\in \TSD$, any $j>i = a^*(\theta)$, on the one hand $C_j - C_i \ge \gamma_i - \gamma_j$, while on the other hand, by the strong dominance property, $\Prob{Y^i\ne Y^j} = \gamma_i - \gamma_j$.
 
-We now relate weak dominance to the optimality condition described in Eq.~\ref{eqn:interp_opt}. Weak dominance can be viewed as a more stringent condition for optimal actions. Namely, for action to be optimal we also require that the marginal cost be larger than marginal absolute error:
+We now relate weak dominance to the optimality condition described in Eq.~\eqref{eqn:interp_opt}. Weak dominance can be viewed as a more stringent condition for optimal actions. Namely, for an action to be optimal we also require that the marginal cost be larger than marginal \emph{absolute} error:
 \begin{equation} \label{eqn:interp_WD}
-\underbrace{C_j - C_i}_{\text{Marginal Cost}} \geq \underbrace{ E \left [ \left | \ind{Y_t \ne Y_t^i} - \ind{Y_t \ne Y_t^j} \right | \right ]}_{\text{Marginal Absolute Error}},\,\,\, \forall \, j \geq i
+\underbrace{C_j - C_i}_{\text{Marginal Cost}} \geq \underbrace{ E \left [ \left | \ind{Y_t \ne Y_t^i} - \ind{Y_t \ne Y_t^j} \right | \right ]}_{\text{Marginal Absolute Error}},\,\,\, \forall \, j \geq i\,.
 \end{equation}
-The difference between marginal error in Eq~\ref{eqn:interp_opt} and marginal absolute error is terms of the absolute value. We will show later that weak-dominant set is a maximal learnable set, namely, the set cannot be expanded while ensuring learnability.
+The difference between marginal error in Eq.~\eqref{eqn:interp_opt} and marginal absolute error is the presence of the absolute value. We will show later that weak-dominant set is a maximal learnable set, namely, the set cannot be expanded while ensuring learnability.
 
 
 We propose the following action selector $\awd: M_1(\{0,1\}^K) \times \R_+^K \to [K]$:
