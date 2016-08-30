@@ -166,12 +166,11 @@ The payoff of an arm is given by loss from the corresponding stage, and the side
 %
 
 \section{Related Work}
+%
+%Supervised, batch learning, the problem is well studied.
 
-Supervised, batch learning, the problem is well studied.
-
-Related Work: \cite{AISTATS13_SupervisedSequentialLearning_TrapezSaligram}
-
-\cite{poczos2009}: Decide when to quit a cascade that leads to better decisions to maximize throughput against error rates. Full feedback about classification accuracy is assumed.
+In contrast to our SAP setup there exists a wide body of literature dealing with fully supervised sensor acquisition. Like us \cite{AISTATS13_SupervisedSequentialLearning_TrapezSaligram} also deal with cascade models. However, unlike us these works focus on prediction-time cost/accuracy tradeoffs. In particular they assume that a fully labeled training dataset is provided for test-time use. This dataset has sensor feature data, sensor decisions as well as annotated ground-truth labels. The goal for the learner is to learn a policy for acquiring sensors based on training data to optimize cost/accuracy during test-time. The work of
+\cite{poczos2009} decide when to quit a cascade that leads to better decisions to maximize throughput against error rates. Full feedback about classification accuracy is assumed.
 
 \citet{ActiveClass-AIJ-s} consider the problem of PAC learning the best ``active classifier'',
 a classifier that decides about what tests to take given the results of previous tests
@@ -185,16 +184,15 @@ The literature of learning active classifiers is large \todoc{Actually, much wor
 (e.g., \citep{LCunderBudget-ECML05,ADORE-99,isukapalli01efficient-ICJAI}).
 
 
-Online learning.
-\cite{SBCA14:BanditsPaid}: The decision maker can opt to pay for additional observations of the costs associated with other arms. Not unsupervised.
-\citet{ZBGGySz13:CostlyFeatures}: Online learning with costly features and labels.
-In each round, learner has to decide which features to observe, known that each features costs 
-some money. The learner can also decide not to observe the label, but the learner always has the option
-to observe the label. Not unsupervised.
+Online learning: In 
+\cite{SBCA14:BanditsPaid}, the decision maker can opt to pay for additional observations of the costs associated with other arms. Unlike ours this setting is not unsupervised. In
+\citet{ZBGGySz13:CostlyFeatures}, online learning with costly features and labels is studied.
+In each round, learner has to decide which features to observe, where each feature costs some money. The learner can also decide not to observe the label, but the learner always has the option
+to observe the label. Again this setting is not unsupervised.
 
 Partial monitoring:
 General theory of \citet{BaFoPaRaSze14} 
 applies to the so-called finite problems (unknown ``key information'') is an element of the probability simplex.
-\citet{AgTeAn89:pmon} considers special case when the payoff is also observed (akin to the side-observation problem of \citet{MaSh11}).
+\citet{AgTeAn89:pmon} considers special case when the payoff is also observed (akin to the side-observation problem of \citet{MaSh11}\cite{COLT15_OnlineLearningWithFeedback_AlonBianchiDekel},\cite{NIPS13_FromBanditsToExperts_AlonBianchiGentile}).
 
 Structure of paper
