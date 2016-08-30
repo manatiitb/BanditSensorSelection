@@ -58,20 +58,6 @@ $\theta\in \TSA$ with $\theta = (P_S\otimes P_{Y|S},c)$ if $a(P_S,c)$ selects an
 With this terminology, the previous proposition says that a set of instances $\Theta$ is learnable if and only if there exists a
 sound action selection map for all the instances in $\Theta$.
 
-Table \ref{tab:ErrorTable1} lists the error probabilities of the classifiers (sensors) for the heart and diabetic datasets from UCI repositoryy. For both the datasets, $\gamma_1$ denotes training error of an SVM classifier (linear) trained using few cheap features and $\gamma_2$ denotes training error of another SVM classifier trained using all the features (cf. Section \ref{sec:Experiments}). The last column lists $\delta_{12}:=\Prob{Y^1=Y, Y^2\neq Y}$, the probability that second sensor misclassifies an instance that is correctly classified by the first sensor. Notice that in these datasets, accuracy of the costly classifiers (trained with more features) is better, justifying our cascade structure of problem. Further, probability that costly sensor err while the cheap sensor do not err on the same instance is small. This observation motivates the following stochastic ordering which is refereed to as {\em strong dominance} condition. 
-\begin{table}
-\begin{center}
-\begin{tabular}[c]{c|c|c|c } 
-%	\caption{cap:Error statistics}
-dataset & $\gamma_1$ & $\gamma_2$ & $\delta_{12}$\\ \hline \hline
-diabetic & $0.288 $ & $ 0.219$  & 0.075\\  \hline
-heart & $0.305$ & $0.169$ &  0.051\\  \hline
-\end{tabular}
-\label{tab:ErrorTable1}
-\caption{Error statistics}
-\end{center}
-\end{table}
-
 A class of sensor acquisition problems that contains instances that satisfy the so-called \emph{strong dominance} condition 
 will be shown to be learnable:
 \begin{defi}[Strong Dominance]
@@ -86,7 +72,24 @@ will be shown to be learnable:
 	almost surely (a.s.)
 	where $(Y,Y^1,\dots,Y^K)\sim P$.
 \end{defi}
-Let $\TSD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
+\begin{table}[h]
+\begin{center}
+\begin{tabular}[c]{c|c|c|c } 
+%	\caption{cap:Error statistics}
+dataset & $\gamma_1$ & $\gamma_2$ & $\delta_{12}$\\ \hline \hline
+diabetic & $0.288 $ & $ 0.219$  & 0.075\\  \hline
+heart & $0.305$ & $0.169$ &  0.051\\  \hline
+\end{tabular}
+\label{tab:ErrorTable1}
+\caption{Error statistics}
+\end{center}
+\end{table}
+Before we develop this concept further we will motivate strong dominance based on experiments on a few real-world datasets. Table \ref{tab:ErrorTable1} lists the error probabilities of the classifiers (sensors) for the heart and diabetic datasets from UCI repository. For both the datasets, $\gamma_1$ denotes the test error of an SVM classifier (linear) trained with low cost features and $\gamma_2$ denotes test error of SVM classifier trained using both low and high-cost features (cf. Section \ref{sec:Experiments}). The last column lists $\delta_{12}:=\Prob{Y^1=Y, Y^2\neq Y}$, the probability that second sensor misclassifies an instance that is correctly classified by the first sensor. Strong dominance is the notion that suggests that this probability is zero. We find in these datasets that $\delta_{12}$ is small thus justifying our notion. In general we have found this behavior is representative of other cost-associated datasets. Note that strong dominance is not merely a consequence of improved accuracy with availability of more features. It is related to better {\it recall rates} of high-cost features relative to low-cost features. %Strong dominance assumption implies that the collection of ''recalled examples'' with low-cost features is a subset of those recalled with high-cost features. 
+
+
+
+We next show that strong dominance conditions ensures learnability. To this end,
+let $\TSD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
 %\begin{thm}
 
 %Let $\TSD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
