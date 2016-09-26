@@ -172,20 +172,16 @@ The payoff of an arm is given by loss from the corresponding stage, and the side
 %
 %Supervised, batch learning, the problem is well studied.
 
-In contrast to our SAP setup there exists a wide body of literature dealing with fully supervised sensor acquisition. Like us \cite{AISTATS13_SupervisedSequentialLearning_TrapezSaligram} also deal with cascade models. However, unlike us these works focus on prediction-time cost/accuracy tradeoffs. In particular they assume that a fully labeled training dataset is provided for test-time use. This dataset has sensor feature data, sensor decisions as well as annotated ground-truth labels. The goal for the learner is to learn a policy for acquiring sensors based on training data to optimize cost/accuracy during test-time. The work of
+In contrast to our SAP setup there exists a wide body of literature dealing with fully supervised sensor acquisition. Like us \cite{AISTATS13_SupervisedSequentialLearning_TrapezSaligram} \cite{NIPS2015_DirectedAcyclic_WangTrapezSaligram}  \cite{NIPS2015_FeatureBudgeted_NanWangSaligrama} also deal with cascade models. However, unlike us these works focus on prediction-time cost/accuracy tradeoffs. In particular they assume that a fully labeled training dataset is provided for test-time use. This dataset has sensor feature data, sensor decisions as well as annotated ground-truth labels. The goal for the learner is to learn a policy for acquiring sensors based on training data to optimize cost/accuracy during test-time. The work of
 \cite{poczos2009} decide when to quit a cascade that leads to better decisions to maximize throughput against error rates. Full feedback about classification accuracy is assumed.
 
-\citet{ActiveClass-AIJ-s} consider the problem of PAC learning the best ``active classifier'',
-a classifier that decides about what tests to take given the results of previous tests
-to minimize total cost when both tests and misclassification errors are priced.
-They consider the batch, supervised setting. \todoc{I suspect they assume more than this:
-In our previous paper we had a sentence that said that
-``their model requires knowing a model of the actions in 
-advance'' (this would mean knowing the joint probabilities, I think).}
-
-The literature of learning active classifiers is large \todoc{Actually, much work exists, need to google this}
-(e.g., \citep{LCunderBudget-ECML05,ADORE-99,isukapalli01efficient-ICJAI}).
-
+Active classification: \citet{ActiveClass-AIJ-s} considers the problem of PAC learning the best ``active classifier'', a classifier that decides about what tests to take given the results of previous tests to minimize total cost when both tests and misclassification errors are priced.
+Unlike us they only consider the batch, supervised learning. The same setting is also studied under hard budget constraints in \cite{LCunderBudget-ECML05} and its applications in imaging and computer vision systems are explored in  \citep{ADORE-99,isukapalli01efficient-ICJAI}).
+ \todoc{I suspect they assume more than this:
+ 	In our previous paper we had a sentence that said that
+ 	``their model requires knowing a model of the actions in 
+ 	advance'' (this would mean knowing the joint probabilities, I think).}
+  \todoc{Actually, much work exists, need to google this}\todom{Added a line about each reference, not sure if we need to include more similar references}
 
 Online learning: In 
 \cite{SBCA14:BanditsPaid}, the decision maker can opt to pay for additional observations of the costs associated with other arms. Unlike ours this setting is not unsupervised. In
@@ -196,6 +192,6 @@ to observe the label. Again this setting is not unsupervised.
 Partial monitoring:
 General theory of \citet{BaFoPaRaSze14} 
 applies to the so-called finite problems (unknown ``key information'') is an element of the probability simplex.
-\citet{AgTeAn89:pmon} considers special case when the payoff is also observed (akin to the side-observation problem of \citet{MaSh11}\cite{COLT15_OnlineLearningWithFeedback_AlonBianchiDekel},\cite{NIPS13_FromBanditsToExperts_AlonBianchiGentile}).
+\citet{AgTeAn89:pmon} considers special case when the payoff is also observed (akin to the side-observation problem of \citet{MaSh11}\cite{COLT15_OnlineLearningWithFeedback_AlonBianchiDekel},\cite{NIPS13_FromBanditsToExperts_AlonBianchiGentile}).\todom{Need to add Yifan's paper, there seems to be few more based on this in ICML'16, AISTATS'16 and NIPS'16}
 
-Structure of paper
+The paper is organized as follows: in Section \ref{sec:background} we give a brief background on online learning problems and discuss information structure in these setups. In Section \ref{sec:Setup} we introduce SAP as a general online learning problem where feedback reveals no information on loss/reward of actions. In Sectjon \ref{sec:Learnability} we identify conditions under which optimal action can be learned in SAP. In Section \ref{sec:Equiv} we establish that SAP is regret equivalent to a stochastic multi-armed bandits with side-observations when it satisfies strong dominance property. When this property holds, Section \ref{sec:Algo} gives an algorithm to solve SAP efficiently. We conclude in Section \ref{sec:Conclu} with a discussion on further extensions.  
