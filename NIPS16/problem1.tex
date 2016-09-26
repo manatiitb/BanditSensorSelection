@@ -12,7 +12,7 @@ is as follows:
 A problem instance is specified by a pair $\theta = (P,c)$, where $P$ is
 a distribution over the $K+1$ dimensional hypercube, and $c$ is a $K$-dimensional, nonnegative valued vector
 of costs.
-While $c$ is known to the learner from the start, $P$ is initially unknown.
+While $c$ is known to the learner from the start, $P$ is initially unknown. We henceforth identify problem instance $\theta$ by $P$ only as $c$ is assumed to fixed and known. 
 The instance parameters specify the learner-environment interaction as follows:
 In each round for $t=1,2,\dots$, 
 the environment generates a $K+1$-dimensional binary vector
@@ -21,7 +21,14 @@ Here, $Y_t^i$ is the output of sensor $i$, while $Y_t$ is a (hidden) label to be
 Simultaneously, the learner chooses an index $I_t\in [K]$ and observes the sensor outputs $Y_t^1,\dots,Y_t^{I_t}$.
 The sensors are known to be ordered from least accurate to most accurate, 
 i.e., $\gamma_k \doteq \Prob{Y_t\ne Y_t^k}$ is decreasing with $k$ increasing.
-\todoc{Add proper figure.}
+\begin{wrapfigure}{r}{5.5cm}
+	\centering
+	\includegraphics[scale=.65]{../Figures/SensorCascade.pdf}
+	\caption{Structure of sensors in Sequential Sensor Acquisition. $Z_t=(X_t,Y_t)$, where $X_t$ is feature vector and $Y_t$ is its label (not observed), is sequentially input to sensors. After observing $\hat{Y}_{t}^t$, $\hat{Y}_{t}^{i+1}$ is observed by incurring additional cost of $c_{i+1}$}
+	\label{fig:SensorCascade}
+	\vspace{-.2cm}
+\end{wrapfigure} 
+\todom{How about this figure and caption?}
 Knowing this, the learner's choice of $I_t$ also indicates that he/she chooses $I_t$ to predict the unknown label $Y_t$.
 Observing sensors is costly: The cost of choosing $I_t$ is $C_{I_t} \doteq c_1 + \dots + c_{I_t}$.
 The total cost suffered by the learner in round $t$ is thus $C_{I_t} + \ind{Y_t \ne Y_t^{I_t}}$.
@@ -32,7 +39,7 @@ For future reference, we let $c(k,\theta) = \EE{ C_{k} +\ind{Y_t \ne Y_t^{k} }} 
 In what follows, we shall denote by $\cA^*(\theta)$ the set of optimal actions of $\theta$
 and we let $a^*(\theta)$ denote the optimal action that has the smallest index. Thus,
 in particular, $a^*(\theta) = \min \cA^*(\theta)$. 
-Note that even if $i<j$ are optimal actions, there can be suboptimal actions in the interval $[i,j] (=[i,j]\cap \N)$
+\todom{How about moving this to footnote?}Note that even if $i<j$ are optimal actions, there can be suboptimal actions in the interval $[i,j] (=[i,j]\cap \N)$
 (e.g., $\gamma_1=0.3$, $C_1=0$, $\gamma_2=0.25$, $C_2=0.1$, $\gamma_3=0$, $C_3=0.3$. 
 Next, for future reference note that one 
 can express optimal actions from the viewpoint of marginal costs and marginal error. 
