@@ -1,0 +1,351 @@
+\section*{Proof of Proposition \ref{prop:learnablemap}}
+\begin{proof}
+	$\Rightarrow$: Let $\Alg$ be an algorithm that achieves sublinear regret
+	and pick  an instance  $\theta \in\Theta$. Let $P = P_S \otimes P_{Y|S}$.
+	The regret $\Regret_n(\Alg,\theta)$ of $\Alg$ on instance $\theta$ can be written in the form
+	\begin{align*}
+	\Regret_n(\Alg,\theta) = \sum_{k\in [K]} \EEi{P_S}{N_k(n)} \Delta_k(\theta)\,,
+	\end{align*}
+	where $N_k(n)$ is the number of times action $k$ is chosen by $\Alg$ during the $n$ rounds while
+	$\Alg$ interacts with $\theta$, $\Delta_k(\theta) = c(k,\theta) - c^*(\theta)$ is the immediate regret
+	and $\EEi{P_S}{\cdot}$ denotes the expectation under the distribution induced by $P_S$.
+	In particular, $N_k(n)$ hides dependence on the iid sequence $Y_1,\dots,Y_n \sim P_S$ 
+	that we are taking the expectation over here. 
+	Since the regret is sublinear, for any $k$ suboptimal action, $\EEi{P_S}{N_k(n)} = o(n)$. 
+	Define $a(P_S) = \min \{ k\in [K]\,;\, \EEi{P_S}{N_k(n)} = \Omega(n) \,\}$. Then, $a$ is well-defined as the distribution of $N_k(n)$ for any $k$ depends only on $P_S$ (and $c$). Furthermore, $a(P_S)$ selects an optimal action.
+	
+	$\Leftarrow$: Let $a$ be the map in the statement and let $f:\N_+\to\N_+$ be such that $1\le f(n)\le n$ for any  $n\in \N$,
+	$f(n)/\log(n) \to \infty$ as $n\to \infty$ and $f(n)/n \to 0$ as $n\to \infty$ (say, $f(n) = \lceil \sqrt{n} \rceil$).
+	Consider the algorithm that chooses $I_t = K$ for the first $f(n)$ steps, after which it estimates $\hat{P}_S$ by
+	frequency counting and then uses $I_t = a(\hat{P}_S)$ in the remaining $n-f(n)$ trials. 
+	Pick any $\theta \in \Theta$ so that $\theta = P_S \otimes P_{Y|S}$. 
+	Note that by Hoeffding's inequality, 
+	$\sup_{y\in \{0,1\}^K} |\hat{P}_S(y)  - P_S(y)| \le \sqrt{\frac{K\log(4n)}{2f(n)}}$ holds with probability $1-1/n$.
+	Let $n_0$ be the first index such that for any $n\ge n_0$,
+	$\sqrt{\frac{K\log(4n)}{2f(n)}}\le \Delta^*(\theta) \doteq \min_{k:\Delta_k(\theta)>0} \Delta_k(\theta)$.
+	Such an index $n_0$ exists by our assumptions that $f$ grows faster than $n \mapsto \log(n)$.
+	For $n\ge n_0$, the expected regret of $\Alg$ is at most $n \times 1/n + f(n) (1-1/n) \le 1+f(n) = o(n)$.
+	\end{proof}
+
+\section*{Proof of Proposition \ref{prop:awdunique}}
+\begin{proof}
+	Pick any $\theta = P_S\otimes P_{Y|S}\in \TWD$. If $A^*(\theta)$ is a singleton, then clearly $a(P_S) = \awd(P_S)$ since both are sound over $\TWD$.
+	Hence, assume that $A^*(\theta)$ is not a singleton.
+	Let $i = a^*(\theta) = \min A^*(\theta)$ and let $j = \min A^*(\theta) \setminus \{ i \}$.
+	We argue that $P_{Y|S}$ can be changed so that on the new instance $i$ is still an optimal action, while
+	$j$ is not an optimal action, while the new instance $\theta' = P_S \otimes P_{Y|S}'$ is in $\TWD$.
+	
+	The modification is as follows:
+	Consider any $y^{-j} \doteq (y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$.
+	For $y,y^j\in \{0,1\}$, define 
+	$q(y|y^j) = P_{Y|S}(y|y^1, \dots, y^{j-1}, y^j, y^{j+1},\dots, y^K)$
+	and similarly let
+	$q'(y|y^j) = P_{Y|S}'(y|y^1, \dots, y^{j-1}, y^j, y^{j+1},\dots, y^K)$
+	Then, we let $q'(0|0) = 0$ and $q'(0|1) = q(0|0) + q(0|1)$,
+	while we let  $q'(1|1) = 0$ and $q'(1|0) = q(1|1) + q(1|0)$.
+	This makes $P_{Y|S}'$ well-defined ($P_{Y|S}'(\cdot|y^1,\dots,y^K)$ is a distribution for any $y^1,\dots,y^K$).
+	Further, we claim that the transformation has the property that 
+	it leaves $\gamma_p$ unchanged for $p\ne j$, while $\gamma_j$ is guaranteed to decrease.
+	To see why $\gamma_p$ is left unchanged for $p\ne j$ note that
+	$\gamma_p = \sum_{y^p}  P_{Y^p}(y^p) P_{Y|Y^p}(1-y^p|y^p)$.
+	Clearly, $P_{Y^p}$ is left unchanged.
+	Introducing $y^{-k}$ to denote a tuple where the $k$th component is left out,
+	$P_{Y|Y^p}(1-y^p|y^p) = \sum_{y^{-p,-j}} P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )
+	+P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )$
+	and by definition,
+	\begin{align*}
+	\MoveEqLeft P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )\\
+	&\quad +P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )\\
+	&
+	=
+	P_{Y|Y^1,\dots,Y^K}'( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )\\
+	&\quad+P_{Y|Y^1,\dots,Y^K}'( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )\,,
+	\end{align*}
+	where the equality holds because ``$q'(y|0)+q'(y|1) = q(y|0) + q(y|1)$''.
+	Thus, $P_{Y|Y^p}(1-y^p|y^p) = P_{Y|Y^p}'(1-y^p|y^p)$ as claimed.
+	That $\gamma_j$ is non-increasing follows with an analogue calculation.
+	In fact, this shows that $\gamma_j$ is strictly decreased
+	if for any $(y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$, either $q(0|0)$ or $q(1|1)$ was positive.
+	If these are never positive, this means that $\gamma_j=1$. 
+	But then $j$ cannot be optimal since $c_j>0$.
+	Since $j$ was optimal, $\gamma_j$ is guaranteed to decrease.
+	
+	Finally, it is clear that the new instance is still in $\TWD$ since  $a^*(\theta)$ is left unchanged.
+	\end{proof}
+
+\section*{Proof of Proposition \ref{prop:awdwelldef}}
+\begin{proof}
+	Let $\theta\in \TWD$, $i = a^*(\theta)$. Obviously, \eqref{eq:wd2} holds by the definition of $\TWD$.
+	Thus, the only question is whether \eqref{eq:wd1} also holds.
+	We prove this by contradiction:
+	Thus, assume that \eqref{eq:wd1} does not hold, i.e., for some $j<i$, $C_i-C_j \ge \Prob{Y^i \ne Y^j}$. Then, by \cref{cor:gammadiff}, $\Prob{ Y^i \ne Y^j} \ge \gamma_j - \gamma_i$, hence $\gamma_j + C_j \le \gamma_i + C_i$, which contradicts the definition of $i$, thus finishing the proof.
+	\end{proof}
+\section*{Proof of Proposition \ref{prop:awdsound}}
+\begin{proof}
+	Take any $\theta\in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $i = \awd(P_S)$, $j = a^*(\theta)$.
+	If $i=j$, there is nothing to be proven. Hence, first assume that $j>i$. Then, by~\eqref{eq:wd2}, $C_j - C_i \ge \Prob{Y^i \ne Y^j}$.
+	By \cref{cor:gammadiff}, $\Prob{Y^i \ne Y^j } \ge \gamma_i - \gamma_j$. Combining these two inequalities we get that
+	$\gamma_i + C_i \le \gamma_j + C_j$, which contradicts with the definition of $j$.
+	Now, assume that $j<i$. Then, by~\eqref{eq:wd}, $C_i - C_j \ge \Prob{Y^i \ne Y^j}$.
+	However, by~\eqref{eq:wd1}, $C_i -C_j < \Prob{Y^i \ne Y^j}$, thus $j<i$ cannot hold either and we must have $i=j$.
+	\end{proof}
+
+\section*{Proof of Proposition \ref{prop:gammadiff}}
+
+\begin{proof}
+	
+	We construct a map as required by~\cref{prop:learnablemap}.
+	Take an instance $\theta \in \TWD$ and let $\theta = P_S \otimes P_{Y|S}$ be its decomposition
+	as defined above.
+	Let $\gamma_i = \Prob{Y^i \ne Y}$, $(Y,Y^1,\dots,Y^K)\sim \theta$.
+	For identifying an optimal action in $\theta$, it clearly suffices
+	to know the sign of $\gamma_i + C_i - (\gamma_j +C_j)$ for all pairs $i,j\in [K]^2$.
+	Since $C_i - C_j$ is known, it remains to study $\gamma_i-\gamma_j$.
+	Without loss of generality (WLOG) let $i<j$.
+	Then, 
+	\begin{align*}
+	\MoveEqLeft 0  \le \gamma_i  - \gamma_j = \Prob{Y^i\ne Y} - \Prob{Y^j\ne Y} \\
+	& = \cancel{\Prob{Y^i\ne Y, Y^i=Y^j}} + \Prob{ Y^i\ne Y, Y^i\ne Y^j } - \\
+	& - \left\{ 
+	\cancel{\Prob{Y^j\ne Y, Y^i=Y^j}} + \Prob{ Y^j\ne Y, Y^i\ne Y^j }\right\}\\
+	& = \Prob{ Y^i\ne Y, Y^i \ne Y^j } + \Prob{Y^i=Y,Y^i\ne Y^j}       \\
+	& - \left\{ 
+	\Prob{ Y^j \ne Y, Y^i\ne Y^j } + \Prob{ Y^i=Y,Y^i\ne Y^j}
+	\right\}\\
+	& \stackrel{\footnotesize (a)}{=} \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y }\,,
+	\end{align*}
+	where in $(a)$ we used that $\Prob{ Y^j \ne Y, Y^i\ne Y^j } =  \Prob{ Y^j\ne Y,Y^i= Y}$ and also
+	$\Prob{ Y^i=Y,Y^i\ne Y^j} = \Prob{ Y^j\ne Y,Y^i= Y}$
+	which hold because $Y,Y^i,Y^j$ only take on two possible values.
+\end{proof}
+\section*{Proof of  Theorem \ref{thm:tsdlearnable}}
+\begin{proof}[Proof of \cref{thm:tsdlearnable}]
+	We construct a map as required by~\cref{prop:learnablemap}.
+	Take an instance $\theta \in \TSD$ and let $\theta = P_S \otimes P_{Y|S}$ be its decomposition as before.
+	Let $\gamma_i = \Prob{Y^i \ne Y}$, $(Y,Y^1,\dots,Y^K)\sim \theta$, $C_i = c_1+\dots+c_i$.
+	For identifying an optimal action in $\theta$, it clearly suffices
+	to know the sign of $\gamma_i + C_i - (\gamma_j +C_j) = \gamma_i-\gamma_j + (C_i-C_j)$ for all pairs $i,j\in [K]^2$.
+	Without loss of generality (WLOG) let $i<j$. By \cref{prop:gammadiff},
+	$\gamma_i - \gamma_j = \Prob{ Y^i \ne Y^j } -2 \Prob{ Y^j\ne Y, Y^i = Y }$.
+	Now, since $\theta$ satisfies the strong dominance condition, $ \Prob{ Y^j\ne Y, Y^i = Y } = 0$.
+	Thus, $\gamma_i - \gamma_j = \Prob{ Y^i \ne Y^j }$
+	which is a function of $P_S$ only.
+	Since $(C_i)_i$ are known, a map as required by~\cref{prop:learnablemap} exists.
+\end{proof}
+
+\section*{Proof of Theorem \ref{thm:nonunif}}
+We first consider the case when $K=2$ and arbitrarily choose $C_2 - C_1 = 1/4$. 
+\todoc{The theorem statement should be refined or this text..}
+We will consider two instances, $\theta,\theta'\in \TWD$ such that for instance $\theta$, 
+action $k=1$ is optimal with an action gap of $c(2,\theta) - c(1,\theta) = 1/4$ between the cost of the second and the first
+action,  while for instance $\theta'$, $k=2$ is the optimal action and the action gap is $c(1,\theta) - c(2,\theta) = \epsilon$
+where $0<\epsilon<3/8$.
+Further, the entries in $P_S(\theta)$ and $P_S(\theta')$ differ by at most $\epsilon$. 
+From this, a standard reasoning gives that no algorithm can achieve sublinear minimax regret over $\TWD$ because any
+algorithm is only able to identify $P_S$. \todoc{Add notation of $P_S(\theta)$ early on. Probably a good idea to add $P_S(\Theta)$ as a notation too for the ``projection'' of $\Theta$ to $P_S$. Also, we should probably remove $c$ from the instance definition;
+	in every case we are reasoning for a fixed $c$, hence it is superfluous to keep $c$ in the instance definition.}\todom{In the beginning, it is now mentioned that c is fixed and known. It is removed from definition of problem instance now. Will introduce the projection notation in the next round of edits.}
+
+The constructions of $\theta$ and $\theta'$ are shown in \cref{tab:nonunif}:
+The entry in a cell gives the probability of the event as specified by the column and row labels.
+For example, in instance $\theta$, $3/8$ is the probability of $Y=Y^1=Y^2$, 
+while the probability of $Y^1=Y\ne Y^2$ is $1/8$. Note that the cells with zero actually 
+correspond to impossible events, i.e., these cannot be assigned a positive probability.
+The rationale of a redundant (and hence sparse) table is so that probabilities of certain events of interest, such as $Y^1\ne Y^2$ are easier to determine based on the table. The reader should also verify that the positive probabilities correspond to events that are possible.
+\bgroup
+\def\arraystretch{1.5}
+\begin{table}[]
+	\centering
+	%\hspace*{-0.1in}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\multicolumn{2}{|c|}{Instance $\theta$}  & $Y^1=Y^2$     & $Y^1\ne Y^2$  \\ \hline
+		\multirow{2}{*}{$Y^1= Y$}   & $Y^2= Y$   & $\frac{3}{8}$ & $0$           \\ \cline{2-4} 
+		& $Y^2\ne Y$ & $0$ & $\frac{1}{8}$ \\ \hline
+		\multirow{2}{*}{$Y^1\ne Y$} & $Y^2= Y$   & $0$ & $\frac{1}{8}$           \\ \cline{2-4} 
+		& $Y^2\ne Y$ & $\frac{3}{8}$ & $0$ \\ \hline
+	\end{tabular}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\multicolumn{2}{|c|}{Instance $\theta'$}  & $Y^1=Y^2$     & $Y^1\ne Y^2$  \\ \hline
+		\multirow{2}{*}{$Y^1= Y$}   & $Y^2= Y$   & $\frac{3}{8}-\epsilon$ & $0$           \\ \cline{2-4} 
+		& $Y^2\ne Y$ & $0$ & $0$ \\ \hline
+		\multirow{2}{*}{$Y^1\ne Y$} & $Y^2= Y$   & $0$ & $\frac{2}{8}+\epsilon$           \\ \cline{2-4} 
+		& $Y^2\ne Y$ & $\frac{3}{8}$ & $0$ \\ \hline
+	\end{tabular}
+	\vspace*{0.1in}
+	\caption{The construction of two problem instances for the proof of \cref{thm:nonunif}.}
+	\label{tab:nonunif}
+\end{table}
+\egroup
+
+We need to verify the following:
+{\em (i)} $\theta,\theta'\in \TWD$;
+{\em (ii)} the optimality of the respective actions in the respective instances;
+{\em (iii)} the claim concerning the size of the action gaps;
+{\em (iv)} that $P_S(\theta)$ and $P_S(\theta')$ are close.
+Details of the calculations to support {\em (i)}--{\em (iii)} can be found in \cref{tab:nonunif2}.
+The row marked by $(*)$ supports that the instances are proper SAP instances.
+In the row marked by $(**)$, there is no requirement for $\theta'$ because 
+in $\theta'$ action two is optimal, and hence there is no action with larger index 
+than the optimal action, hence $\theta'\in \TWD$ automatically holds.
+To verify the closeness of $P_S(\theta)$ and $P_S(\theta')$ we actually 
+would need to first specify $P_S$ (the tables do not fully specify these).
+However, it is clear the only restriction we put on $P_S$ is the value of $\Prob{Y^1\ne Y^2}$ (and
+that of $\Prob{Y^1=Y^2}$) and these values are within an $\epsilon$ distance of each other.
+Hence, $P_S$ can also be specified to satisfy this. In particular, one possibility for $P$ and $P_S$ are given in \cref{tab:nonunif3}.
+\bgroup
+\def\arraystretch{1.5}
+\begin{table}[]
+	\centering
+	%\hspace*{-0.1in}
+	\begin{tabular}{|c|c|c|}
+		\hline
+		& $\theta$                & $\theta'$ \\ \hline
+		$\gamma_1 = \Prob{Y^1\ne Y}$ & $\frac{1}{4}$           & $\frac{5}{8}+\epsilon$ \\ \hline
+		$\gamma_2 = \Prob{Y^2\ne Y}$ & $\frac{1}{4}$           & $\frac{3}{8}$ \\ \hline
+		$\gamma_2 \le \gamma_1 \mbox{}^{(*)}$        & \checkmark           & \checkmark \\ \hline
+		$c(1,\cdot)$                                 & $\frac{1}{4}$           & $\frac{5}{8}+\epsilon$ \\ \hline
+		$c(2,\cdot)$                                 & $\frac{2}{4}$           & $\frac{5}{8}$ \\ \hline
+		$a^*(\cdot)$                                 & $k=1$                   & $k=2$ \\ \hline
+		$\Prob{Y^1\ne Y^2}$                   & $\frac{1}{4}$         & $\frac{1}{4}+\epsilon$ \\ \hline
+		$\theta \in \TWD  \mbox{}^{(**)}$                        & $\frac{1}{4}\ge \frac14$ \checkmark & \checkmark \\ \hline
+		$|c(1,\cdot)-\c(2,\cdot)|$              & $\frac{1}{4}$         & $\epsilon$ \\ \hline
+	\end{tabular}
+	\vspace*{0.1in}
+	\caption{Calculations for the proof of \cref{thm:nonunif}.}
+	\label{tab:nonunif2}
+\end{table}
+\egroup
+
+\bgroup
+\def\arraystretch{1.5}
+\begin{table}[]
+	\centering
+	%\hspace*{-0.1in}
+	\begin{tabular}{|c|c|c||c|c|}
+		\hline
+		$Y^1$ & $Y^2$ & $Y$ & $\theta$ & $\theta'$ \\ \hline\hline
+		$0$ & $0$ & $0$ & $\frac38$ & $\frac38-\epsilon$ \\ \hline
+		$0$ & $0$ & $1$ & $\frac38$ & $\frac38-\epsilon$ \\ \hline
+		$0$ & $1$ & $0$ & $0         $ & $0                       $ \\ \hline
+		$0$ & $1$ & $1$ & $0         $ & $0                       $ \\ \hline
+		$1$ & $0$ & $0$ & $\frac18$ & $\frac28+\epsilon$ \\ \hline
+		$1$ & $0$ & $1$ & $\frac18$ & $0                       $ \\ \hline
+		$1$ & $1$ & $0$ & $0         $ & $0                       $ \\ \hline
+		$1$ & $1$ & $1$ & $0         $ & $0                       $ \\ \hline
+	\end{tabular}
+	\mbox{}
+	\vspace*{2in}
+	\hspace*{0.5in}
+	\mbox{}
+	\begin{tabular}{|c|c||c|c|}
+		\hline
+		$Y^1$ & $Y^2$ &$\theta$ & $\theta'$ \\ \hline\hline
+		$0$ & $0$ & $\frac68$ & $\frac68-\epsilon$ \\ \hline
+		$0$ & $1$ & $0         $ & $0                       $ \\ \hline
+		$1$ & $0$ & $\frac28$ & $\frac28+\epsilon$ \\ \hline
+		$1$ & $1$ & $0         $ & $0                       $ \\ \hline
+	\end{tabular}
+	
+	\vspace*{0.1in}
+	\caption{Probability distributions for instances $\theta$ and $\theta'$. On the left are shown the joint
+		probability distributions, while on the right are shown their marginals
+		for the sensors.}
+	\label{tab:nonunif3}
+\end{table}
+\egroup
+
+
+\end{proof}
+
+\section*{Proof of Proposition \ref{prop:equivalence}}
+\begin{proof}First note that the mapping of the policies is such that number of pull of arm $k$ after $n$ rounds by policy $\pi$ on problem instance $f(\theta)$ is the same as the number of pulls of arm $k$ by $\pi^\prime$ on problem instance $\theta$. Recall that mean value of arm $k$ in problem instance $\theta$ $ is \gamma_k +C_k$ and that of corresponding arm in problem instance $f(\theta)$ is $\gamma_1-(\gamma_i+C_i)$. We have
+	
+	\begin{align*}
+	\Regret_n(\pi^\prime,\theta) = \sum_{k\in [K]} \EEi{P_S}{N_k(n)}(\gamma_k+C_k-\gamma_{k^*}-C_{k^*}) \,,
+	\end{align*}
+	and
+	\begin{align*}
+	&\Regret_n(\pi,f(\theta))\\
+	&= \sum_{k\in [K]} \EEi{P_S}{N_k(n)}\left (\max_{i \in [K]}\{\gamma_1-\gamma_i- C_i\}-(\gamma_1-\gamma_k- C_k)\right) \\
+	&= \sum_{k\in [K]} \EEi{P_S}{N_k(n)}\left (\gamma_k+ C_k - \min_{i \in [K]}\{\gamma_i+ C_i\}\right) \\
+	&=\Regret_n(\pi^\prime,\theta).
+	\end{align*}
+	\end{proof}
+%\section{Proof of Theorem \ref{thm:K-SAPRegret}}
+%Consider a $K$-armed stochastic bandit problem where reward distribution $\nu_i$ has mean  $\gamma_1-\gamma_i- \sum_{j< i}c_j$ for all $i >1$ and arm $1$ gives a fixed reward of value $0$. The arms have side-observation structure defined by graph $G_S$.  
+%Given an arbitrary policy $\pi=(\pi_1, \pi_2, \cdots \pi_t )$ for the SAP, we obtain a policy for the bandit problem with side observation graph $G_S$ from $\pi$ as follows: Let $H_{t-1}$ denote the history, consisting of all arms played and the corresponding rewards, available to policy $\pi_{t-1}$ till time $t-2$. In round $t-1$, let $a_{t-1}$ denote the arm selected by the bandit policy,  $r_{t-1}$ the corresponding reward and $o_{t-1}$ the side-observation defined by graph $G_S$. Then, the next action $a_t$ is obtained as follows:
+%\begin{equation}
+%\label{eqn:SAPtoKBandit}
+%a_t=
+%\begin{cases}
+%\pi_t(H_{t-1}\cup \{1, \emptyset
+%\}) \mbox{ if } a_{t-1}= \mbox{arm 1}	\\
+%\pi_t(H_{t-1} \cup \{i, r_{t-1}\cup o_{t-1}\}) \mbox{ if } a_{t-1}= \mbox{arm i}
+%\end{cases}
+%\end{equation}
+%\noindent
+%Conversely, let $\pi^\prime=\{\pi^\prime_1, \pi^\prime_2,\cdots\}$ denote an arbitrary policy for the $K$-armed bandit problem with side-observation graph. we obtain a policy the SAP as follows: Let $H^\prime_{t-1}$ denote the history, consisting of all actions played and feedback, available to policy $\pi^\prime_{t-1}$ till time $t-2$. Let $a^\prime_{t-1}$ denote the action selected by the SAP policy in round $t-1$ and observed feedback $F_t$. Then, the next action $a^\prime_t$ is obtained as follows:
+%\begin{equation}
+%\label{eqn:KBanditToSAP}
+%a^\prime_t=
+%\begin{cases}
+%\pi^\prime_t(H^\prime_{t-1} \cup \{1, 0
+%\}) \mbox{ if } a^\prime_{t-1}= \mbox{action 1}	\\
+%\pi^\prime_t(H^\prime_{t-1} \cup \{i, \boldsymbol{1}\{\hat{Y}_t^1\neq \hat{Y}_t^2\}\cdots \boldsymbol{1}\{\hat{Y}_t^1\neq \hat{Y}_t^i\}\}) \mbox{ if } a_{t-1}= \mbox{action i}.
+%\end{cases}
+%\end{equation}
+%We next show that regret of a policy $\pi$ on the SAP problem is same as that of the policy derived from it for the $K$-armed bandit problem with side information graph $G_S$, 
+%and regret of $\pi^\prime$ on the $K$-armed bandit with side-observation graph  $G_S$ is same as that of the policy derived from it for the SAP.
+%
+%Given a policy $\pi$ for the SAP problem let $f_1(\pi)$ denote the policy obtained by the mapping defined in (\ref{eqn:SAPtoKBandit}). The regret of policy $\pi$ that plays actions $i$, $N_i^\psi(T)$ times is given by 
+%\begin{eqnarray}
+%R^\psi_T(\pi) &=&\sum_{i=1}^{K}\left [ \left (\gamma_{i}+\sum_{j< i} c_j\right )-\left (\gamma_{i^*}+\sum_{j < i^*} c_j\right )\right ]\mathbb{E}[N^\psi_i(T)]\\
+%\end{eqnarray}
+%Now, regret of regret policy $f_1(\pi)$ on the $K$-armed bandit problem with side-observation graph $G_S$ 
+%\begin{equation}
+%R^{\phi}_T(f_1(\pi))=\sum_{i=1}^{K} \left[\left (\gamma_1-\gamma_{i^*}-\sum_{j <i^*} c_j \right )-\left (\gamma_1- \gamma_{i}-\sum_{j < i} c_j \right )\right ]\mathbb{E}[N^{\phi}_i(T)],
+%\end{equation}
+%where $N^{\phi}_i(T)$ is the number of times arm $i$ is pulled by policy $f_1(\pi)$. Since the mapping is such that $N^{\phi}_i(T)=N^{\psi}_i(T)$, 
+%$R^\phi_T(f_1(\pi))$ is same as $R^\psi_T(\pi)$. Further, given a policy $\pi^\prime$ on $\psi$ we can obtain a policy $f_2(\psi)$ for $\psi$ as defined in (\ref{eqn:KBanditToSAP}) and we can argue similarly that they are regret equivalent. This concludes the proof. 
+%
+%
+%\section{Extension to context based prediction}
+%\label{sec:Contextual}
+%In this section we consider that the prediction errors depend on the context $X_t$, and in each round the learner can decide which action to apply based on $X_t$. Let  $\gamma_i(X_t)=\Pr\{\hat{Y}^1_t \neq \hat{Y}^2_t| X_t\}$ for all $i \in [K]$. We refer to this setting as  Contextual Sensor Acquisition Problem (CSAP) and denote it as $\psi_c=(K, \mathcal{A}, \mathcal{C}, (\gamma_i,c_i)_{i\in [K]})$. 
+%
+%Given $x \in \mathcal{C}$, let $L_t(a|x)$ denote the loss from action $a\in \mathcal{A}$ in round $t$. A policy on $\phi^c$ maps past history and current contextual information to an action. Let $\Pi^{\psi_c}$ denote set of policies on $\psi_c$ and for any policy $\pi \in \Pi^{\psi_c}$, let $\pi(x_t)$ denote the action selected when the context is $x_t$. For any sequence $\{x_t,y_t\}_{t>0}$, the regret of a policy $\pi$ is defined as:
+%\begin{equation}
+%	R^{\phi_c}_T(\pi)= \sum_{t=1}^{T} \mathbb{E}\left [L_t(\pi(x_t)|x_t)\right ]-\sum_{t=1}^{T}\min_{a \in \mathcal{A}} \mathbb{E} \left [ L_t(a|x_t)\right ]. 
+%\end{equation}
+%As earlier, the goal is to learn a policy that minimizes the expected regret, i.e., $\pi^*= \arg \min_{\pi \in \Pi^{\psi_c}} \mathbb{E}[R^{\psi_c}_T(\pi)].$
+%
+%In this section we focus on CSA-problem with two sensors and assume that sensor predictions errors are linear in the context. Specifically, we assume that there exists $\theta_1, \theta_2 \in \mathcal{R}^d$ such that $\gamma_1(x)=x^\prime\theta_1$ and $\gamma_2(x)+c=x^\prime\theta_2$ for all $x \in \mathcal{C}$, were $x^\prime$ denotes the transpose of $x$. By default all vectors are column vectors. In the following we establish that CSAP is regret equivalent to a stochastic liner bandits with varying decision sets. We first recall the stochastic linear bandit setup and relevant results. 
+%
+%\subsection{Background on Stochastic Linear Bandits}
+%In round $t$, the learner is given a decision set $D_t \subset \mathcal{R}^d$ from which he has to choose an action. For a choice $x_t \in D_t$, the learner receives a reward $r_t=x_t^\prime\theta^* + \epsilon_t$, where $\theta^* \in \mathcal{R}^d$ is unknown and $\epsilon_t$ is random noise of zero mean. The learner's goal  is to maximize the expected accumulated reward $\mathbb{E}\left[\sum_{t=1}^{T} r_t \right]$ over a period $T$. If the leaner knows $\theta^*$, his optimal strategy is to select $x_t^*=\arg \max_{x \in D_t} x^\prime \theta^* $ in round $t$. The performance of any policy $\pi$ that selects action $x_t$ at time $t$ is 
+%measured with respect to the optimal policy and is given by the expected regret  as follows
+%\begin{equation}
+%\label{eqn:LinearBanditRegret}
+%R^L_T(\pi)= \sum (x_t^*)^\prime \theta^* - \sum x_t^\prime \theta^* .
+%\end{equation}
+%The above setting, where actions sets can change in every round, is introduced in\cite{NIPS2011_ImprovedAlgorithms_AbbasiPalSzepes} and is a more general setting than that studied in \cite{COLT08_StochasticLinearOptimization_DaniHayesKakad,MOR11_LinearlyParametrized_RusmevichientongTsitsiklis} where decision set is fixed. Further, the above setting also specializes the contextual bandit studied in \cite{WWW10_Contextaulbandits_LiChuWei}. The authors in \cite{NIPS2011_ImprovedAlgorithms_AbbasiPalSzepes} developed an
+%`optimism in the face of uncertainty linear bandit algorithm' (OFUL) that achieves $\mathcal{O}(d \sqrt{T})$ regret with high probability when the random noise is $R$-sub-Gaussian for some finite $R$. The performance of OFUL is significantly better than $ConfidenceBall_2$ \cite{COLT08_StochasticLinearOptimization_DaniHayesKakad}, $UncertainityEllipsoid$ \cite{MOR11_LinearlyParametrized_RusmevichientongTsitsiklis}
+%and $LinUCB$ \cite{WWW10_Contextaulbandits_LiChuWei}. 
+%
+%
+%\begin{thm}
+%	\label{thm:2CSAPRegret}
+%Consider a CSA-problem with $K=2$ sensors. Let $\mathcal{C}$ be a bounded set and $\gamma_i(x)+c_i=x^\prime\theta_i$ for $i=1,2$ for all $x \in \mathcal{C}$. Assume $x^\prime \theta_1, x^\prime \theta_2 \in [0\; 1]$ for all $x \in \mathcal{C}$. Then, equivalent to a stochastic linear bandit. 
+%\end{thm}
+%
+%
+%\subsection{Proof of Theorem \ref{thm:2CSAPRegret}}
+%Let $\{x_t,y_t\}_{t\geq 0}$ be an arbitrary sequence of context-label pairs. Consider a stochastic linear bandit where $D_t=\{0, x_t\} $ is a decision set in round $t$. 
+%From the previous section, we know that given a context $x$, action $1$ is optimal if $\gamma_1(x)-\gamma_2(x) -c< 0$, otherwise  action $2$ is optimal. Let $\theta:=\theta_1-\theta_2$, then it boils down to check if $x^\prime\theta-c<0$ for each context $x\in \mathcal{C}$. 
+%
+%For all $t$, define $\epsilon_t= \boldsymbol{1}\{\hat{Y}^1_t \neq \hat{Y}^2_t\}-x_t^\prime\theta$. Note that $\epsilon_t \in [0 \;1]$ for all $t$, and since sensors do not have memory, they are conditionally independent given past contexts. Thus, $\{\epsilon_t\}_{t>0}$ are conditionally $R$-sub-Gaussian for some finite $R$.  
+%
+%Given a policy $\pi$ on a linear bandit we obtain next to play for the CSAP as follows: For each round $t$ define $a_t \in \mathcal{C}$ and $r_t \in \{0,1\}$ such that $a_t=0$ and $r_t=0$ if action $1$ is played in that round, otherwise set $a_t=x_t$ and $r_t=\boldsymbol{1}\{\hat{y}^1_t \neq \hat{y}^1_t \}$. Let $\mathcal{H}_{t}=\{(a_1, r_1)\cdots (a_{t-1},r_{t-1})\}$ denote the past actions and corresponding rewards observed till time $t-1$. In round $t$, after observing context $x_t$, we transfer  $((a_{t-1},r_{t-1}), D_t)$, where  $D_t=\{0,x_t\}$. If $\pi$ outputs $0 \in D_t$ as the optimal choice, we play action $1$, otherwise we play action $2$.
+%
+%Conversely,   suppose $\pi^\prime$ denote a policy for the CSAP problem we select action to play from decision set $D_t=\{0,x_t\}$ as follows.  For each round $t$ define $a^\prime_t \in {1,2}$ and $r^\prime_t \in \mathcal{R}$ such that $a^\prime_t=1$ and $r^\prime_t=\emptyset$ if $0$ is played otherwise set $a^\prime_t=2$ and $r^\prime_t=x_t^\prime\theta^* +\epsilon_t$ if $x_t$ is played.  Let $\mathcal{H}^\prime_{t}=\{(a^\prime_1, r^\prime_1)\cdots (a^\prime_{t-1},r^\prime_{t-1})\}$ denote the past actions and corresponding rewards observed till time $t-1$. In round $t$, after observing set  $D_t$, we transfer  $((a^\prime_{t-1},r^\prime_{t-1}), x_t)$ to policy $\pi^\prime$. If $\pi$ outputs action $1$ as the optimal choice, we play action $0$, otherwise we play $x_t$. 

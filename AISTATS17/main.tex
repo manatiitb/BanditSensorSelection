@@ -1,0 +1,200 @@
+\documentclass[twoside]{article} \usepackage{aistats2017}
+
+% If your paper is accepted, change the options for the package
+% aistats2017 as follows:
+%
+%\usepackage[accepted]{aistats2017}
+%
+% This option will print headings for the title of your paper and
+% headings for the authors names, plus a copyright note at the end of
+% the first column of the first page.
+
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{pifont} % \checkmark
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+%\usepackage[english]{babel}
+%\usepackage{cite}
+%\usepackage{verbatim}
+\usepackage{amsmath,amsthm}
+\usepackage{amssymb,amsbsy,epsfig,float}
+\usepackage{graphicx,wrapfig,lipsum}
+%\usepackage{graphicx}
+%\usepackage{multirow}
+%\usepackage{algorithmicx}
+%\usepackage[ruled]{algorithm}
+%\usepackage{algpseudocode}
+\usepackage{subfigure} 
+\usepackage[makeroom]{cancel}
+\usepackage{xspace}
+\usepackage{mathtools}
+
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\usepackage[backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
+% To remove todo notes, simply uncomment the following line and comment out the previous one
+% \usepackage[disable,backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
+
+% Comments by Csaba:
+\newcommand{\todoc}[2][]{\todo[color=Apricot!20,size=\tiny,#1]{Cs: #2}}
+% Comments by Manjesh:
+\newcommand{\todom}[2][]{\todo[color=Cerulean!20,size=\tiny,#1]{M: #2}}
+% Comments by Venkatesh:
+\newcommand{\todov}[2][]{\todo[color=Purple!20,size=\tiny,#1]{V: #2}}
+
+\newcommand{\hY}{\hat{Y}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\htheta}{\hat{\theta}}
+\newcommand{\iset}[1]{[#1]}
+\DeclareMathOperator{\argmin}{argmin}
+\newcommand{\ip}[1]{\langle #1 \rangle} % inner product
+\newcommand{\SA}{\mathrm{SA}}
+\newcommand{\SD}{\mathrm{SD}}
+\newcommand{\WD}{\mathrm{WD}}
+\newcommand{\TSA}{\Theta_{\SA}}
+\newcommand{\Alg}{\mathfrak{A}}
+\newcommand{\TSD}{\Theta_{\SD}}
+\newcommand{\TWD}{\Theta_{\WD}}
+\newcommand{\awd}{a_{\mathrm{wd}}}
+\def\ddefloop#1{\ifx\ddefloop#1\else\ddef{#1}\expandafter\ddefloop\fi}
+
+% \bA, \bB, ...
+\def\ddef#1{\expandafter\def\csname b#1\endcsname{\ensuremath{\mathbf{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+
+% \bbA, \bbB, ...
+\def\ddef#1{\expandafter\def\csname bb#1\endcsname{\ensuremath{\mathbb{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+
+% \cA, \cB, ...
+\def\ddef#1{\expandafter\def\csname c#1\endcsname{\ensuremath{\mathcal{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZ\ddefloop
+
+% \vA, \vB, ..., \va, \vb, ...
+\def\ddef#1{\expandafter\def\csname v#1\endcsname{\ensuremath{\boldsymbol{#1}}}}
+\ddefloop ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\ddefloop
+
+% \valpha, \vbeta, ...,  \vGamma, \vDelta, ...,
+\def\ddef#1{\expandafter\def\csname v#1\endcsname{\ensuremath{\boldsymbol{\csname #1\endcsname}}}}
+\ddefloop {alpha}{beta}{gamma}{delta}{epsilon}{varepsilon}{zeta}{eta}{theta}{vartheta}{iota}{kappa}{lambda}{mu}{nu}{xi}{pi}{varpi}{rho}{varrho}{sigma}{varsigma}{tau}{upsilon}{phi}{varphi}{chi}{psi}{omega}{Gamma}{Delta}{Theta}{Lambda}{Xi}{Pi}{Sigma}{varSigma}{Upsilon}{Phi}{Psi}{Omega}\ddefloop
+
+\newcommand{\Y}{\mathcal{Y}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\EE}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\EEi}[2]{\mathbb{E}_{#1}\left[#2\right]}
+\newcommand{\Prob}[1]{\mathbb{P}\left(#1\right)}
+\newcommand{\Regret}{\mathfrak{R}}
+\newcommand{\R}{\mathbb{R}} % reals
+\newcommand{\Yti}{Y_t^i}
+\newcommand{\Yt}{Y_t}
+\newcommand{\X}{\mathcal{X}}
+
+
+\usepackage[capitalize]{cleveref}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}{Lemma}
+\newtheorem{prop}{Proposition}
+\newtheorem{cor}{Corollary}
+\newtheorem{ex}{Example}
+\newtheorem{cond}{Condition}
+\newtheorem{rem}{Remark}
+\newtheorem{defi}{Definition}
+\newtheorem{ass}{Assumption}
+
+
+
+\begin{document}
+
+% If your paper is accepted and the title of your paper is very long,
+% the style will print as headings an error message. Use the following
+% command to supply a shorter title of your paper so that it can be
+% used as headings.
+%
+%\runningtitle{I use this title instead because the last one was very long}
+
+% If your paper is accepted and the number of authors is large, the
+% style will print as headings an error message. Use the following
+% command to supply a shorter version of the authors names so that
+% they can be used as headings (for example, use only the surnames)
+%
+%\runningauthor{Surname 1, Surname 2, Surname 3, ...., Surname n}
+
+\twocolumn[
+
+\aistatstitle{Unsupervised Sequential Sensor Acquisition}
+
+\aistatsauthor{ Anonymous Author 1 \And Anonymous Author 2 \And Anonymous Author 3 }
+
+\aistatsaddress{ Unknown Institution 1 \And Unknown Institution 2 \And Unknown Institution 3 } ]
+
+\begin{abstract}
+	Sequential sensor acquisition problems (SAP) arise \todom{SAP is not a standard setup, we need to introduce it first .} in many application domains including medical-diagnostics, security and surveillance. SAP architecture is organized as a cascaded network of ``intelligent'' sensors that produce decisions upon acquisition. Sensors must be acquired sequentially and comply with the architecture. Our task is to identify the sensor with optimal accuracy-cost tradeoff. We formulate SAP as a version of the stochastic partial monitoring problem with side information and {\it unusual} reward structure.  Actions correspond to choice of sensor and the chosen sensor's parents decisions are available as side information. Nevertheless, what is atypical, is that we do not observe the reward/feedback, which a learner often uses to reject suboptimal actions. Unsurprisingly, with no further assumptions, we show that no learner can achieve sublinear regret. This negative result leads us to introduce the notion of weak dominance on cascade structures. Weak dominance supposes that a child node in the cascade has higher accuracy whenever its parent's predictions are correct. \todoc{The story is a bit more complicated. The abstract will need a rewrite once we settle on the results.}
+	We then empirically verify this assumption on real datasets. We show that weak dominance is a maximal learnable set in the sense that we must suffer linear regret for any non-trivial expansion of this set. Furthermore, by reducing SAP to a special case of multi-armed bandit problem with side information we show that for any instance in the weakly dominant we only suffer a sublinear regret.
+	%		We propose a sensor acquisition problem (SAP) wherein sensors (and sensing tests) are organized into a cascaded architecture and the goal is to choose a test with the optimal cost-accuracy tradeoff for a given instance. We consider the case where we obtain no feedback in terms of rewards for our chosen actions apart from test observations. Absence of feedback raises fundamentally new challenges since one cannot infer potentially optimal tests. We pose the problem in terms of competitive optimality with the goal of minimizing cumulative regret against optimally chosen actions in hindsight. In this context we introduce the notion of weak dominance and show that it is necessary and sufficient for realizing sub-linear regret. Weak dominance on a cascade supposes that a child node in the cascade has higher accuracy when its parent node makes correct predictions. When weak dominance holds we show that we can reduce SAP to a corresponding multi-armed bandit problem with side observations. Empirically we verify that weak dominance holds for many datasets.
+\end{abstract}
+
+
+\section{Introduction}
+\input{intro}
+
+\section{Background}
+\label{sec:background}
+\input{background}
+
+\section{Unsupervised Sensor Acquisition Problem}
+\label{sec:Setup}
+\input{problem1}
+
+\section{When is SAP Learnable?}
+\label{sec:Learnability}
+\input{learnability}
+
+%\section{Stochastic Multi-armed Bandits with Side Observations}
+%\input{mab}
+\section{Regret Equivalence}
+\label{sec:Equiv}
+\input{equiv}
+
+\section{Algorithms}
+\label{sec:Algo}
+\input{alg}
+
+\section{Experiments}
+\label{sec:Experiments}
+\input{exp}
+
+\section{Conclusions}
+\label{sec:Conclu}
+\input{conclude}
+
+
+\newpage
+123
+\newpage
+
+
+%\bibliographystyle{biblio}
+\bibliographystyle{IEEEtran}
+\bibliography{bandits1}
+
+
+\newpage
+\section{Appendix}
+\input{append}
+
+
+\end{document}

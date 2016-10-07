@@ -1,0 +1,197 @@
+%!TEX root =  main.tex
+Sequential sensor acquisition arises in many scenarios where we have a diverse collection of sensors with differing costs and accuracy. In these applications, to minimize costs, one often chooses inexpensive sensors first; and based on their outcomes, one sequentially decides whether or not to acquire more expensive sensors. For instance, in security systems%\footnote{A similar situation arises in clinical diagnosis, where doctors order tests such as genetic markers, imaging (CT, ultrasound, elastography) and biopsy sequentially for cancer diagnosis.} 
+ (see \cite{ML13_MultistageClassifier_TrapezSaligramaCastanon} and other medically oriented examples), costs can arise due to sensor availability and delay. A suite of sensors/tests including inexpensive ones such as magnetometers, video feeds, to more expensive ones such as millimeter wave imagers are employed. These sensors are typically organized in a hierarchical architecture with low-cost sensors at the top of the hierarchy. The task is to determine which sensor acquisitions lead to maximizing accuracy for the available cost-budget. 
+
+These scenarios motivate us to propose the unsupervised sequential sensor acquisition problem (SAP). Our SAP architecture is organized as a cascaded network of intelligent sensors. The sensors when utilized to probe an instance, outputs a prediction of the underlying state of the instance (anomaly or normal, threat or no-threat etc.). Sensors are ordered with respect to increasing cost and accuracy. While the costs are assumed to be known a priori, the exact misclassification rate of a sensor is unknown. This setup is realistic in security and surveillance scenarios because sensors are often required to be deployed in new domains/environments with little or no opportunity for re-calibration. 
+
+We assume that the scenario is played over multiple rounds with an instance associated with each round. Sensors must be acquired sequentially and comply with the cascade architecture in each round. The learner's goal is to figure out the hidden, stochastic state of the instance based on the sensor outputs. Since the learner knows that the sensors are ordered from least to most accurate he/she can use the most accurate sensor among his/her acquired sensors for prediction. Nevertheless, since the learner does not know the sensor accuracy he/she faces the dilemma of as to which sensor to use for predicting this state.
+
+%As in problems that deal with sequential learning under uncertainty, we pose the problem as a stochastic partial monitoring problem. In particular we consider a competitor who has the benefit of hindsight and can choose an optimal collection of tests for all the examples. Our goal is to learn the action, while our learning algorithm's performance is evaluated using their cumulative regret with respect to the competitor.
+
+
+%In a sequential sensor acquisition problem (SAP) \todoc{This comes a little late.}
+ %the goal is to acquire the tests/sensors that achieves the optimal cost-accuracy tradeoff.
+ %We assume that the sensors/tests are organized into a diagnostic cascade architecture, where the ordering is based on costs/informativity of tests. Each stage in the cascade outputs a prediction of the underlying state of the instance (disease or disease-free, threat or no-threat etc.). We suppose that the classifiers (or predictors) corresponding to each node are part of the system and produce labeled outputs. This is often the case in diagnostic systems where a test ordering is a priori known and a report is produced by a human being or an automated mechanism corresponding to different sensor measurements. Thus our task in this paper is primarily to learn a decision rule to identify the collection of tests required for an instance. 
+
+%Our task is to identify the sensor with optimal accuracy-cost tradeoff. We assume that while the costs for each sensor is known their corresponding accuracy is unknown.  
+%The learner's goal in any round is to figure out the hidden, stochastic state of the environment based on the sensor outputs $(\Yt^{k})_{k\in [K]}$.
+%The dilemma of the learner is which sensors to use for predicting this state.
+%The learner knows that the sensors are ordered from least to most accurate:
+
+
+%that require a careful tradeoff 
+%In many applications 
+
+%medical diagnosis  and  homeland  security,  sequential decisions  are  often  warranted.   For each  instance,  an initial diagnostic test  is conducted and based on its result further tests maybe conducted in a fixed ordering, where ordering of the tests is often based on their cost.
+%Given the outcomes of the test results at some stage,
+%a classifier, which is part of the diagnostic architecture,
+%produces a prediction of the unknown label of the instance to be classified.
+%Apart from the above-mentioned natural scenarios, 
+%the problem also arises in human engineered systems, such as in the context of wireless communication systems,
+%where a cascade of error-correcting decoders of increasing block lengths are designed to overcome channel noise, 
+%but using a larger block lengths incurs extra communication cost.
+
+%In all these examples, tests have varying  costs for  acquisition, accounting for delay,  throughput  or  monetary  value.%
+%\footnote{As described in \cite{ML13_MultistageClassifier_TrapezSaligramaCastanon} security systems utilize a suite of sensors/tests such as X-rays, millimeter wave imagers (expensive \& low-throughput), magnetometers, video, IR imagers human search.  Security systems  must  maintain  a  throughput  constraint  in  order to  keep  pace  with  arriving  traffic.   In  clinical  diagnosis, doctors  in the context of breast cancer diagnosis utilize tests such as genetic markers, imaging (CT, ultrasound, elastography) and biopsy. Sensors providing imagery are scored by humans. The different sensing  modalities  have  diverse  costs,  in  terms  of  health risks (radiation exposure) and monetary expense.}
+
+%We model these situations
+
+%As in sequential learning under uncertainty, we pose the problem in terms of competitive optimality. In particular we consider a competitor who has the benefit of hindsight and can choose an optimal collection of tests for all the examples. Our goal is to learn the action, while our learning algorithm's performance is evaluated using their  cumulative regret with respect to the competitor.
+
+We frame our problem as a version of stochastic partial monitoring problem \cite{BaFoPaRaSze14} with \emph{atypical} reward structure. As is common, we pose the problem in terms of competitive optimality. We consider a competitor who can choose an optimal action with the benefit of hindsight. Our goal is to minimize cummulative regret based on learning the optimal action based on observations that are observed during multiple rounds of play.
+
+
+Stochastic partial monitoring problem is itself a generalization of multi-armed bandit problems, the latter going back to \cite{Tho33}. In our context, we view sensors choices as actions. The availability of predictions of parent sensors of a chosen sensor is viewed as side observation.  Recall that in a stochastic partial monitoring problem a decision maker needs to choose the action with the lowest expected cost by repeatedly trying the actions and observing some feedback.
+The decision maker lacks the knowledge of some key information, such as in our case, the misclassification
+error rates of the classifiers, but had this information been available, the decision maker could calculate the
+expected costs of all the actions (sensor acquisitions) and could choose the best action (sensor). The feedback received by the decision maker in a given round depends stochastically on the unknown information and the action chosen.
+Bandit problems are a special case of partial monitoring, where the key missing information is the expected
+cost for each action (or arm), and the feedback is simply the noisy version of the expected cost of the action chosen.
+In the \emph{unsupervised} version considered here
+and which we call the unsupervised \emph{sequential sensor acquisition problem} (SAP),
+the learner only observes the outputs of the classifiers, but not the label to be predicted over multiple rounds
+in a stochastic, stationary environment. 
+
+
+%To cast our problem as a partial monitoring problem, \todoc{Do we need this? Or leave this to the reader, just saying that casting our problem as a partial monitoring problem is trivial?} 
+%the key unknown information can be the misclassification error rates of the classifiers, an action is identified with 
+%the subset of sensors selected, the cost of an action is the sum of the misclassification cost of the classifiers
+%that uses the selected sensor subset outputs and the cost of acquiring these sensor outputs,
+%while the observed feedback is the vector of predicted labels by each of the classifiers that use 
+%the first, the first and second, etc., up to all sensor outputs from the sensors that were selected.
+%Note that unlike in a conventional bandit problem, we do not get \emph{direct} 
+%feedback of how well our action performed (either noisy or noiseless)\footnote{This problem naturally arises in the surveillance and medical domains. We can perform a battery of tests on an individual in an airport but can never be sure whether or not he/she poses a threat.}.
+
+%Were the probability of error known for each classifier that uses an initial segment of the tests, 
+%a decision maker could optimally balance the cost of erroneous decisions and that of the sensor acquisitions'.
+%\todoc{This assumes a cost associated with each error; should this be noted?}
+%In the learning version of the problem, the misclassification probabilities are \emph{a priori} unknown and a learner must learn the optimal balance based on some feedback available to him. 
+%In the \emph{unsupervised} version considered here
+%and which we call the unsupervised \emph{sequential sensor acquisition problem} (SAP),
+%the learner only observes the outputs of the classifiers, but not the label to be predicted over multiple rounds
+%in a stochastic, stationary environment. 
+
+This leads us to the following question: Can a learner still achieve the optimal balance in this case?  We first show that, unsurprisingly, with no further assumptions, no learner can achieve sublinear regret. \todoc{Has regret been defined?}
+This negative result leads us to introduce the notion of weak dominance on tests. It is best described as a relaxed notion of strong dominance. Strong dominance states that a sensor's predictions are almost surely correct whenever the parent nodes in the cascade are correct. \todoc{Weak dominance has not been introduced yet.} We empirically demonstrate that weak dominance appears to hold by evaluating it on several real datasets. We also show that in a sense weak dominance is fundamental, namely, without this condition there exist problem instances that result in linear regret. On the other hand whenever this condition is satisfied there exist polynomial time algorithms that lead to sublinear ($O(\sqrt{T})$) cummulative regret. 
+
+%In particular, we reduce the SAP problem to a stochastic multi-armed bandit with side observations, 
+%a problem introduced by \citet{MaSh11}.
+Our proof of sublinear regret is based on reducing SAP to a version of multi-armed bandit problem (MAB) with side-observation. The latter problem has already been shown to have sub-linear regret in the literature. In our reduction, we identify sensor nodes in the cascade as the bandit arms. % are identified by the nodes of the cascade. \todoc{Should we introduce cascade formally then above?}
+The payoff of an arm is given by loss from the corresponding stage, and the side observation structure is defined by the feedback graph induced by the cascade. We then formally show that there is a one-to-one mapping between algorithms for SAP and algorithms for MAB with side-observation. In particular, under weak dominance, the regret bounds for MAB with side-observation then imply corresponding regret bounds for SAP. 
+
+%The weak dominance condition occasionally can be shown to hold by design. For example, we do show that,
+%in fact, a stronger dominance condition holds in the context of the communication systems 
+%and error-correcting code cascades, implying the weak dominance condition there.
+%Empirically, with the help of labelled data, 
+%we verify that weak dominance condition naturally holds for several real-world problems,
+%including diagnosing breast-cancer and diabetes.
+
+%We show that weak dominance is fundamental, i.e., regardless of the algorithm, if this condition is not satisfied, we are left with a linear regret. On the other hand, we develop UCB style algorithms that show that we can realize optimal regret (sub-linear regret) guarantees when the condition is satisfied. 
+%Thus, we identify weak dominance as the sharp necessary and sufficient condition for the learnability of
+%our sensor acquisition problem.
+
+
+%Unsurprisingly, it turns out that, without any further assumptions we show that no learner can achieve sublinear regret. This negative result leads us to introduce the notion of weak dominance on cascade structures. As we explain later weak dominance supposes that a child node in the cascade has higher accuracy whenever its parent's predictions are correct.
+
+
+%\todoc{Too provocative? Give a hint that we will add some conditions?}
+
+\if0
+%In a sequential sensor acquisition problem (SAP) \todoc{This comes a little late.}
+% the goal is to acquire the tests/sensors that achieves the optimal cost-accuracy tradeoff.
+% We assume that the sensors/tests are organized into a diagnostic cascade architecture, where the ordering is based on costs/informativity of tests. Each stage in the cascade outputs a prediction of the underlying state of the instance (disease or disease-free, threat or no-threat etc.). We suppose that the classifiers (or predictors) corresponding to each node are part of the system and produce labeled outputs. This is often the case in diagnostic systems where a test ordering is a priori known and a report is produced by a human being or an automated mechanism corresponding to different sensor measurements. Thus our task in this paper is primarily to learn a decision rule to identify the collection of tests required for an instance. 
+\fi
+
+%Our problem can be framed as a stochastic partial monitoring problem \citep{BaFoPaRaSze14},
+%which itself is a generalization of multi-armed bandit problems, going back to \citet{Tho33}. 
+%Recall that in a stochastic partial monitoring problem a decision maker needs to choose the action with the lowest 
+%expected cost by repeatedly trying the actions and observing some feedback.
+%The decision maker lacks the knowledge of some key information, such as in our case, the misclassification
+%error rates of the classifiers, but had this information been available, the decision maker could calculate the
+%expected costs of all the actions and could choose the best action. The feedback received by the decision
+%maker in a given round depends stochastically on the unknown information and the action chosen.
+%Bandit problems are a special case of partial monitoring, where the key missing information is the expected
+%cost for each action (or arm), and the feedback is simply the noisy version of the expected cost of the action chosen.
+%To cast our problem as a partial monitoring problem, \todoc{Do we need this? Or leave this to the reader, just saying that casting our problem as a partial monitoring problem is trivial?} 
+%the key unknown information can be the misclassification error rates of the classifiers, an action is identified with 
+%the subset of sensors selected, the cost of an action is the sum of the misclassification cost of the classifiers
+%that uses the selected sensor subset outputs and the cost of acquiring these sensor outputs,
+%while the observed feedback is the vector of predicted labels by each of the classifiers that use 
+%the first, the first and second, etc., up to all sensor outputs from the sensors that were selected.
+%Note that unlike in a conventional bandit problem, we do not get \emph{direct} 
+%feedback of how well our action performed (either noisy or noiseless)\footnote{This problem naturally arises in the surveillance and medical domains. We can perform a battery of tests on an individual in an airport but can never be sure whether or not he/she poses a threat.}.
+
+%Absence of reward information associated with chosen actions is fundamentally challenging since we may not be able to infer potential optimal actions. As usual, in sequential learning under uncertainty, we pose the problem in terms of competitive optimality. In particular we consider a competitor who has the benefit of hindsight and can choose an optimal collection of tests for all the examples. Our goal is to learn the action, while our learning algorithm's performance is evaluated using their  cumulative regret with respect to the competitor.
+% is sub-linear (and optimal). 
+
+%We first prove an (unsurprising) result that states 
+%with no further assumptions, no learner can ``learn'', i.e., no learner can achieve sublinear regret.
+%This negative result led us to introduce the notion of weak dominance on tests. 
+%We show that weak dominance is fundamental, i.e., regardless of the algorithm, if this condition is not satisfied, we are left with a linear regret. On the other hand, we develop UCB style algorithms that show that we can realize optimal regret (sub-linear regret) guarantees when the condition is satisfied. 
+%Thus, we identify weak dominance as the sharp necessary and sufficient condition for the learnability of
+%our sensor acquisition problem.
+
+%The weak dominance condition amounts to a stochastic ordering of the tests on the diagnostic cascade. 
+%\todoc{I think I edited out ``cascade'' from the above text.}
+%Conceptually, the weak dominance condition says that the child node tends to be relatively more accurate when the parent is correct. \todoc{I would prefer to be more explicit about what this condition is.}
+%The weak dominance condition is a somewhat stronger condition than stochastic dominance and ensures that the test accuracy associated with a child node when conditioned on the parent being correct improves over its unconditioned accuracy. 
+%Under weak dominance we show that the learner can partially infer losses of the stages. 
+%In particular, we reduce the SAP problem to a stochastic multi-armed bandit with side observations, 
+%a problem introduced by \citet{MaSh11}.
+%In the reduction, the bandit arms are identified by the nodes of the cascade. \todoc{Should we introduce cascade formally then above?}
+%The payoff of an arm is given by loss from the corresponding stage, and side observation structure is defined by the feedback graph induced by the cascade. 
+%The weak dominance condition occasionally can be shown to hold by design. For example, we do show that,
+%in fact, a stronger dominance condition holds in the context of the communication systems 
+%and error-correcting code cascades, implying the weak dominance condition there.
+%Empirically, with the help of labelled data, 
+%we verify that weak dominance condition naturally holds for several real-world problems,
+%including diagnosing breast-cancer and diabetes.
+
+%     
+%Several papers including \cite{AISTATS13_SupervisedSequentialLearning_TrapezSaligram},\cite{ML13_MultistageClassifier_TrapezSaligramaCastanon}\cite{ICML13_CostSensitiveTreeClassification_XuKusnerChenWeinberger} have considered the problem of learning the best cost effective predictor/classifier using supervised learning methods. The general approach in these methods is to learn a decision function by minimizing an empirical risk objective over a training set. The objective functions in these methods are inherently non-convex and the authors resort to convex relaxations and experimental validations without any theoretical guarantees. However, in many applications gathering training samples may be infeasible, and moreover the labels may not be available at all. We consider an online version of this problem where the samples arrive sequentially and a learner has to decide which sensors to apply for prediction. For each sample, the learner only observes sensor predictions and true label is not revealed. 
+%
+%In this work we focus on sequential predication of binary labels.  Similar to \cite{ML13_MultistageClassifier_TrapezSaligramaCastanon}, we consider that the order in which sensors are applied is fixed. Typically, the cheapest sensor, or the one with highest error rate, is used first, followed by next cheap sensor with smaller error rate and so on. The sensors thus constitute stages of a cascade, where prediction error rates decrease along the depth, while the costs increase. For each new sample, the learner applies the sensors sequentially and can stop at any stage in the cascade. The goal is to stop at a stage where expected loss is the smallest. Loss at depth $k$ is defined as total cost incurred for acquiring sensor predictions plus a penalty which is $1$ if the prediction of $k^{th}$ sensor is correct, otherwise it is zero. If the learner stops at a depth $k$, he obtains the predictions of all the first $k$ senors as feedback, but which of them are correct is unknown. We refer to this setup as the Sensor Acquisitions Problem (SAP). 
+%
+%The feedback in SAP do not reveal information about the losses, hence the learner cannot identify the best stage for any sample. 
+%We thus focus on scenarios where feedback satisfies some stochastic ordering. Specifically, we assume that if a sensor in the cascade predicts a label correctly, any subsequent sensor also predict it correctly. We refer to this assumption as {\em dominance condition}. When it holds, the learner can partially infer losses of the stages, which, as discussed later, is sufficient to learn the best stage for a given sample. We further demonstrate that under any weaker condition the learner cannot identify the best stage. Dominance conditions holds in many scenarios includes the examples discussed at the beginning. In the wireless communication example, if an error correcting code (ex. Reed-Solomon, LDPC \cite{Book_InferenceLearning_MacKay} recovers information in a channel with certain noise level, then with more redundancy blocks in the error correction code we can certainly recover the information on the channel (though at a lower transmission rate).     
+%
+%Our first main contribution is to show that if the dominance condition holds the SAP problem can be reduced to 
+%a stochastic multi-armed bandit with side observations,
+%where bandit arms are identified with the stage of cascade,
+%the payoff of an arm is given by loss from the corresponding stage, and side observation structure is defined by the feedback graph induced by the cascade. In particular, we show that the SAPregret
+%of any meta-strategy is equal to its bandit-regret
+%when the procedure is used to play in the corresponding
+%bandit problem. As a consequence, we conclude that existing efficient
+%bandit algorithms, as well as their bounds on bandit-regret,
+%can be directly applied to achieve new results
+%for SAP. Although the underlying
+%reduction is straightforward, it gives ready policies with performance guarantees for SAP and their fundamental limitations .
+%
+
+\section{Related Work}
+%
+%Supervised, batch learning, the problem is well studied.
+
+In contrast to our SAP setup there exists a wide body of literature dealing with fully supervised sensor acquisition. Like us \cite{AISTATS13_SupervisedSequentialLearning_TrapezSaligram} \cite{NIPS2015_DirectedAcyclic_WangTrapezSaligram}  \cite{NIPS2015_FeatureBudgeted_NanWangSaligrama} also deal with cascade models. However, unlike us these works focus on prediction-time cost/accuracy tradeoffs. In particular they assume that a fully labeled training dataset is provided for test-time use. This dataset has sensor feature data, sensor decisions as well as annotated ground-truth labels. The goal for the learner is to learn a policy for acquiring sensors based on training data to optimize cost/accuracy during test-time. The work of
+\cite{poczos2009} decide when to quit a cascade that leads to better decisions to maximize throughput against error rates. Full feedback about classification accuracy is assumed.
+
+Active classification: \cite{ActiveClass-AIJ-s} considers the problem of PAC learning the best ``active classifier'', a classifier that decides about what tests to take given the results of previous tests to minimize total cost when both tests and misclassification errors are priced.
+Unlike us they only consider the batch, supervised learning. The same setting is also studied under hard budget constraints in \cite{LCunderBudget-ECML05} and its applications in imaging and computer vision systems are explored in  \cite{ADORE-99,isukapalli01efficient-ICJAI}).
+ \todoc{I suspect they assume more than this:
+ 	In our previous paper we had a sentence that said that
+ 	``their model requires knowing a model of the actions in 
+ 	advance'' (this would mean knowing the joint probabilities, I think).}
+  \todoc{Actually, much work exists, need to google this}\todom{Added a line about each reference, not sure if we need to include more similar references}
+
+Online learning: In 
+\cite{SBCA14:BanditsPaid}, the decision maker can opt to pay for additional observations of the costs associated with other arms. Unlike ours this setting is not unsupervised. In
+\cite{ZBGGySz13:CostlyFeatures}, online learning with costly features and labels is studied.
+In each round, learner has to decide which features to observe, where each feature costs some money. The learner can also decide not to observe the label, but the learner always has the option
+to observe the label. Again this setting is not unsupervised.
+
+Partial monitoring:
+General theory of \cite{BaFoPaRaSze14} 
+applies to the so-called finite problems (unknown ``key information'') is an element of the probability simplex.
+\cite{AgTeAn89:pmon} considers special case when the payoff is also observed (akin to the side-observation problem of \cite{MaSh11}\cite{COLT15_OnlineLearningWithFeedback_AlonBianchiDekel},\cite{NIPS13_FromBanditsToExperts_AlonBianchiGentile}).\todom{Need to add Yifan's paper, there seems to be few more based on this in ICML'16, AISTATS'16 and NIPS'16}
+
+The paper is organized as follows: in Section \ref{sec:background} we give a brief background on online learning problems and discuss information structure in these setups. In Section \ref{sec:Setup} we introduce SAP as a general online learning problem where feedback reveals no information on loss/reward of actions. In Sectjon \ref{sec:Learnability} we identify conditions under which optimal action can be learned in SAP. In Section \ref{sec:Equiv} we establish that SAP is regret equivalent to a stochastic multi-armed bandits with side-observations when it satisfies strong dominance property. When this property holds, Section \ref{sec:Algo} gives an algorithm to solve SAP efficiently. We conclude in Section \ref{sec:Conclu} with a discussion on further extensions.  

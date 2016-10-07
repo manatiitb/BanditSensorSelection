@@ -1,0 +1,120 @@
+%\section{Proof of Theorem \ref{thm:2SAPRegret}}
+%Consider a $1$-armed stochastic bandit problem where arm with constant reward has value $c$ and the arm that gives stochastic reward has mean value  $\gamma_1-\gamma_2$.  
+%Given an arbitrary policy $\pi=(\pi_1, \pi_2, \cdots \pi_t )$ for the SAP, we obtain a policy for the bandit problem from $\pi$ as follows: Let $H_{t-1}$ denote the history, consisting of all arms played and the corresponding rewards, available to policy $\pi_{t-1}$ till time $t-2$. Let $a_{t-1}$ denote the action selected by the bandit policy  in round $t-1$ and $r_{t-1}$ the observed reward. Then, the next action $a_t$ is obtained as follows:
+%\begin{equation}
+%\label{eqn:SAPto1Bandit}
+%a_t=
+%\begin{cases}
+%\pi_t(H_{t-1}\cup \{1, \emptyset
+%\}) \mbox{ if } a_{t-1}= \mbox{fixed rewad arm}	\\
+%\pi_t(H_{t-1} \cup \{2, r_{t-1}\}) \mbox{ if } a_{t-1}= \mbox{stochastic arm}
+%\end{cases}
+%\end{equation}
+%\noindent
+%Conversely, let $\pi^\prime=\{\pi^\prime_1, \pi^\prime_2,\cdots\}$ denote an arbitrary policy for the 1-armed bandit problem. we obtain a policy for the SAP as follows: Let $H^\prime_{t-1}$ denote the history, consisting of all actions played and feedback, available to policy $\pi^\prime_{t-1}$ till time $t-1$. Let $a^\prime_{t-1}$ denote the action selected by the SAP policy in round $t-1$ and observed feedback $F_t$. Then, the next action $a^\prime_t$ is obtained as follows:
+%\begin{equation}
+%\label{eqn:1BanditToSAP}
+%a^\prime_t=
+%\begin{cases}
+%\pi^\prime_t(H^\prime_{t-1} \cup \{1, c
+%\}) \mbox{ if } a^\prime_{t-1}= \mbox{action 1}	\\
+%\pi^\prime_t(H^\prime_{t-1} \cup \{2, \boldsymbol{1}\{\hat{Y}_t^1\neq \hat{Y}_t^2\}\}) \mbox{ if } a_{t-1}= \mbox{actions 2}.
+%\end{cases}
+%\end{equation}
+%We next show that regret of $\pi$ on the SAP is same as that of derived policy on the 1-armed bandit, and  regret of $\pi^\prime$ on the 1-armed bandit is same as regret of the derived policy on SAP. 
+%We first argue that any policy on the SAP problem with 2 actions needs the information if whether the predictions of sensors match or not whenever action $2$ is played.  The following observation is straightforward.
+%\begin{lemma}
+%	\label{lma:SuffStat2Action}
+%	Let  dominance condition holds. Then, $\Pr\{\hat{Y}^1_t \neq \hat{Y}^2_t\}=\gamma_1-\gamma_2$.
+%\end{lemma}
+%\begin{eqnarray}
+%\lefteqn{\Pr\{\hat{Y}^1_t \neq \hat{Y}^1_t\}=\Pr\{\hat{Y}^1_t=Y_t, \hat{Y}^2_t \neq Y_t\} + \Pr\{\hat{Y}^2_t=Y_t, \hat{Y}^1_t \neq Y_t\}} \\
+%&=& \Pr\{\hat{Y}^2_t=Y_t, \hat{Y}^1_t \neq Y_t\} \;\;\mbox{from assumption (\ref{eqn:DominanceCondition})}\\
+%&=& \Pr\{\hat{Y}^1_t\neq y_t\}\Pr\{\hat{Y}^2_t= Y_t| \hat{Y}^1_t\neq Y_t\} \\
+%&=& \Pr\{\hat{Y}^1_t\neq Y_t\}\left( 1-\Pr\{\hat{Y}^2_t \neq  Y_t| \hat{Y}^1_t\neq Y_t\} \right ) \\
+%&=& \Pr\{\hat{Y}^1_t\neq Y_t\}\left( 1-\frac{\Pr\{\hat{Y}^2_t \neq  Y_t, \hat{Y}^1_t\neq Y_t\}}{\Pr\{\hat{Y}^1_t\neq Y_t\}} \right )\\
+%&=& \Pr\{\hat{Y}^1_t\neq Y_t\}-\Pr\{\hat{Y}^2_t \neq  Y_t\}  \;\; \mbox{by contrapositve of  (\ref{eqn:DominanceCondition})} 
+%\end{eqnarray}
+%From Lemma \ref{lma:SuffStat2Action}, mean of the observations $Z_t:=\boldsymbol{1}{\{\hat{Y}_t^1 \neq \hat{Y}_t^2 \}}$ from action $2$ in the SAP is a sufficient statistics to identify the optimal arm. Thus, any SAP only needs to know $Z_t$ in each round, and $Z_t$ are i.i.d with mean $\gamma_1-\gamma_2$.  Our mapping of policies is such that any poilcy for SAP (1-armed bandits) and the derived policy on the 1-armed bandit (SAP) play the sub-optimal arm same number of times.  For the sake of simplicity assume that action $1$ is optimal for SAP  $(\gamma_1> \gamma_2 + c)$ and let a policy $\pi$ on SAP plays it $N_1(T)$ number if times. Then, we have
+%\[ R^\psi_T(\pi)=\Delta_i\mathbb{E}[N^\psi_1(T)]=(\gamma_1-\gamma_2-c)\mathbb{E}[N_1(T)]\]
+%Let $f(\pi)$ denote the policy for the 1-armed bandit obtained using the mapping (\ref{eqn:SAPto1Bandit}). Now, for the $1$-armed bandit, where the arm with stochastic rewards is optimal, we have
+%\[ R^\phi_T(f(\pi))=(\mu_2-\mu_1)\mathbb{E}[N_1(T)]=(\gamma_1-\gamma_2-c)\mathbb{E}[N^\phi_1(T)]\]
+%Thus the regret of $\pi$ on the SAP problem and that of $f(\pi)$ on the $1$-armed bandit are the same. We can argue similarly for the other case. 
+%
+
+\section{Proof of Theorem \ref{thm:K-SAPRegret}}
+Consider a $K$-armed stochastic bandit problem where rewards distribution $\nu_i$ has mean  $\gamma_1-\gamma_i- \sum_{j< i}c_j$ for all $i >1$ and arm $1$ gives a fixed reward of value $0$. The arms have side-observation structure defined by graph $G^S$.  
+Given an arbitrary policy $\pi=(\pi_1, \pi_2, \cdots \pi_t )$ for the SAP, we obtain a policy for the bandit problem with side observation graph $G^S$ from $\pi$ as follows: Let $H_{t-1}$ denote the history, consisting of all arms played and the corresponding rewards, available to policy $\pi_{t-1}$ till time $t-2$. In round $t-1$, let $a_{t-1}$ denote the arm selected by the bandit policy,  $r_{t-1}$ the corresponding reward and $o_{t-1}$ the side-observation defined by graph $G_S$ excluding that from the first arm. Then, the next action $a_t$ is obtained as follows:
+\begin{equation}
+\label{eqn:SAPtoKBandit}
+a_t=
+\begin{cases}
+\pi_t(H_{t-1}\cup \{1, \emptyset
+\}) \mbox{ if } a_{t-1}= \mbox{arm 1}	\\
+\pi_t(H_{t-1} \cup \{i, r_{t-1}\cup o_{t-1}\}) \mbox{ if } a_{t-1}= \mbox{arm i}
+\end{cases}
+\end{equation}
+\noindent
+Conversely, let $\pi^\prime=\{\pi^\prime_1, \pi^\prime_2,\cdots\}$ denote an arbitrary policy for the $K$-armed bandit problem with side-observation graph. we obtain a policy the SAP as follows: Let $H^\prime_{t-1}$ denote the history, consisting of all actions played and feedback, available to policy $\pi^\prime_{t-1}$ till time $t-2$. Let $a^\prime_{t-1}$ denote the action selected by the SAP policy in round $t-1$ and observed feedback $F_t$. Then, the next action $a^\prime_t$ is obtained as follows:
+\begin{equation}
+\label{eqn:KBanditToSAP}
+a^\prime_t=
+\begin{cases}
+\pi^\prime_t(H^\prime_{t-1} \cup \{1, 0
+\}) \mbox{ if } a^\prime_{t-1}= \mbox{action 1}	\\
+\pi^\prime_t(H^\prime_{t-1} \cup \{i, \boldsymbol{1}\{\hat{Y}_t^1\neq \hat{Y}_t^2\}\cdots \boldsymbol{1}\{\hat{Y}_t^1\neq \hat{Y}_t^i\}\}) \mbox{ if } a_{t-1}= \mbox{action i}.
+\end{cases}
+\end{equation}
+We next show that regret of a policy $\pi$ on the SAP problem is same as that of the policy derived from it for the $K$-armed bandit problem with side information graph $G^S$, 
+and regret of $\pi^\prime$ on the $K$-armed bandit with side information graph  $G^S$ is same as that of the policy derived from it for the SAP.
+
+Given a policy $\pi$ for the SAP problem let $f_1(\pi)$ denote the policy obtained by the mapping defined in (\ref{eqn:SAPtoKBandit}). The regret of policy $\pi$ that plays actions $i$, $N_i(T)$ times is given by 
+\begin{eqnarray}
+R^\psi_T(\pi) &=&\sum_{i=1}^{K}\left [ \left (\gamma_{i}+\sum_{j< i} c_j\right )-\left (\gamma_{i^*}+\sum_{j < i^*} c_j\right )\right ]\mathbb{E}[N^\psi_i(T)]\\
+\end{eqnarray}
+Now, regret of regret policy $f_1(\pi)$ on the $K$-armed bandit problem with side information graph $G^S$ 
+\begin{equation}
+R^{\phi_G}_T(f_1(\pi))=\sum_{i=1}^{K} \left[\left (\gamma_1-\gamma_{i^*}-\sum_{j <i^*} c_j \right )-\left (\gamma_1- \gamma_{i}-\sum_{j < i} c_j \right )\right ]\mathbb{E}[N^{\phi_G}_i(T)]
+\end{equation}
+which is same as $R^\phi_T(\pi)$. This concludes the proofs. 
+
+
+\section{Extension to context based prediction}
+\label{sec:Contextual}
+In this section we consider that the prediction errors depend on the context $X_t$, and in each round the learner can decide which action to apply based on $X_t$. Let  $\gamma_i(X_t)=\Pr\{\hat{Y}^1_t \neq \hat{Y}^2_t| X_t\}$ for all $i \in [K]$. We refer to this setting as  Contextual Sensor Acquisition Problem (CSAP) and denote it as $\psi_c=(K, \mathcal{A}, \mathcal{C}, (\gamma_i,c_i)_{i\in [K]})$. 
+
+Given $x \in \mathcal{C}$, let $L_t(a|x)$ denote the loss from action $a\in \mathcal{A}$ in round $t$. A policy on $\phi^c$ maps past history and current contextual information to an action. Let $\Pi^{\psi_c}$ denote set of policies on $\psi_c$ and for any policy $\pi \in \Pi^{\psi_c}$, let $\pi(x_t)$ denote the action selected when the context is $x_t$. For any sequence $\{x_t,y_t\}_{t>0}$, the regret of a policy $\pi$ is defined as:
+\begin{equation}
+	R^{\phi_c}_T(\pi)= \sum_{t=1}^{T} \mathbb{E}\left [L_t(\pi(x_t)|x_t)\right ]-\sum_{t=1}^{T}\min_{a \in \mathcal{A}} \mathbb{E} \left [ L_t(a|x_t)\right ]. 
+\end{equation}
+As earlier, the goal is to learn a policy that minimizes the expected regret, i.e., $\pi^*= \arg \min_{\pi \in \Pi^{\psi_c}} \mathbb{E}[R^{\psi_c}_T(\pi)].$
+
+In this section we focus on CSA-problem with two sensors and assume that sensor predictions errors are linear in the context. Specifically, we assume that there exists $\theta_1, \theta_2 \in \mathcal{R}^d$ such that $\gamma_1(x)=x^\prime\theta_1$ and $\gamma_2(x)+c=x^\prime\theta_2$ for all $x \in \mathcal{C}$, were $x^\prime$ denotes the transpose of $x$. By default all vectors are column vectors. In the following we establish that CSAP is regret equivalent to a stochastic liner bandits with varying decision sets. We first recall the stochastic linear bandit setup and relevant results. 
+
+\subsection{Background on Stochastic Linear Bandits}
+In round $t$, the learner is given a decision set $D_t \subset \mathcal{R}^d$ from which he has to choose an action. For a choice $x_t \in D_t$, the learner receives a reward $r_t=x_t^\prime\theta^* + \epsilon_t$, where $\theta^* \in \mathcal{R}^d$ is unknown and $\epsilon_t$ is random noise of zero mean. The learner's goal  is to maximize the expected accumulated reward $\mathbb{E}\left[\sum_{t=1}^{T} r_t \right]$ over a period $T$. If the leaner knows $\theta^*$, his optimal strategy is to select $x_t^*=\arg \max_{x \in D_t} x^\prime \theta^* $ in round $t$. The performance of any policy $\pi$ that selects action $x_t$ at time $t$ is 
+measured with respect to the optimal policy and is given by the expected regret  as follows
+\begin{equation}
+\label{eqn:LinearBanditRegret}
+R^L_T(\pi)= \sum (x_t^*)^\prime \theta^* - \sum x_t^\prime \theta^* .
+\end{equation}
+The above setting, where actions sets can change in every round, is introduced in\cite{NIPS2011_ImprovedAlgorithms_AbbasiPalSzepes} and is a more general setting than that studied in \cite{COLT08_StochasticLinearOptimization_DaniHayesKakad,MOR11_LinearlyParametrized_RusmevichientongTsitsiklis} where decision set is fixed. Further, the above setting also specializes the contextual bandit studied in \cite{WWW10_Contextaulbandits_LiChuWei}. The authors in \cite{NIPS2011_ImprovedAlgorithms_AbbasiPalSzepes} developed an
+`optimism in the face of uncertainty linear bandit algorithm' (OFUL) that achieves $\mathcal{O}(d \sqrt{T})$ regret with high probability when the random noise is $R$-sub-Gaussian for some finite $R$. The performance of OFUL is significantly better than $ConfidenceBall_2$ \cite{COLT08_StochasticLinearOptimization_DaniHayesKakad}, $UncertainityEllipsoid$ \cite{MOR11_LinearlyParametrized_RusmevichientongTsitsiklis}
+and $LinUCB$ \cite{WWW10_Contextaulbandits_LiChuWei}. 
+
+
+\begin{thm}
+	\label{thm:2CSAPRegret}
+Consider a CSA-problem with $K=2$ sensors. Let $\mathcal{C}$ be a bounded set and $\gamma_i(x)+c_i=x^\prime\theta_i$ for $i=1,2$ for all $x \in \mathcal{C}$. Assume $x^\prime \theta_1, x^\prime \theta_2 \in [0\; 1]$ for all $x \in \mathcal{C}$. Then, equivalent to a stochastic linear bandit. 
+\end{thm}
+
+
+\subsection{Proof of Theorem \ref{thm:2CSAPRegret}}
+Let $\{x_t,y_t\}_{t\geq 0}$ be an arbitrary sequence of context-label pairs. Consider a stochastic linear bandit where $D_t=\{0, x_t\} $ is a decision set in round $t$. 
+From the previous section, we know that given a context $x$, action $1$ is optimal if $\gamma_1(x)-\gamma_2(x) -c< 0$, otherwise  action $2$ is optimal. Let $\theta:=\theta_1-\theta_2$, then it boils down to check if $x^\prime\theta-c<0$ for each context $x\in \mathcal{C}$. 
+
+For all $t$, define $\epsilon_t= \boldsymbol{1}\{\hat{Y}^1_t \neq \hat{Y}^2_t\}-x_t^\prime\theta$. Note that $\epsilon_t \in [0 \;1]$ for all $t$, and since sensors do not have memory, they are conditionally independent given past contexts. Thus, $\{\epsilon_t\}_{t>0}$ are conditionally $R$-sub-Gaussian for some finite $R$.  
+
+Given a policy $\pi$ on a linear bandit we obtain next to play for the CSAP as follows: For each round $t$ define $a_t \in \mathcal{C}$ and $r_t \in \{0,1\}$ such that $a_t=0$ and $r_t=0$ if action $1$ is played in that round, otherwise set $a_t=x_t$ and $r_t=\boldsymbol{1}\{\hat{y}^1_t \neq \hat{y}^1_t \}$. Let $\mathcal{H}_{t}=\{(a_1, r_1)\cdots (a_{t-1},r_{t-1})\}$ denote the past actions and corresponding rewards observed till time $t-1$. In round $t$, after observing context $x_t$, we transfer  $((a_{t-1},r_{t-1}), D_t)$, where  $D_t=\{0,x_t\}$. If $\pi$ outputs $0 \in D_t$ as the optimal choice, we play action $1$, otherwise we play action $2$.
+
+Conversely,   suppose $\pi^\prime$ denote a policy for the CSAP problem we select action to play from decision set $D_t=\{0,x_t\}$ as follows.  For each round $t$ define $a^\prime_t \in {1,2}$ and $r^\prime_t \in \mathcal{R}$ such that $a^\prime_t=1$ and $r^\prime_t=\emptyset$ if $0$ is played otherwise set $a^\prime_t=2$ and $r^\prime_t=x_t^\prime\theta^* +\epsilon_t$ if $x_t$ is played.  Let $\mathcal{H}^\prime_{t}=\{(a^\prime_1, r^\prime_1)\cdots (a^\prime_{t-1},r^\prime_{t-1})\}$ denote the past actions and corresponding rewards observed till time $t-1$. In round $t$, after observing set  $D_t$, we transfer  $((a^\prime_{t-1},r^\prime_{t-1}), x_t)$ to policy $\pi^\prime$. If $\pi$ outputs action $1$ as the optimal choice, we play action $0$, otherwise we play $x_t$. 

@@ -1,0 +1,140 @@
+%!TEX root =  main.tex
+\newcommand{\set}{\leftarrow}
+\newcommand{\hgamma}{\hat{\gamma}}
+The reduction of the previous section suggests that one can  utilize 
+an algorithm developed for stochastic bandits with side-observation to solve a SAP satisfying SD property.
+In this paper we make use of Algorithm~1 of \cite{WGySz:NIPS15}. \todoc{Note the bug in the other paper.}
+While this algorithm was proposed for stochastic bandits with Gaussian side observations, 
+as noted in the above paper, the algorithm is also suitable for problems where the payoff distributions are sub-Gaussian.
+As Bernoulli random variables are $\sigma^2=1/4$-sub-Gaussian (after centering),
+the algorithm is also applicable in our case.
+
+
+	\begin{minipage}{0.48\textwidth}
+		\begin{algorithm}[H]
+			\caption{Algorithm for SAP with SD property} 
+			\label{alg:asym}
+			\begin{algorithmic}[1]
+				\STATE Play action $K$ and observe  $Y^1,\dots,Y^K$.
+				\STATE Set $\hgamma_{i}^1 \set \one{Y^1\ne Y^i}$ for all $i\in [K]$.
+				\STATE Initialize the exploration count: $n_e \set 0$.
+				\STATE Initialize the allocation counts: $N_K(1) \set 1$.
+				\FOR{$t=2,3,...$}
+				\IF{$\frac{N(t-1)}{4\alpha \log t}\in C(\hgamma^{t-1})$} \label{alg:check}
+				\STATE Set $I_t \set \argmin_{k\in [K]} c(k,\hgamma^{t-1})$. \label{alg:greedy}
+				%		\STATE Set $n_e(t+1)=n_e(t)$.
+				\ELSE
+				\IF{$N_K(t-1)<\beta(n_e)/K$} \label{alg:starve}
+				\STATE Set $I_t =K$. \label{alg:forced}
+				\ELSE
+				\STATE Set $I_t$ to some $i$ for which \label{alg:plan} \\
+				$\quad$ $N_i(t-1)< u_i^*(\hgamma^{t-1})4\alpha\log t$.
+				\ENDIF
+				\STATE Increment exploration count: $n_e \set n_e+1$.
+				\ENDIF
+				\STATE Play $I_t$ and observe  $Y^1,\dots,Y^{I_t}$.
+				\STATE For $i\in [I_t]$, set\\
+				$\quad$ $\hgamma_i^t \set (1-1/t) \hgamma_i^{t-1} + 1/t \,\one{Y^1\ne Y^i}$.
+				\ENDFOR
+			\end{algorithmic}
+		\end{algorithm}
+	\end{minipage}
+
+
+For the convenience of the reader, we give the algorithm resulting from applying the reduction to Algorithm~1 
+of \cite{WGySz:NIPS15} in an explicit form.
+For specifying the algorithm we need some extra notation.
+Recall that given a SAP instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\ne Y^k}$ where $(Y,Y^1,\dots,Y^K)\sim P$ and $k\in [K]$. Let $k^*=\arg\min_k \gamma_k +C_k$ denote the optimal action and $\Delta_k(\theta)=\gamma_k+C_k-\gamma_{k^*}+C_{k^*}$ the sub-optimality gap of arm $k$. Further, let $\Delta^*(\theta) = \min\{\Delta_k(\theta), k\neq k^* \}$ denote the smallest positive sub-optimality gap and define $\Delta_k^*(\theta) =\max\{\Delta_k(\theta), \Delta^*(\theta)\}$.
+
+Since cost vector $c$ is fixed, in the following we use parameter $\gamma$ in place of $\theta$ to denote the problem instance.
+%For an instance $\gamma$, let $\pi(1,\gamma)$ denote the index of the optimal action $(\pi(1,\gamma) = \min_j C_j+\gamma_j)$, $\pi(2,\gamma)$ denote the index of the second best action $(\pi(2,\gamma) = \min_{j\ne \pi(1,\gamma)} C_j +\gamma_j)$ and more generally let $\pi(k,\gamma)$ be the index of the $k$th best action.
+A (fractional) allocation count $u\in [0,\infty)^K$ determines for each action $i$ how many times the
+action is selected.
+Thanks to the cascade structure, using an action $i$ implies observing the output of all the sensors with index $j$ less than equal to $i$. Hence, a sensor $j$ gets observed $u_j+u_{j+1}+\dots+u_K$ times.
+We call an allocation count ``sufficiently informative'' if (with some level of confidence)
+it holds that {\em (i)} for each suboptimal choice, 
+the number of observations for the corresponding sensor is sufficiently large to distinguish
+it from the optimal choice; and  {\em (ii)}  the optimal choice is also distinguishable from the second best choice.
+We collect these counts into the set $C(\gamma)$ for a given parameter $\gamma$:
+$C(\gamma) = \{ u\in [0,\infty)^K\,:\, 
+u_j+u_{j+1}+\dots+u_K
+\ge \frac{2\sigma^2}{(\Delta_j^*(\theta))^2}, j\in [K] \}$
+(note that $\sigma^2=1/4$).
+Further, let $u^*(\gamma)$
+be the allocation count that minimizes the total expected excess cost over the set of sufficiently informative allocation counts:
+In particular,  we let $u^*(\gamma) = \argmin_{u\in C(\gamma)} \ip{ u, \Delta(\theta) }$ 
+with the understanding that for any optimal action $k$, $u_k^*(\gamma) = \min \{ u_k \,: u\in C(\gamma) \}$ (here, $\ip{x,y} = \sum_i x_i y_i$ is the standard inner product of vectors $x,y$).
+For an allocation count $u\in [0,\infty)^K$ let $m(u)\in \N^K$ denote total sensor observations, where $m_j(u) = \sum_{i=1}^j u_i$ corresponds to observations of sensor $j$.
+
+The idea of the algorithm shown as \cref{alg:asym} is as follows:
+The algorithm keeps track of an estimate $\hgamma^{t}:=(\hgamma^t_i)_{i \in [K]}$ of $\gamma$ in each round, which is initialized by pulling arm $K$ as this arm
+gives information about all the other arms.
+In each round, the algorithm first checks whether given the current estimate $\hgamma^t$ and the current confidence level (where the confidence level is gradually increased over time), the current allocation count $N(t)\in \N^K$
+is sufficiently informative (cf. line \ref{alg:check}). If this holds, the action that is optimal under $\hgamma(t)$ is chosen 
+(cf. line \ref{alg:greedy}). If the check fails, we need to explore.
+The idea of the exploration is that it tries to ensure that the ``optimal plan'' -- assuming $\hgamma$ is the ``correct'' parameter -- is followed (line \ref{alg:plan}). However, this is only reasonable, if all components of $\gamma$ are relatively well-estimated.
+Thus, first the algorithm checks whether any of the components of $\gamma$ has a chance of being
+extremely poorly estimated (line \ref{alg:starve}). Note that the requirement here is that a significant, but still altogether diminishing fraction of the \emph{exploration rounds} is spent on estimating each components: In the long run, the fraction of exploration rounds amongst all rounds itself is diminishing; hence the forced exploration of line \ref{alg:forced} overall has a small impact on the regret, while it allows to stabilize the algorithm.
+
+\newcommand{\gap}{d}
+\newcommand{\norm}[1]{\|#1\|}
+For $\theta \in \TSD$, let $\gamma(\theta)$ be the error probabilities for the various sensors.
+The following result follows from Theorem~6 of \cite{WGySz:NIPS15}:
+\begin{thm}
+Let $\epsilon>0$, $\alpha>2$ arbitrary and choose any non-decreasing $\beta(n)$ that satisfies $0\le \beta(n)\le n/2$ and $\beta(m+n)\le \beta(m)+\beta(n)$ for $m,n\in \N$.
+Then, 
+for any
+$\theta\in \TSD$, letting $\gamma = \gamma(\theta)$
+the expected regret of \cref{alg:asym} after $T$ steps satisfies 
+\todoc{Actually, needs to be checked.. I also replaced $\gap_{\max}(\theta)$ with $1$.}
+\begin{align*}
+&R_T(\theta)
+  \le  \Big( 2K+2+\frac{4K}{\alpha-2} \Big) 
+  +  4K\sum_{s=0}^T \exp{\Big( \frac{-8\beta(s)\epsilon^2}{2K} \Big)}~~~~~ \\
+ &\hspace{-.3cm} + 2 \beta\Big( 4\alpha\log T\sum_{i\in \iset{K}} u_i^*(\gamma,\epsilon)+K \Big)
+  +  4\alpha\log T \sum_{i\in \iset{K}} u_i^*(\gamma,\epsilon)\gap_i(\gamma) \,,
+\end{align*}
+where $u_i^*(\gamma,\epsilon) = \sup\{u_i^*(\gamma')\,:\, \norm{\gamma'-\gamma}_{\infty}\le \epsilon \}$.
+\label{thm:alg1-ub1}
+\end{thm}  
+Further specifying $\beta(n)$ and using the continuity of $u^*(\cdot)$ at $\theta$, it immediately follows that Algorithm~\ref{alg:asym} achieves asymptotically optimal performance: \todoc{I just copy\&pasted this.
+We don't actually have a lower bound..}
+\begin{cor}
+\label{cor:alg1-asym-opt}
+ Suppose the conditions of Theorem~\ref{thm:alg1-ub1} hold. Assume, furthermore, that $\beta(n)$ satisfies $\beta(n) = o(n)$ and $\sum_{s=0}^\infty \exp \left( -\frac{\beta(s)\epsilon^2}{2K\sigma^2} \right)<\infty$ for any $\epsilon>0$, then for any $\theta$ such that $u^*(\theta)$ is unique, 
+\[
+\limsup_{T\rightarrow \infty} R_T(\theta,c)/\log T \le 4\alpha \inf_{u\in C_\theta} \ip{u,\gap(\gamma(\theta))}\,.
+\]
+\end{cor}
+Note that any $\beta(n) = an^b$ with $a\in (0,\frac{1}{2}]$, $b\in (0,1)$ satisfies the requirements in Theorem~\ref{thm:alg1-ub1} and Corollary~\ref{cor:alg1-asym-opt}.
+%Also note that the algorithms presented in \cite{CaKvLe12,BuErSh14} do not achieve this asymptotic bound.
+
+The algorithm in \ref{alg:asym} only estimates the disagreements $\P\{Y^1 \neq Y^j\}$ for all $j \in [K]$ which suffices to identify the optimal arm when the SAP satisfies the SD property (see Sec \ref{sec:Equiv}). Clearly, one can estimate pairwise disagreements probabilities $\P\{Y^i \neq Y^j\}$ for $i\neq j$ and use them to order the arms. We next develop an heuristic algorithm that uses this information and works for SAP satisfying WD property. 
+
+\subsection{Algorithm for SAP with Weak Dominance}
+For any suboptimal arm $j < i^*$,  $C_{i^*}-C_j \leq \P\{Y^{i^*} \neq Y^j\}$ holds, and when the WD property holds, we further have $C_j -C_{i^*} \geq \P\{Y^i \neq Y^j\}$ for all $j>i^*$. Thus, given the disagreement probabilities $\P\{Y^i \neq Y^j\}$ for all $i \neq j$, the set $\{i \in [K-1]: C_j - C_i \geq \P\{Y^i \neq Y^j\} \mbox{ for all } j>i\}$ includes the optimal arm. We use this idea in Algorithm \ref{alg:UCB} to identify the optimal arm when an instance of SAP satisfies the WD property. We will experimentally validate its performance  on real datasets in the next sections.
+\begin{minipage}{0.48\textwidth}
+		\begin{algorithm}[H]
+			\caption{Algorithm for SAP with WD property} %ALG1}
+			\label{alg:UCB}
+			\begin{algorithmic}[1]
+				\STATE Play action $K$ and observe $Y^1,\dots,Y^K$
+				\STATE Set $\hgamma_{ij}^1 \set \one{Y^i\ne Y^j}$ for all $i,j\in [K]$ and $i < j$.
+				\STATE $n_i(1)\leftarrow \one{i=K} \; \forall i\in [K]$.
+				\FOR{$t=2,3,...$}
+				\STATE $U_{ij}^t=\hgamma_{ij}^{t-1} + \sqrt{\frac{1.5\log(t)}{n_j(t-1)}}$  $\;\forall \; i,j \in [K]$ and $i<j$ \label{algo:UCB}
+				\STATE $S_t=\{i \in [K-1]: C_j-C_i \geq U_{ij}^t \;\forall \;   j > i \}$ \label{algo:sort}
+				\STATE Set $I_t= \arg \min S_t \cup \{K\} $
+				\STATE Play $I_t$ and observe $Y^1,\dots,Y^{I_t}$.
+				 \FOR {$i\in [I_t]$}
+				\STATE $n_i(t) \set n_i(t-1)+1$\\
+				 \STATE $\hgamma_{ij}^t \set \left (1-\frac{1}{n_j(t)}\right )
+				 \hgamma_{ij}^{t-1} + \frac{1}{n_j(t)} \,\one{Y^j\ne Y^i} \forall \; i<j \leq I_t$ \label{algo:Update}
+				\ENDFOR
+				\ENDFOR
+			\end{algorithmic}
+		\end{algorithm}
+	\end{minipage}
+	
+	\vspace{.2cm}
+The algorithm works as follows. It keeps track of $\hgamma^t_{ij}$ for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}).     
