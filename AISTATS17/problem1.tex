@@ -1,13 +1,28 @@
 %!TEX root =  main.tex
 %The sensors are differentiated in terms of their prediction efficiency and cost. 
 \newcommand{\ind}[1]{\mathbb{I}\{#1\}}
-
-\todoc[inline]{I compressed the problem spec. We don't want the reader to get bored.}
+%
+%\todoc[inline]{I compressed the problem spec. We don't want the reader to get bored.}
+\vspace{-5pt}
 The formal problem specification of the unsupervised, stochastic, 
-cascaded sensor acquisition problem 
-\todoc{I added stochastic and cascaded. Later we may want to consider alternatives,
-thus it will be useful to have these so that we can distinguish between the problem defined here and those
-future alternatives.}
+cascaded sensor selection problem and can be cast as a special case of stochastic partial monitoring problem (SPM) \footnote{In an SPM a learner interacts with a stochastic environment in a sequential manner.
+In round $t=1,2,\dots$ the learner chooses an action $A_t$ from an action set $\A$, and receives a feedback $Y_t\in \Y$
+from a distribution $p$ which depends on the action chosen and also on the environment instance identified
+with a ``parameter'' $\theta\in\Theta$:
+$Y_t \sim p(\cdot;A_t,\theta)$. 
+%The learner chooses $A_t$ based on the past feedbacks $Y_1,\dots,Y_{t-1}$. 
+The learner also incurs a reward $R_t$, which is a function of the action chosen and the unknown parameter $\theta$:
+$R_t = r(A_t,\theta)$. 
+The reward may or may not be part of the feedback for round $t$.
+The learner's goal is to maximize its total expected reward.
+The family of distributions $(p(\cdot;a,\theta))_{a,\theta}$ and the family of rewards $(r(a,\theta))_{a,\theta}$
+and the set of possible parameters $\Theta$ are known to the learner, who uses this knowledge to judiciously choose
+its next action to reduce its uncertainty about $\theta$ so that it is able to eventually converge on choosing only an 
+optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*(\theta) = \max_{a\in \A} r(a,\theta)$.  Bandit problems are a special case of SPMs where $\Y$ is the set of real numbers, $r(a,\theta)$ is the mean of distribution $p(\cdot;a,\theta)$.}
+Later we will describe extensions to contextual and tree-based sensor selection. 
+%\todoc{I added stochastic and cascaded. Later we may want to consider alternatives,
+%thus it will be useful to have these so that we can distinguish between the problem defined here and those
+%future alternatives.}
 is as follows: 
 A problem instance is specified by a pair $\theta = (P,c)$, where $P$ is
 a distribution over the $K+1$ dimensional hypercube, and $c$ is a $K$-dimensional, nonnegative valued vector
@@ -20,11 +35,11 @@ $Y = (Y_t,Y_t^1,\dots,Y_t^K)$ chosen at random from $P$.
 Here, $Y_t^i$ is the output of sensor $i$, while $Y_t$ is a (hidden) label to be guessed by the learner.
 Simultaneously, the learner chooses an index $I_t\in [K]$ and observes the sensor outputs $Y_t^1,\dots,Y_t^{I_t}$.
 The sensors are known to be ordered from least accurate to most accurate, 
-i.e., $\gamma_k \doteq \Prob{Y_t\ne Y_t^k}$ is decreasing with $k$ increasing.
+i.e., $\gamma_k(\theta) \doteq \Prob{Y_t\ne Y_t^k}$ is decreasing with $k$ increasing.
 \begin{figure}[!h]
 	\centering
-	\includegraphics[scale=.65]{../Figures/SensorCascade.pdf}
-	\caption{Structure of sensors in Sequential Sensor Acquisition. $Z_t=(X_t,Y_t)$, where $X_t$ is feature vector and $Y_t$ is its label (not observed), is sequentially input to sensors. After observing $\hat{Y}_{t}^t$, $\hat{Y}_{t}^{i+1}$ is observed by incurring additional cost of $c_{i+1}$}
+	\includegraphics[scale=.4]{../Figures/Cascade.pdf}
+	\caption{\footnotesize Cascaded Unsupervised Sequential Sensor Selection. $Y_t$ is the hidden state of the instance and $Y_t^1, Y_t^2 \ldots$ are test outputs. Not shown are features that a sensor could process to produce the output. The cost for using test $j$ is also shown.}
 	\label{fig:SensorCascade}
 	\vspace{-.2cm}
 \end{figure} 
@@ -35,18 +50,27 @@ The total cost suffered by the learner in round $t$ is thus $C_{I_t} + \ind{Y_t 
 The goal of the learner is to compete with the best choice given the hindsight of the values $(\gamma_k)_k$.
 The expected regret of learner up to the end of round $n$ is 
 $\Regret_n =( \sum_{t=1}^n \EE{ C_{I_t} +\ind{Y_t \ne Y_t^{I_t} }} )- n \min_k (C_k + \gamma_k)$.
+
+\noindent
+{\bf Sublinear Regret:} The quantification of the learning speed is given by the expected regret 
+$\Regret_n = n r^*(\theta) - \EE{\sum_{t=1}^n R_t}$, which, for brevity and when it does not cause confusion, 
+we will just call regret. A sublinear expected regret, i.e., $\Regret_n/n \to 0$ as $n\to \infty$ means that the learner in the long run collects almost as much reward on expectation as if the optimal action was known to it.
+
 For future reference, we let $c(k,\theta) = \EE{ C_{k} +\ind{Y_t \ne Y_t^{k} }}  (= C_k + \gamma_k)$ and $c^*(\theta) = \min_k c(k,\theta)$. Thus, $\Regret_n =( \sum_{t=1}^n \EE{ c(I_t,\theta) }) - n c^*(\theta)$.
 In what follows, we shall denote by $\cA^*(\theta)$ the set of optimal actions of $\theta$
-and we let $a^*(\theta)$ denote the optimal action that has the smallest index. Thus,
+and we let $a^*(\theta)$ denote the optimal action that has the smallest index
+\footnote{Note that even if $i<j$ are optimal actions, there can be suboptimal actions in the interval $[i,j] (=[i,j]\cap \N)$
+(e.g., $\gamma_1=0.3$, $C_1=0$, $\gamma_2=0.25$, $C_2=0.1$, $\gamma_3=0$, $C_3=0.3$.}. Thus,
 in particular, $a^*(\theta) = \min \cA^*(\theta)$. 
-\todom{How about moving this to footnote?}Note that even if $i<j$ are optimal actions, there can be suboptimal actions in the interval $[i,j] (=[i,j]\cap \N)$
-(e.g., $\gamma_1=0.3$, $C_1=0$, $\gamma_2=0.25$, $C_2=0.1$, $\gamma_3=0$, $C_3=0.3$. 
+%\todom{How about moving this to footnote?} 
 Next, for future reference note that one 
 can express optimal actions from the viewpoint of marginal costs and marginal error. 
 In particular an action $i$ is optimal if for all $j > i$ the marginal increase in cost, $C_j - C_i$, 
 is larger than the marginal decrease in error, $\gamma_i - \gamma_j$: $ \forall \, j \geq i\,$
+%
 \begin{equation} \label{eqn:interp_opt}
-\underbrace{C_j - C_i}_{\text{Marginal Cost}} \geq \gamma_i - \gamma_j = \underbrace{ E \left [ \ind{Y_t \ne Y_t^i} - \ind{Y_t \ne Y_t^j} \right ]}_{\text{Marginal Decrease in Error}}.
+\vspace{-5pt}
+\underbrace{C_j - C_i}_{\text{Marginal Cost}} \geq \underbrace{ E \left [ \ind{Y_t \ne Y_t^i} - \ind{Y_t \ne Y_t^j} \right ]}_{\text{Marginal Error $= \gamma_i-\gamma_j$}}.
 \end{equation}
 
 
@@ -97,7 +121,7 @@ The feedback of learner for this round is then $H_t(k)=(\hat{Y}^1_t,\ldots,\hat{
 \begin{wrapfigure}{r}{5cm}
 	\vspace{-.5cm}
 	\centering
-	\includegraphics[scale=.6]{../Figures/SensorCascade.pdf}
+	\includegraphics[scale=.6]{../Figures/cascade.pdf}
 	\caption{Cascade of sensors
 	}\label{wrap-fig:1}
 	\vspace{-.5cm}

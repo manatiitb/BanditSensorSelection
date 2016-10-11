@@ -58,7 +58,7 @@ heart & $0.305$ & $0.169$ &  0.051\\  \hline
 \caption{Error statistics}
 \end{center}
 \end{table}
-Before we develop this concept further we will motivate strong dominance based on experiments on a few real-world datasets. Table \ref{tab:ErrorTable1} lists the error probabilities of the classifiers (sensors) for the heart and diabetic datasets from UCI repository. For both the datasets, $\gamma_1$ denotes the test error of an SVM classifier (linear) trained with low cost features and $\gamma_2$ denotes test error of SVM classifier trained using both low and high-cost features (cf. Section \ref{sec:Experiments}). The last column lists $\delta_{12}:=\Prob{Y^1=Y, Y^2\neq Y}$, the probability that second sensor misclassifies an instance that is correctly classified by the first sensor. Strong dominance is the notion that suggests that this probability is zero. We find in these datasets that $\delta_{12}$ is small thus justifying our notion. In general we have found this behavior is representative of other cost-associated datasets. Note that strong dominance is not merely a consequence of improved accuracy with availability of more features. It is related to better {\it recall rates} of high-cost features relative to low-cost features. %Strong dominance assumption implies that the collection of ''recalled examples'' with low-cost features is a subset of those recalled with high-cost features. 
+Before we develop this concept further we will motivate strong dominance based on experiments on a few real-world datasets. Table \ref{tab:ErrorTable1} lists the error probabilities of the classifiers (sensors) for the heart and diabetic datasets from UCI repository. For both the datasets, $\gamma_1$ denotes the test error of an SVM classifier (linear) trained with low cost features and $\gamma_2$ denotes test error of SVM classifier trained using both low and high-cost features (cf. Section \ref{sec:Experiments}). The last column lists $\delta_{12}:=\Prob{Y^2\neq Y \mid Y^1 = Y}$, the conditional probability that second sensor misclassifies an instance that is correctly classified by the first sensor. Strong dominance is the notion that suggests that this probability is zero. We find in these datasets that $\delta_{12}$ is small thus justifying our notion. In general we have found this behavior is representative of other cost-associated datasets. Note that strong dominance is not merely a consequence of improved accuracy with availability of more features. It is related to better {\it recall rates} of high-cost features relative to low-cost features. %Strong dominance assumption implies that the collection of ''recalled examples'' with low-cost features is a subset of those recalled with high-cost features. 
 
 
 
@@ -207,4 +207,4 @@ While $\TWD$ is learnable, it is not uniformly learnable, i.e., the minimax regr
 $\TWD$ is not uniformly learnable:
 $\Regret_n^*(\TWD) = \Omega(n)$.
 \end{thm}
-\begin{proof}
+%\begin{proof}
