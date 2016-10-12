@@ -142,20 +142,26 @@
 \aistatsaddress{ Unknown Institution 1 \And Unknown Institution 2 \And Unknown Institution 3 } ]
 
 \begin{abstract}
-	Sequential sensor acquisition problems (SAP) arise \todom{SAP is not a standard setup, we need to introduce it first .} in many application domains including medical-diagnostics, security and surveillance. SAP architecture is organized as a cascaded network of ``intelligent'' sensors that produce decisions upon acquisition. Sensors must be acquired sequentially and comply with the architecture. Our task is to identify the sensor with optimal accuracy-cost tradeoff. We formulate SAP as a version of the stochastic partial monitoring problem with side information and {\it unusual} reward structure.  Actions correspond to choice of sensor and the chosen sensor's parents decisions are available as side information. Nevertheless, what is atypical, is that we do not observe the reward/feedback, which a learner often uses to reject suboptimal actions. Unsurprisingly, with no further assumptions, we show that no learner can achieve sublinear regret. This negative result leads us to introduce the notion of weak dominance on cascade structures. Weak dominance supposes that a child node in the cascade has higher accuracy whenever its parent's predictions are correct. \todoc{The story is a bit more complicated. The abstract will need a rewrite once we settle on the results.}
-	We then empirically verify this assumption on real datasets. We show that weak dominance is a maximal learnable set in the sense that we must suffer linear regret for any non-trivial expansion of this set. Furthermore, by reducing SAP to a special case of multi-armed bandit problem with side information we show that for any instance in the weakly dominant we only suffer a sublinear regret.
+\vspace{-10pt}
+Different types of sensors/tests are applied in a \emph{sequence} for detection and diagnosis in many security and healthcare systems. Each test outputs a prediction of the latent state, and carries with it inherent costs. Our objective is to {\it learn} strategies for selecting tests to optimize accuracy \& costs. Unfortunately it is often impossible to acquire-in-situ ground truth annotations and we are left with the problem of unsupervised sensor selection (USS). We pose USS as a version stochastic partial monitoring problem with an {\it unusual} reward structure (even noisy annotations are unavailable). Unsurprisingly no learner can achieve sublinear regret without further assumptions. To this end we propose the notion of weak-dominance. This is a condition on the joint probability distribution of test outputs and latent state. It requires that whenever a sensor test is accurate the test predictions for later tests in the sequence are also likely to be accurate. %whenever an earlier stage   
+%	Sequential sensor acquisition problems (SAP) arise \todom{SAP is not a standard setup, we need to introduce it first .} in many application domains including medical-diagnostics, security and surveillance. SAP architecture is organized as a cascaded network of ``intelligent'' sensors that produce decisions upon acquisition. Sensors must be acquired sequentially and comply with the architecture. Our task is to identify the sensor with optimal accuracy-cost tradeoff. We formulate SAP as a version of the stochastic partial monitoring problem with side information and {\it unusual} reward structure.  Actions correspond to choice of sensor and the chosen sensor's parents decisions are available as side information. Nevertheless, what is atypical, is that we do not observe the reward/feedback, which a learner often uses to reject suboptimal actions. Unsurprisingly, with no further assumptions, we show that no learner can achieve sublinear regret. This negative result leads us to introduce the notion of weak dominance on cascade structures. Weak dominance supposes that a child node in the cascade has higher accuracy whenever its parent's predictions are correct. \todoc{The story is a bit more complicated. The abstract will need a rewrite once we settle on the results.}
+We empirically verify that weak dominance holds on real datasets and prove that it is a maximal condition for achieving sublinear regret. We reduce USS to a special case of multi-armed bandit problem with side information and develop polynomial time algorithms that achieve sublinear regret.
+%	Sequential sensor acquisition problems (SAP) arise \todom{SAP is not a standard setup, we need to introduce it first .} in many application domains including medical-diagnostics, security and surveillance. SAP architecture is organized as a cascaded network of ``intelligent'' sensors that produce decisions upon acquisition. Sensors must be acquired sequentially and comply with the architecture. Our task is to identify the sensor with optimal accuracy-cost tradeoff. We formulate SAP as a version of the stochastic partial monitoring problem with side information and {\it unusual} reward structure.  Actions correspond to choice of sensor and the chosen sensor's parents decisions are available as side information. Nevertheless, what is atypical, is that we do not observe the reward/feedback, which a learner often uses to reject suboptimal actions. Unsurprisingly, with no further assumptions, we show that no learner can achieve sublinear regret. This negative result leads us to introduce the notion of weak dominance on cascade structures. Weak dominance supposes that a child node in the cascade has higher accuracy whenever its parent's predictions are correct. \todoc{The story is a bit more complicated. The abstract will need a rewrite once we settle on the results.}
+%	We then empirically verify this assumption on real datasets. We show that weak dominance is a maximal learnable set in the sense that we must suffer linear regret for any non-trivial expansion of this set. Furthermore, by reducing SAP to a special case of multi-armed bandit problem with side information we show that for any instance in the weakly dominant we only suffer a sublinear regret.
 	%		We propose a sensor acquisition problem (SAP) wherein sensors (and sensing tests) are organized into a cascaded architecture and the goal is to choose a test with the optimal cost-accuracy tradeoff for a given instance. We consider the case where we obtain no feedback in terms of rewards for our chosen actions apart from test observations. Absence of feedback raises fundamentally new challenges since one cannot infer potentially optimal tests. We pose the problem in terms of competitive optimality with the goal of minimizing cumulative regret against optimally chosen actions in hindsight. In this context we introduce the notion of weak dominance and show that it is necessary and sufficient for realizing sub-linear regret. Weak dominance on a cascade supposes that a child node in the cascade has higher accuracy when its parent node makes correct predictions. When weak dominance holds we show that we can reduce SAP to a corresponding multi-armed bandit problem with side observations. Empirically we verify that weak dominance holds for many datasets.
+\vspace{-10pt}
 \end{abstract}
 
 
 \section{Introduction}
+\vspace{-6pt}
 \input{intro}
 
-\section{Background}
-\label{sec:background}
-\input{background}
+%\section{Background}
+%\label{sec:background}
+%\input{background}
 
-\section{Unsupervised Sensor Acquisition Problem}
+\section{Unsupervised Sensor Selection}
 \label{sec:Setup}
 \input{problem1}
 
@@ -165,6 +171,7 @@
 
 %\section{Stochastic Multi-armed Bandits with Side Observations}
 %\input{mab}
+
 \section{Regret Equivalence}
 \label{sec:Equiv}
 \input{equiv}

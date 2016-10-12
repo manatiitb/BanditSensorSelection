@@ -1,18 +1,19 @@
 %!TEX root =  main.tex
 
-The purpose of this section is to present some necessary background material that will prove to be useful later.
-In particular, we introduce a number of sequential decision making problems,
+%The purpose of this section is to present some necessary background material that will prove to be useful later.
+In this section we will introduce a number of sequential decision making problems,
 namely stochastic partial monitoring, bandits and bandits with side-observations, which we will build upon later.
 
-First, a few words about our notation:
-We will use upper case letters to denote random variables.
+First, a few words about our notation: We will use upper case letters to denote random variables.
 The set of real numbers is denoted by $\R$. For positive integer $n$, we let
 $[n] = \{1,\dots,n\}$. % with $[n]=\emptyset$ if $n=0$.
 We let $M_1(\X)$ to denote the set of probability distributions over some set $\X$.
 When $\X$ is finite with a cardinality of $d \doteq |\X|$, 
 $M_1(\X)$ can be identified with the $d$-dimensional probability simplex.
 
-In a \emph{stochastic partial monitoring problem} a learner interacts with a stochastic environment in a sequential manner.
+%\emph{Stochastic partial monitoring problem} is described by a collection of 
+%
+In a \emph{stochastic partial monitoring problem (SPM)} a learner interacts with a stochastic environment in a sequential manner.
 In round $t=1,2,\dots$ the learner chooses an action $A_t$ from an action set $\A$, and receives a feedback $Y_t\in \Y$
 from a distribution $p$ which depends on the action chosen and also on the environment instance identified
 with a ``parameter'' $\theta\in\Theta$:
@@ -31,32 +32,38 @@ $\Regret_n = n r^*(\theta) - \EE{\sum_{t=1}^n R_t}$, which, for brevity and when
 we will just call regret.
 A sublinear expected regret, i.e., $\Regret_n/n \to 0$ as $n\to \infty$ means that the learner in the long run collects
 almost as much reward on expectation as if the optimal action was known to it.
-Such a learner is called Hannan consistent. \todoc{Not sure whether Hannan consistency is this, or when the random average regret converges to zero with probability one.}
+%Such a learner is called Hannan consistent. \todoc{Not sure whether Hannan consistency is this, or when the random average regret converges to zero with probability one.}
 In some cases it is more natural to define the problems in terms of costs as opposed to rewards;
-in such cases the definition of regret is modified appropriately. 
-Transforming between costs and rewards is trivial by flipping the sign of the rewards and costs.
+in such cases the definition of regret is modified appropriately by flipping the sign of rewards and costs. 
+%Transforming between costs and rewards is trivial by flipping the sign of the rewards and costs.
 
-A wide range of interesting sequential learning scenarios can be cast as partial monitoring.
-One special case is bandit problems when $\Y$ is the set of real numbers and $r(a,\theta)$
-is the mean of distribution $p(\cdot;a,\theta)$: 
-Thus, in a bandit problem in evert round the learner chooses an action $A_t$ based on its past observations
-and receives the noisy reward $Y_t \sim p(\cdot;A_t,\theta)$ as feedback. 
-A bandit problem is special in that the observation $Y_t$ and the reward are directly tied.
-Another special case is finite-armed  \emph{bandits with side-observations} \cite{MaSh11},
-where each action $a\in \A$ is associated with a neighbor-set $\cN(a)\subset \A$ and
-the set of neighborhoods is known to the learner from the beginning.
-The learner upon choosing action $A_t\in \A$ receives noisy reward observations for each action in $\cN(A_t)$:
-$Y_t  = (Y_{t,a})_{a\in N(A_t)}$, where $Y_{t,a} \sim p_r(\cdot;a,\theta)$, and $\EE{Y_{t,a}} = r(a,\theta)$.
-(The action chosen may or may not be an element of $N(A_t)$.)
-The reader can readily verify that this problem can also be cast as a partial monitoring problem
-by defining $\Y$ as the set $\cup_{i=0}^K \R^i$ and defining 
+%A wide range of interesting sequential learning scenarios can be cast as partial monitoring.
+\emph{Bandit Problems} are a special case of SPMs where 
+%One special case is bandit problems when 
+$\Y$ is the set of real numbers, $r(a,\theta)$ is the mean of distribution $p(\cdot;a,\theta)$ and thus the learner in every round the learner upon choosing an action $A_t$ receives the noisy reward $Y_t \sim p(\cdot;A_t,\theta)$ as feedback. 
+%Thus, in a bandit problem in every round the learner chooses an action $A_t$ based on its past observations
+%and receives the noisy reward $Y_t \sim p(\cdot;A_t,\theta)$ as feedback. 
+%A bandit problem is special in that the observation $Y_t$ and the reward are directly tied.
+A finite armed \emph{bandit with side-observations} \cite{MaSh11} is also a special case of SPMs, where the learner upon choosing an action $a \in \A$ receives noisy reward observations, namely, $Y_t  = (Y_{t,a})_{a\in N(A_t)},\,\,Y_{t,a} \sim p_r(\cdot;a,\theta),\,\,\EE{Y_{t,a}} = r(a,\theta)$, from a neighbor-set $\cN(a) \subset \A$, which is a priori known to the learner. 
+%
+%
+%
+%Another special case is finite-armed  \emph{bandits with side-observations} \cite{MaSh11},
+%where each action $a\in \A$ is associated with a neighbor-set $\cN(a)\subset \A$ and
+%the set of neighborhoods is known to the learner from the beginning.
+%The learner upon choosing action $A_t\in \A$ receives noisy reward observations for each action in $\cN(A_t)$:
+%$Y_t  = (Y_{t,a})_{a\in N(A_t)}$, where $Y_{t,a} \sim p_r(\cdot;a,\theta)$, and $\EE{Y_{t,a}} = r(a,\theta)$.
+%(The action chosen may or may not be an element of $N(A_t)$.)
+%The reader can readily verify that this problem can also be cast as a partial monitoring problem
+To cast this setting as an SPM we let $\Y$ as the set $\cup_{i=0}^K \R^i$ and define 
 the family of distributions $(p(\cdot;a,\theta))_{a,\theta}$ such that $Y_t \sim p(\cdot;A_t,\theta)$.
-Finally, we note in passing that while we called $\Theta$ a parameter set, 
-we have not equipped $\Theta$ with any structure. As such,
-the framework is able to model both bona fide parametric settings (e.g., Bernoulli rewards) and 
-the so-called non-parametric settings. For example, $K$-armed bandits with reward distributions supported
-over $[0,1]$ can be modelled by choosing $\Theta$ as the set of all $K$-tuples 
-$\theta:=(\theta_1,\dots,\theta_K)$ of distributions over $[0,1]$ and setting $p(\cdot;a,\theta) = \theta_a(\cdot)$.
-More generally, we can identify $\Theta$ with set of instances $(p(\cdot;a,\theta),r(a,\theta))_{\theta\in \Theta}$.
-In what follows, when convenient, we will use this identification and will view elements of $\Theta$ as a pair $p,r$ 
-where $p(\cdot;a)$ is a probability distribution over $\Y$ for each $a\in \A$ and $r$ is a map from $\A$ to the reals.
+The framework of SPM is quite general and allows for parametric and non-parametric sets $\Theta$. 
+%Finally, we note in passing that while we called $\Theta$ a parameter set, 
+%we have not equipped $\Theta$ with any structure. As such,
+%the framework is able to model both bona fide parametric settings (e.g., Bernoulli rewards) and 
+%the so-called non-parametric settings. 
+%For example, $K$-armed bandits with reward distributions supported
+%over $[0,1]$ can be modelled by choosing $\Theta$ as the set of all $K$-tuples 
+%$\theta:=(\theta_1,\dots,\theta_K)$ of distributions over $[0,1]$ and setting $p(\cdot;a,\theta) = \theta_a(\cdot)$.
+In what follows we identify $\Theta$ with set of instances $(p(\cdot;a,\theta),r(a,\theta))_{\theta\in \Theta}$.
+In other words we view elements of $\Theta$ as a pair $p,r$ where $p(\cdot;a)$ is a probability distribution over $\Y$ for each $a\in \A$ and $r$ is a map from $\A$ to the reals.
