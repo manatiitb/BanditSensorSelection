@@ -114,7 +114,7 @@ The size of these datasets is relatively small and limits our ability to experim
 {\bf Testing Learnability:}
 We experiment with different USS algorithms on the synthetic dataset. Our purpose is twofold: (a) show the superior performance of reduction scheme (Alg~1) on SD and necessity of a more robust scheme to account for WD, (b) establish WD condition as the maximal learnable set. To test WD requirement we parameterize the problem by varying costs. Without loss of generality we fix the cost of sensor 1 to be zero and the total cost of the entire system to be $C_{\mbox{tot}}$. We then vary cost of sensors 2 and 3. To plot the effect of WD note from Eq.~\ref{dfn:WDP} that we must have that if a sensor $j <K$ is optimal then the ratio,
 $$
-\rho = \max_{j'>K} \frac{(c_{j'} - c_j)}{Prob{Y^{(j)} \neq Y^{(j')}} \leq 1
+\rho = \max_{j < j'} \frac{(c_{j'} - c_j)}{Prob\{Y^{(j)} \neq Y^{(j')}\}} \leq 1
 $$
 This corresponds to the condition that the worst-case marginal-cost to marginal absolute error is bounded by 1.
 We test this hypothesis by enforcing Sensor 2 to be the optimal sensor and vary the costs accordingly. Figs.~\ref{fig:BSC_SD} depicts the results of Alg.~\ref{alg:asym} when SD condition is satisfied for varying values of costs. This verifies the fact that SD is strictly contained within WD set. In Fig.~\ref{fig:BSC_WD} we plot regret-per-round as a function of $\rho$ when the data generated no longer remains in WD set. We also note the behavior of Alg.~\ref{alg:asym} and the modified UCB algorithm Alg.~\ref{alg:UCB}. While for SD condition Alg.~\ref{alg:asym} is superior there is an inherent lack of robustness when SD fails to be satisfied. Consequently, modified UCB is somewhat more robust to relaxation of SD assumption.
