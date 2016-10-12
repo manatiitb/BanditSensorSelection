@@ -1,6 +1,7 @@
 \begin{figure*}[!bt]
 	\begin{minipage}{4cm}
 		\centering
+		\vspace{.5cm}
 		\includegraphics[scale=0.21]{../Simulations/Figures/BSC_SD}
 		\label{fig:BSC_SD}
 		\vspace{-.2cm}
@@ -8,23 +9,23 @@
 	\end{minipage}
 	\begin{minipage}{4cm}
 		\centering
-		\includegraphics[scale=0.3]{../Simulations/Figures/BSC_WD1}
+		\includegraphics[scale=0.3]{../Simulations/Figures/BSC_WD2}
 		\label{fig:BSC_WD}
-		\vspace{-1cm}
+		\vspace{-.5cm}
 		\caption{BSC data}
 	\end{minipage}
 	\begin{minipage}{4cm}
 		\centering
 		\includegraphics[scale=0.3]{../Simulations/Figures/Diabetes_WD1}
 		\label{fig:Diabetes}
-		\vspace{-1cm}
+		\vspace{-.5cm}
 		\caption{Diabetes dataset}
 	\end{minipage}
 	\begin{minipage}{4cm}
 		\centering
 		\includegraphics[scale=0.3]{../Simulations/Figures/Heart_WD1}
 		\label{fig:Heart}
-		\vspace{-1cm}
+		\vspace{-.5cm}
 		\caption{Heart dataset}
 	\end{minipage}
 	\vspace{.2cm}
@@ -116,15 +117,12 @@ We experiment with different USS algorithms on the synthetic dataset. Our purpos
 The real datasets provide an opportunity to understand how different types of information can impact performance. We compare our USS algorithm (Alg.~\ref{alg:UCB}) against UCB bandit algorithms, where we obtain feedback of the reward (we consider both noisy and noiseless cases) for each action. Note that for USS we apply Alg.~2 because the real datasets does not satisfy SD condition. Our implementation for UCB algorithm is based on modification of Alg.~\ref{alg:UCB}) so that we keep track of actual pairwise error differences for each arm rather than pairwise-disagreements (Step 5 in Alg.~\ref{alg:UCB}). We benchmark the performance with respect to a budget constrained problem, where the objective is to pick a sensor that minimizes error with respect to a budget constraint. We consider both high and low available budget situations. For Heart and Diabetes datasets a low budget is about (\$ 10). We note from the error probabilities in Table~\ref{tab:error_stats} that the optimal sensor in such a situation is Sensor 1. On the other hand for a budget of about (\$ 50) the optimal sensor for Diabetes dataset is Sensor 3, while for the Heart dataset it is Sensor 2. To map this to our setting we consider an equivalent error-cost tradeoff objective ($\lambda$ Cost + Error) with an appropriate scaling parameter $\lambda$ so that it leads to the same sensor choice based on Eq.~\ref{eqn:interp_opt} as in the constrained one.
 
 
-%This can also be seen from Eq.~\ref{}. Consequently, we choose an appropriate $\lambda$ that corresponds to the
->>>>>>> bf364d745ef586227b99f696a8fb6b27b5a5716c
-
-Fo the synthetic experiments we set $c_1=0$ and $c_2+c_3=0.4$ while varying $c_2$ between $[0.1 0.29]$. The optimal action in this setup is $2$. In Figure \ref{fig:BSC_SD} we applied Algorithm \ref{alg:asym} on BSC data that satisfies SD property. As seen, the algorithm learns the optimal arm for all values of $c_2$. In Figure \ref{fig:BSC_WD} 
-we applied Algorithm \ref{alg:UCB} on BSC data, where The $x$-axis in the figure is the ratio
+Fo the synthetic experiments we set $c_1=0$ and $c_2+c_3=0.4$ while varying $c_2$ from $0.1$ to $0.29$. The optimal action in this setup is $2$. In Figure \ref{fig:BSC_SD} we applied Algorithm \ref{alg:asym} on BSC data that satisfies SD property. As seen, the algorithm learns the optimal arm for all values of $c_2$. In Fig. ~\ref{fig:BSC_WD} 
+we applied Alg. ~\ref{alg:UCB} on BSC data, where $x$-axis in the figure is the ratio
 \[R= \frac{0.4 - c_2}{\Pr\{Y^2 \neq Y^3\}}\]
-and $y$-axis is the regret per round. As shown,  regret per round is small when $R>1$, whereas it is high for for $R<1$. This observation follows by applying definition of (\ref{dfn:WDP})- when $R>1$, the setup satisfies the WD property and the algorithm identifies the optimal action, whereas when $R<1$ the setup violates the WD property and the algorithm cannot identify the optimal arm. This validates the learnability under the WD property. 
+and $y$-axis is the regret per round. As shown, regret per round is small when $R>1$, whereas it is high for $R<1$. This observation follows by applying definition of (\ref{dfn:WDP})- when $R>1$, the setup satisfies the WD property and the algorithm identifies the optimal action, whereas when $R<1$ the setup violates the WD property and the algorithm cannot identify the optimal arm resulting in high regret per round. This validates the learnability under the WD property. 
 
-In figure \ref{fig:Diabetes}, we apply Algorithm $2$ and standard UCB algorithm on the Diabetes dataset. In applying the standard using algorithm, we use the true label in each round to get the loss for the action played. The regret plots corresponding to the Algorithm $2$ are labeled as unsupervised and that corresponding to standard UCB as supervised in the figure. We consider two values for trade-off factor, $\lambda=0.001$ and $\lambda=0.015$. In the first case, accuracy is given higher weight and action $3$ is optimal, in the second cost factor becomes dominant and action $1$ is optimal. When action $3$ is optimal, the performance of both the supervised and unsupervised methods are almost identical. When action $1$ is optimal. As expected, the performance of unsupervised method is better than the supervised method, but unsupervised method learns the optimal arms almost after the same number of rounds as the supervised method though it incurs high regret in the initial rounds.
+In figure \ref{fig:Diabetes}, we apply Algorithm $2$ and the standard UCB algorithm on the Diabetes dataset. In applying the standard using algorithm, we use the true label in each round to get the loss for the action played. The regret plots corresponding to the Algorithm $2$ are labeled as unsupervised and that corresponding to standard UCB as supervised in the figure. We consider two values for trade-off factor, $\lambda=0.001$ and $\lambda=0.015$. In the first case, accuracy is given higher weight and action $3$ is optimal, in the second cost factor becomes dominant and action $1$ is optimal. When action $3$ is optimal, the performance of both the supervised and unsupervised methods are almost identical. When action $1$ is optimal. As expected, the performance of unsupervised method is better than the supervised method, but unsupervised method learns the optimal arms almost after the same number of rounds as the supervised method though it incurs high regret in the initial rounds.
 
 
 In figure \ref{fig:Heart} we again apply Algorithm $2$ on the standard UCB algorithm on the heart dataset. We set $\lambda=0.05$ for which action $1$ is optimal. The two corresponding plots are labeled as unsupervised and supervised in the figure. We also plot the regret obtained when noisy labels are input to the 
