@@ -5,28 +5,28 @@
 		\includegraphics[scale=0.21]{../Simulations/Figures/BSC_SD}
 		\label{fig:BSC_SD}
 		\vspace{-.2cm}
-		\caption{BSC data satisfying SD}
+		\caption{Synthetic under SD}
 	\end{minipage}
 	\begin{minipage}{4cm}
 		\centering
 		\includegraphics[scale=0.3]{../Simulations/Figures/BSC_WD2}
 		\label{fig:BSC_WD}
 		\vspace{-.5cm}
-		\caption{BSC data}
+		\caption{Synthetic under WD}
 	\end{minipage}
 	\begin{minipage}{4cm}
 		\centering
 		\includegraphics[scale=0.3]{../Simulations/Figures/Diabetes_WD1}
 		\label{fig:Diabetes}
 		\vspace{-.5cm}
-		\caption{Diabetes dataset}
+		\caption{PIMA Diabetes}
 	\end{minipage}
 	\begin{minipage}{4cm}
 		\centering
 		\includegraphics[scale=0.3]{../Simulations/Figures/Heart_WD1}
 		\label{fig:Heart}
 		\vspace{-.5cm}
-		\caption{Heart dataset}
+		\caption{Heart disease}
 	\end{minipage}
 	\vspace{.2cm}
 
@@ -78,7 +78,9 @@ In Fig. \ref{fig:BSC_SD}, BSC data is generated that satisfies SD property and A
 
 In this section we evaluate performance of \ref{alg:asym} and \ref{alg:UCB} on synthetic and real datasets (PIMA-Diabetes) and Heart Disease (Cleveland). Both of these datasets have accompanying costs for individual features.%. For synthetic example, we consider a binary symmetric channel, and for real world examples, we use diabetes (PIMA indiana) and heart disease (Clevland) from UCI dataset. In both datasets attributes/features are associated with costs, where features related to physical observations are cheap and that obtained from medical tests are costly. The experiments are setup as follows:
 
-{\bf Synthetic:} we generate data as follows. The input, $Y_t$, is generated IID Ber($0.7$). Outputs for channels 1, 2, 3 have an overall error statistic, $\gamma_1 = 0.4,\,\gamma_2=0.1,\,\gamma=0.05$ respectively. To ensure SD we enforce Eq.~\ref{eqn:DominanceCondition} during the generation process. To ensure WD we enforce Eq.~\ref{dfn:WDP}.  %Channel $i=1,2,3$ flips input bit with probability $p_i$ where $p_1\geq p_2\geq p_3$. Transmission over channel $1$ is free and that over channel $2$ and $3$ costs price of $ c_2$ and $c_3\in (0,1] $ units per bit, respectively. Input bits are generated with probability $0.7$ and we set $p_1=.3, p_2=.1$ and $p_3=.05$.
+{\bf Synthetic:} We generate data as follows. The input, $Y_t$, is generated IID Ber($0.7$). Outputs for channels 1, 2, 3 have an overall error statistic, $\gamma_1 = 0.4,\,\gamma_2=0.1,\,\gamma_3=0.05$ respectively. To ensure SD we enforce Defn.~\ref{eqn:DominanceCondition} during the generation process. To relax SD requirement we introduce errors during data generation for sensor outputs 2 and 3 even when sensor 1 predicts correctly (while still keeping the overall errors fixed).  
+
+%Channel $i=1,2,3$ flips input bit with probability $p_i$ where $p_1\geq p_2\geq p_3$. Transmission over channel $1$ is free and that over channel $2$ and $3$ costs price of $ c_2$ and $c_3\in (0,1] $ units per bit, respectively. Input bits are generated with probability $0.7$ and we set $p_1=.3, p_2=.1$ and $p_3=.05$.
 
 {\bf Real Datatsets:} %we obtain a sensor acquisition setup from the datasets as follows: 
 We split the features into three ``sensors'' based on their costs. For PIMA-Diabetes dataset (size = $768$) the first sensor is associated with patient history/profile with cost (\$ 6), the second sensor in addition utilizes  insulin test (cost \$ 22) and the 3nd sensor uses all attributes (cost \$46). For the Heart dataset (size = $297$) we use the first $7$ attributes that includes cholestrol readings, blood-sugar, and rest-ECG (Cost \$ 27), the second sensor utilizes in addition thalach, exang, oldpeak, slope attributes that cost $\$300$  and the third sensor utilizes more extensive tests at a total cost of \$601. 
@@ -110,23 +112,28 @@ The size of these datasets is relatively small and limits our ability to experim
 
 \noindent
 {\bf Testing Learnability:}
-We experiment with different USS algorithms on the synthetic dataset. Our purpose is twofold: (a) show the superior performance of reduction scheme (Alg~1) on SD and necessity of a more robust scheme to account for WD, (b) establish WD condition as the maximal learnable set.
+We experiment with different USS algorithms on the synthetic dataset. Our purpose is twofold: (a) show the superior performance of reduction scheme (Alg~1) on SD and necessity of a more robust scheme to account for WD, (b) establish WD condition as the maximal learnable set. To test WD requirement we parameterize the problem by varying costs. Without loss of generality we fix the cost of sensor 1 to be zero and the total cost of the entire system to be $C_{\mbox{tot}}$. We then vary cost of sensors 2 and 3. To plot the effect of WD note from Eq.~\ref{dfn:WDP} that we must have that if a sensor $j <K$ is optimal then the ratio,
+$$
+\rho = \max_{j'>K} \frac{(c_{j'} - c_j)}{Prob{Y^{(j)} \neq Y^{(j')}} \leq 1
+$$
+This corresponds to the condition that the worst-case marginal-cost to marginal absolute error is bounded by 1.
+We test this hypothesis by enforcing Sensor 2 to be the optimal sensor and vary the costs accordingly. Figs.~\ref{fig:BSC_SD} depicts the results of Alg.~\ref{alg:asym} when SD condition is satisfied for varying values of costs. This verifies the fact that SD is strictly contained within WD set. In Fig.~\ref{fig:BSC_WD} we plot regret-per-round as a function of $\rho$ when the data generated no longer remains in WD set. We also note the behavior of Alg.~\ref{alg:asym} and the modified UCB algorithm Alg.~\ref{alg:UCB}. While for SD condition Alg.~\ref{alg:asym} is superior there is an inherent lack of robustness when SD fails to be satisfied. Consequently, modified UCB is somewhat more robust to relaxation of SD assumption.
 
 \noindent
 {\bf Unsupervised vs. Supervised Learning:}
-The real datasets provide an opportunity to understand how different types of information can impact performance. We compare our USS algorithm (Alg.~\ref{alg:UCB}) against UCB bandit algorithms, where we obtain feedback of the reward (we consider both noisy and noiseless cases) for each action. Note that for USS we apply Alg.~2 because the real datasets does not satisfy SD condition. Our implementation for UCB algorithm is based on modification of Alg.~\ref{alg:UCB}) so that we keep track of actual pairwise error differences for each arm rather than pairwise-disagreements (Step 5 in Alg.~\ref{alg:UCB}). We benchmark the performance with respect to a budget constrained problem, where the objective is to pick a sensor that minimizes error with respect to a budget constraint. We consider both high and low available budget situations. For Heart and Diabetes datasets a low budget is about (\$ 10). We note from the error probabilities in Table~\ref{tab:error_stats} that the optimal sensor in such a situation is Sensor 1. On the other hand for a budget of about (\$ 50) the optimal sensor for Diabetes dataset is Sensor 3, while for the Heart dataset it is Sensor 2. To map this to our setting we consider an equivalent error-cost tradeoff objective ($\lambda$ Cost + Error) with an appropriate scaling parameter $\lambda$ so that it leads to the same sensor choice based on Eq.~\ref{eqn:interp_opt} as in the constrained one.
+The real datasets provide an opportunity to understand how different types of information can impact performance. We compare our USS algorithm (Alg.~\ref{alg:UCB}) against UCB bandit algorithms, where we obtain feedback of the reward (we consider both noisy and noiseless cases) for each action. Note that for USS we apply Alg.~\ref{alg:UCB} because the real datasets does not satisfy SD condition and our experience on synthetic data (see Fig.~\ref{fig:BSC_WD}). Our implementation for UCB algorithm is based on modification of Alg.~\ref{alg:UCB}) so that we keep track of actual pairwise error differences for each arm rather than pairwise-disagreements (Step 5 in Alg.~\ref{alg:UCB}). We benchmark the performance with respect to a budget constrained problem, where the objective is to pick a sensor that minimizes error with respect to a budget constraint. We consider both high and low available budget situations. For Heart and Diabetes datasets a low budget is about (\$ 10). We note from the error probabilities in Table~\ref{tab:error_stats} that the optimal sensor in such a situation is Sensor 1. On the other hand for a budget of about (\$ 50) the optimal sensor for Diabetes dataset is Sensor 3, while for the Heart dataset it is Sensor 2. To map this to our setting we consider an equivalent error-cost tradeoff objective ($\lambda$ Cost + Error) with an appropriate scaling parameter $\lambda$ so that it leads to the same sensor choice based on Eq.~\ref{eqn:interp_opt} as in the constrained one. We then compare supervised and unsupervised scenarios in Figs~\ref{fig:Diabetes} and \ref{fig:Heart} for real datasets. We notice that for both high as well as low cost scenarios, while supervised does have lower regret, the cummulative regret is also sublinear and within a constant fraction of the regret for unsupervised case. This is qualititively interesting because these plots demonstrate that (although under WD we do not have uniform learnability) in typical cases we learn in unsupervised setting as in the supervised bandit setting. In general we emphasize that in many medical and security systems it is often difficult to obtain ground-truth annotatations for examples.
 
 
-Fo the synthetic experiments we set $c_1=0$ and $c_2+c_3=0.4$ while varying $c_2$ from $0.1$ to $0.29$. The optimal action in this setup is $2$. In Figure \ref{fig:BSC_SD} we applied Algorithm \ref{alg:asym} on BSC data that satisfies SD property. As seen, the algorithm learns the optimal arm for all values of $c_2$. In Fig. ~\ref{fig:BSC_WD} 
-we applied Alg. ~\ref{alg:UCB} on BSC data, where $x$-axis in the figure is the ratio
-\[R= \frac{0.4 - c_2}{\Pr\{Y^2 \neq Y^3\}}\]
-and $y$-axis is the regret per round. As shown, regret per round is small when $R>1$, whereas it is high for $R<1$. This observation follows by applying definition of (\ref{dfn:WDP})- when $R>1$, the setup satisfies the WD property and the algorithm identifies the optimal action, whereas when $R<1$ the setup violates the WD property and the algorithm cannot identify the optimal arm resulting in high regret per round. This validates the learnability under the WD property. 
+%Fo the synthetic experiments we set $c_1=0$ and $c_2+c_3=0.4$ while varying $c_2$ from $0.1$ to $0.29$. The optimal action in this setup is $2$. In Figure \ref{fig:BSC_SD} we applied Algorithm \ref{alg:asym} on BSC data that satisfies SD property. As seen, the algorithm learns the optimal arm for all values of $c_2$. In Fig. ~\ref{fig:BSC_WD} 
+%we applied Alg. ~\ref{alg:UCB} on BSC data, where $x$-axis in the figure is the ratio
+%\[R= \frac{0.4 - c_2}{\Pr\{Y^2 \neq Y^3\}}\]
+%and $y$-axis is the regret per round. As shown, regret per round is small when $R>1$, whereas it is high for $R<1$. This observation follows by applying definition of (\ref{dfn:WDP})- when $R>1$, the setup satisfies the WD property and the algorithm identifies the optimal action, whereas when $R<1$ the setup violates the WD property and the algorithm cannot identify the optimal arm resulting in high regret per round. This validates the learnability under the WD property. 
 
-In figure \ref{fig:Diabetes}, we apply Algorithm $2$ and the standard UCB algorithm on the Diabetes dataset. In applying the standard using algorithm, we use the true label in each round to get the loss for the action played. The regret plots corresponding to the Algorithm $2$ are labeled as unsupervised and that corresponding to standard UCB as supervised in the figure. We consider two values for trade-off factor, $\lambda=0.001$ and $\lambda=0.015$. In the first case, accuracy is given higher weight and action $3$ is optimal, in the second cost factor becomes dominant and action $1$ is optimal. When action $3$ is optimal, the performance of both the supervised and unsupervised methods are almost identical. When action $1$ is optimal. As expected, the performance of unsupervised method is better than the supervised method, but unsupervised method learns the optimal arms almost after the same number of rounds as the supervised method though it incurs high regret in the initial rounds.
+%In figure \ref{fig:Diabetes}, we apply Algorithm $2$ and the standard UCB algorithm on the Diabetes dataset. In applying the standard using algorithm, we use the true label in each round to get the loss for the action played. The regret plots corresponding to the Algorithm $2$ are labeled as unsupervised and that corresponding to standard UCB as supervised in the figure. We consider two values for trade-off factor, $\lambda=0.001$ and $\lambda=0.015$. In the first case, accuracy is given higher weight and action $3$ is optimal, in the second cost factor becomes dominant and action $1$ is optimal. When action $3$ is optimal, the performance of both the supervised and unsupervised methods are almost identical. When action $1$ is optimal. As expected, the performance of unsupervised method is better than the supervised method, but unsupervised method learns the optimal arms almost after the same number of rounds as the supervised method though it incurs high regret in the initial rounds.
 
 
-In figure \ref{fig:Heart} we again apply Algorithm $2$ on the standard UCB algorithm on the heart dataset. We set $\lambda=0.05$ for which action $1$ is optimal. The two corresponding plots are labeled as unsupervised and supervised in the figure. We also plot the regret obtained when noisy labels are input to the 
-the standard UCB algorithm instead of the true labels. This plot is labeled as supervised (noisy) in the figure which is obtained when each label is flipped by probability $0.2$. As seen, the regret performance of the supervised method deteriorates as label gets noisier. 
+%In figure \ref{fig:Heart} we again apply Algorithm $2$ on the standard UCB algorithm on the heart dataset. We set $\lambda=0.05$ for which action $1$ is optimal. The two corresponding plots are labeled as unsupervised and supervised in the figure. We also plot the regret obtained when noisy labels are input to the 
+%the standard UCB algorithm instead of the true labels. This plot is labeled as supervised (noisy) in the figure which is obtained when each label is flipped by probability $0.2$. As seen, the regret performance of the supervised method deteriorates as label gets noisier. 
 
 
 %and the average is shown in figures (\ref{fig:BSC1}-\ref{fig:Heart}) with $95\%$ confidence bounds. The left Figure in\ref{fig: BSC1} we applied Algorithm \ref{alg:asym} on BSC data that satisfies SD property. As see, the algorithm learns the optimal arm. In Figure \ref{fig:BSC2} 
