@@ -2,9 +2,10 @@
 \newcommand{\one}[1]{\mathbb{I}_{\{#1\}}}
 \newcommand{\Pside}{\P_{\mathrm{side}}\xspace}
 \newcommand{\PSAP}{\P_{\mathrm{SAP}}\xspace}
+\newcommand{\PUSS}{\P_{\mathrm{USS}}\xspace}
 \renewcommand{\P}{\mathcal{P}}
 
-In this section we establish that SAP with strong dominance property is `regret equivalent' to an instance of MAB with side-information and the corresponding algorithm for MAB can be suitably imported to solve SAP efficiently.   
+In this section we establish that USS with SD property is `regret equivalent' to an instance of MAB with side-information and the corresponding algorithm for MAB can be suitably imported to solve USS efficiently.   
 
 \if0
 \todoc[inline]{I am thinking that maybe we should skip this general section
@@ -90,43 +91,44 @@ regret equivalent.
 
 %Let us now show how to reduce SAP under strong dominance to a specific 
 %bandit with side-observations.
-Let $\PSAP$ be the set of SAPs with action set $\A = [K]$.
+Let $\PUSS$ be the set of USSs with action set $\A = [K]$.
 The corresponding bandit problems will have the same action set,
 while for action $k\in [K]$ the neighborhood set is $\mathcal{N}(k) = [k]$.
-Take any instance $(P,c)\in \PSAP$ and let $(Y,Y^1,\dots,Y^K) \sim P$ be the 
-unobserved state of environment in round $s$.
+Take any instance $(P,c)\in \PUSS$ and let $(Y,Y^1,\dots,Y^K) \sim P$ be the 
+unobserved state of environment.
 We let the reward distribution for arm $k$ in the corresponding bandit problem
 be a shifted Bernoulli distribution.
-In particular, the cost of arm $k$ follows the distribution of 
-\todom{We need to define in the bandit problem as $\one{Y^k\ne Y^1} - C_k$  not $\one{Y^k\ne Y^1} + C_k$. Now, the mean of rewards can be negative!! We can overcome this by adding $C_K$ to each arm so that the mean rewards are non-negative. This won't change optimal arm or regret.}$\one{Y^k\ne Y^1} - C_k$ (we use costs here to avoid flipping signs).
+In particular, the cost of arm $k$ follows the distribution of $\one{Y^k\ne Y^1} - C_k$ (we use costs here to avoid flipping signs).
+%\todom{We need to define in the bandit problem as $\one{Y^k\ne Y^1} - C_k$  not $\one{Y^k\ne Y^1} + C_k$. Now, the mean of rewards can be negative!! We can overcome this by adding $C_K$ to each arm so that the mean rewards are non-negative. This won't change optimal arm or regret.}
 
 %%%Manjesh: Changed +C_k to -C_k
 The costs for different arms are defined to be independent of each other.
-Let $\Pside$ denote the set of resulting bandit problems and let $f:\PSAP \to \Pside$
+Let $\Pside$ denote the set of resulting bandit problems and let $f:\PUSS \to \Pside$
 be the map that transforms SAP instances to bandit instances by following the
 transformation that was just described.
-\todoc[inline]{
-Ok, so if they are independent of each other, then the joint distributions will not be 
-same as if they were not independent of each other.
-Independence may lose information (e.g., may increase variance?).
-If we define them not to be independent of each other, we will need to be careful
-with the algorithms defined for bandits with side-observation: Do they use
-(in their proof) independence of rewards underlying different arms?
-I would think that they are not.
-The downside of not defining independent rewards is that the specification of
-bandits with side observations must allow this -- complicating things a bit in the background.
-Another executive decision we should make is whether we like to see both costs and 
-rewards.
-}
-\todom{We will add this as a remark so that reviewers do not come back asking this question.}
+%\todoc[inline]{
+%Ok, so if they are independent of each other, then the joint distributions will not be 
+%same as if they were not independent of each other.
+%Independence may lose information (e.g., may increase variance?).
+%If we define them not to be independent of each other, we will need to be careful
+%with the algorithms defined for bandits with side-observation: Do they use
+%(in their proof) independence of rewards underlying different arms?
+%I would think that they are not.
+%The downside of not defining independent rewards is that the specification of
+%bandits with side observations must allow this -- complicating things a bit in the background.
+%Another executive decision we should make is whether we like to see both costs and 
+%rewards.
+%}
+%\todom{We will add this as a remark so that reviewers do not come back asking this question.}
 
 Now let $\pi\in \Pi(\Pside)$ be a policy for $\Pside$.
-Policy $\pi$ can also be used on any $(P,c)$ instance in $\PSAP$ in an obvious way:
+Policy $\pi$ can also be used on any $(P,c)$ instance in $\PUSS$ in an obvious way:
 In particular, given the history of actions and states $A_1,U_1,\dots,A_t,U_t$
 in $\theta=(P,c)$ where $U_s = (Y_s,Y_s^1,\dots,Y_s^{K})$ such that 
 the distribution of $U_s$ given that $A_s=a$ is $P$ marginalized to $\Y^{a}$,
 the next action to be taken is 
-$A_{t+1}\sim \pi(\cdot| A_1, V_1,\dots,A_t,V_t)$, where \todom{I changed the way rewards are mapped between SAP and bandits and added the proof for regret equivalence, please check.}
+$A_{t+1}\sim \pi(\cdot| A_1, V_1,\dots,A_t,V_t)$, where 
+%\todom{I changed the way rewards are mapped between SAP and bandits and added the proof for regret equivalence, please check.}
 $V_s = (\one{Y_s^1\ne Y_s^1}-C_1,\dots,\one{Y_s^1\ne Y_s^{A_s}}-C_{A_s})$. Let the resulting policy be denoted by $\pi'$.
 The following can be checked by simple direct calculation:
 \begin{prop} 
@@ -135,12 +137,10 @@ If $\theta \in \TSD$, then the regret of $\pi$ on $f(\theta)\in \Pside$
 is the same as the regret of $\pi^\prime$ on $\theta$. 
 \end{prop}
 
-This implies that $\Regret_T^*(\TSD)\le \Regret_T^*(f(\TSD))$.
-
-Now note that this reasoning can also be repeated in the other ``direction'': 
+This implies that $\Regret_T^*(\TSD)\le \Regret_T^*(f(\TSD))$. Now note that this reasoning can also be repeated in the other ``direction'': 
 For this, first note that the map $f$ has a right inverse $g$ 
 (thus, $f\circ g$ is the identity over $\Pside$)
-and if $\pi'$ is a policy for $\PSAP$, 
+and if $\pi'$ is a policy for $\PUSS$, 
 then $\pi'$ can be ``used''  on any instance $\theta\in \Pside$
 via the ``inverse'' of the above policy-transformation:
 Given the sequence $(A_1,V_1,\dots,A_t,V_t)$ where 
@@ -161,16 +161,16 @@ $\Regret_T^*(\TSD) = \Regret_T^*(f(\TSD))$.
 {\bf Lower Bounds:} Note that as a consequence of the reduction and the one-to-one correspondence between the two problems, lower bounds for the bandit with side-information also serves as a lower bound for the USS problem as well.
 
 
-\todoc[inline]{So this could in theory be used for upper and lower bounds.. 
-However, $\Pside$ is really special (because of the fixed costs) -- hence it is unclear 
-whether existing lower bounds, for example, would apply.
-The next step could be to describe policies for bandits
-with side observation starting from our paper with Yifan.
-We have two types of policies.
-One is asymptotically optimal, the other is minimax optimal.
-Can we have a single policy in our special problem that would be simultanously 
-optimal in both cases? What happens when only weak dominance
-is satisfied?}
+%\todoc[inline]{So this could in theory be used for upper and lower bounds.. 
+%However, $\Pside$ is really special (because of the fixed costs) -- hence it is unclear 
+%whether existing lower bounds, for example, would apply.
+%The next step could be to describe policies for bandits
+%with side observation starting from our paper with Yifan.
+%We have two types of policies.
+%One is asymptotically optimal, the other is minimax optimal.
+%Can we have a single policy in our special problem that would be simultanously 
+%optimal in both cases? What happens when only weak dominance
+%is satisfied?}
 
 \if0
 At the price of abusing notation 

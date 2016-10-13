@@ -39,11 +39,11 @@ i.e., $\gamma_k(\theta) \doteq \Prob{Y_t\ne Y_t^k}$ is decreasing with $k$ incre
 \begin{figure}[!h]
 	\centering
 	\includegraphics[scale=.4]{../Figures/Cascade.pdf}
-	\caption{\footnotesize Cascaded Unsupervised Sequential Sensor Selection. $Y_t$ is the hidden state of the instance and $Y_t^1, Y_t^2 \ldots$ are test outputs. Not shown are features that a sensor could process to produce the output. The cost for using test $j$ is also shown.}
+	\caption{\footnotesize Cascaded Unsupervised Sequential Sensor Selection. $Y_t$ is the hidden state of the instance and $Y_t^1, Y_t^2 \ldots$ are test outputs. Not shown are features that a sensor could process to produce the output.}
 	\label{fig:SensorCascade}
 	\vspace{-.2cm}
 \end{figure} 
-\todom{How about this figure and caption?}
+%\todom{How about this figure and caption?}
 Knowing this, the learner's choice of $I_t$ also indicates that he/she chooses $I_t$ to predict the unknown label $Y_t$.
 Observing sensors is costly: The cost of choosing $I_t$ is $C_{I_t} \doteq c_1 + \dots + c_{I_t}$.
 The total cost suffered by the learner in round $t$ is thus $C_{I_t} + \ind{Y_t \ne Y_t^{I_t}}$.
@@ -54,7 +54,7 @@ $\Regret_n =( \sum_{t=1}^n \EE{ C_{I_t} +\ind{Y_t \ne Y_t^{I_t} }} )- n \min_k (
 \noindent
 {\bf Sublinear Regret:} The quantification of the learning speed is given by the expected regret 
 $\Regret_n = n r^*(\theta) - \EE{\sum_{t=1}^n R_t}$, which, for brevity and when it does not cause confusion, 
-we will just call regret. A sublinear expected regret, i.e., $\Regret_n/n \to 0$ as $n\to \infty$ means that the learner in the long run collects almost as much reward on expectation as if the optimal action was known to it.
+we will just call regret. A sublinear expected regret, i.e., $\Regret_n/n \to 0$ as $n\to \infty$ means that the learner in the long run collects almost as much reward on expectation as if the optimal action is known.
 
 For future reference, we let $c(k,\theta) = \EE{ C_{k} +\ind{Y_t \ne Y_t^{k} }}  (= C_k + \gamma_k)$ and $c^*(\theta) = \min_k c(k,\theta)$. Thus, $\Regret_n =( \sum_{t=1}^n \EE{ c(I_t,\theta) }) - n c^*(\theta)$.
 In what follows, we shall denote by $\cA^*(\theta)$ the set of optimal actions of $\theta$

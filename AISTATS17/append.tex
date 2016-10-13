@@ -27,68 +27,12 @@
 	For $n\ge n_0$, the expected regret of $\Alg$ is at most $n \times 1/n + f(n) (1-1/n) \le 1+f(n) = o(n)$.
 	\end{proof}
 
-\section*{Proof of Proposition \ref{prop:awdunique}}
+\section*{Proof of Corollary \ref{cor:twdlearnable}}
 \begin{proof}
-	Pick any $\theta = P_S\otimes P_{Y|S}\in \TWD$. If $A^*(\theta)$ is a singleton, then clearly $a(P_S) = \awd(P_S)$ since both are sound over $\TWD$.
-	Hence, assume that $A^*(\theta)$ is not a singleton.
-	Let $i = a^*(\theta) = \min A^*(\theta)$ and let $j = \min A^*(\theta) \setminus \{ i \}$.
-	We argue that $P_{Y|S}$ can be changed so that on the new instance $i$ is still an optimal action, while
-	$j$ is not an optimal action, while the new instance $\theta' = P_S \otimes P_{Y|S}'$ is in $\TWD$.
-	
-	The modification is as follows:
-	Consider any $y^{-j} \doteq (y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$.
-	For $y,y^j\in \{0,1\}$, define 
-	$q(y|y^j) = P_{Y|S}(y|y^1, \dots, y^{j-1}, y^j, y^{j+1},\dots, y^K)$
-	and similarly let
-	$q'(y|y^j) = P_{Y|S}'(y|y^1, \dots, y^{j-1}, y^j, y^{j+1},\dots, y^K)$
-	Then, we let $q'(0|0) = 0$ and $q'(0|1) = q(0|0) + q(0|1)$,
-	while we let  $q'(1|1) = 0$ and $q'(1|0) = q(1|1) + q(1|0)$.
-	This makes $P_{Y|S}'$ well-defined ($P_{Y|S}'(\cdot|y^1,\dots,y^K)$ is a distribution for any $y^1,\dots,y^K$).
-	Further, we claim that the transformation has the property that 
-	it leaves $\gamma_p$ unchanged for $p\ne j$, while $\gamma_j$ is guaranteed to decrease.
-	To see why $\gamma_p$ is left unchanged for $p\ne j$ note that
-	$\gamma_p = \sum_{y^p}  P_{Y^p}(y^p) P_{Y|Y^p}(1-y^p|y^p)$.
-	Clearly, $P_{Y^p}$ is left unchanged.
-	Introducing $y^{-k}$ to denote a tuple where the $k$th component is left out,
-	$P_{Y|Y^p}(1-y^p|y^p) = \sum_{y^{-p,-j}} P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )
-	+P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )$
-	and by definition,
-	\begin{align*}
-	\MoveEqLeft P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )\\
-	&\quad +P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )\\
-	&
-	=
-	P_{Y|Y^1,\dots,Y^K}'( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )\\
-	&\quad+P_{Y|Y^1,\dots,Y^K}'( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )\,,
-	\end{align*}
-	where the equality holds because ``$q'(y|0)+q'(y|1) = q(y|0) + q(y|1)$''.
-	Thus, $P_{Y|Y^p}(1-y^p|y^p) = P_{Y|Y^p}'(1-y^p|y^p)$ as claimed.
-	That $\gamma_j$ is non-increasing follows with an analogue calculation.
-	In fact, this shows that $\gamma_j$ is strictly decreased
-	if for any $(y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$, either $q(0|0)$ or $q(1|1)$ was positive.
-	If these are never positive, this means that $\gamma_j=1$. 
-	But then $j$ cannot be optimal since $c_j>0$.
-	Since $j$ was optimal, $\gamma_j$ is guaranteed to decrease.
-	
-	Finally, it is clear that the new instance is still in $\TWD$ since  $a^*(\theta)$ is left unchanged.
-	\end{proof}
-
-\section*{Proof of Proposition \ref{prop:awdwelldef}}
-\begin{proof}
-	Let $\theta\in \TWD$, $i = a^*(\theta)$. Obviously, \eqref{eq:wd2} holds by the definition of $\TWD$.
-	Thus, the only question is whether \eqref{eq:wd1} also holds.
-	We prove this by contradiction:
-	Thus, assume that \eqref{eq:wd1} does not hold, i.e., for some $j<i$, $C_i-C_j \ge \Prob{Y^i \ne Y^j}$. Then, by \cref{cor:gammadiff}, $\Prob{ Y^i \ne Y^j} \ge \gamma_j - \gamma_i$, hence $\gamma_j + C_j \le \gamma_i + C_i$, which contradicts the definition of $i$, thus finishing the proof.
-	\end{proof}
-\section*{Proof of Proposition \ref{prop:awdsound}}
-\begin{proof}
-	Take any $\theta\in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $i = \awd(P_S)$, $j = a^*(\theta)$.
-	If $i=j$, there is nothing to be proven. Hence, first assume that $j>i$. Then, by~\eqref{eq:wd2}, $C_j - C_i \ge \Prob{Y^i \ne Y^j}$.
-	By \cref{cor:gammadiff}, $\Prob{Y^i \ne Y^j } \ge \gamma_i - \gamma_j$. Combining these two inequalities we get that
-	$\gamma_i + C_i \le \gamma_j + C_j$, which contradicts with the definition of $j$.
-	Now, assume that $j<i$. Then, by~\eqref{eq:wd}, $C_i - C_j \ge \Prob{Y^i \ne Y^j}$.
-	However, by~\eqref{eq:wd1}, $C_i -C_j < \Prob{Y^i \ne Y^j}$, thus $j<i$ cannot hold either and we must have $i=j$.
-	\end{proof}
+	By \cref{prop:awdwelldef}, $\awd$ is well-defined over $\TWD$, while by \cref{prop:awdsound}, $\awd$ is sound over $\TWD$.
+	%By \cref{prop:learnablemap}, $\TWD$ is learnable, as witnessed by $\awd$. \todoc{We should add definitions for these concepts..
+	%namely, $\awd$ well-defined over $\TWD$, $\awd$ sound over $\TWD$, etc.}\todom[]{Csaba, you did this already!!}
+\end{proof}
 
 \section*{Proof of Proposition \ref{prop:gammadiff}}
 
@@ -118,6 +62,95 @@
 	$\Prob{ Y^i=Y,Y^i\ne Y^j} = \Prob{ Y^j\ne Y,Y^i= Y}$
 	which hold because $Y,Y^i,Y^j$ only take on two possible values.
 \end{proof}
+
+
+\section*{Proof of Proposition \ref{prop:ilej}}
+\begin{proof}
+	\noindent $\Rightarrow$: From the premise, it follows that $C_j - C_i \ge \gamma_i - \gamma_j$.
+	Thus, by~\eqref{eq:cond1}, $C_j - C_i \ge \Prob{Y^i\ne Y^j}$.
+	\noindent $\Leftarrow$: We have $C_j - C_i \ge \Prob{Y^i \ne Y^j} \ge \gamma_i -\gamma_j$, where the last
+	inequality is by \cref{cor:gammadiff}.
+	\end{proof}
+\section*{Proof of proposition \ref{prop:jlei}}	
+	\begin{proof}
+		\noindent $\Rightarrow$: The condition $\gamma_i + C_i \le \gamma_j + C_j$ implies that $\gamma_j -\gamma_i \ge C_i - C_j$.
+		By \cref{cor:gammadiff} we get $\Prob{Y^i \ne Y^j} \ge C_i - C_j$.
+		\noindent $\Leftarrow$: Let $C_i - C_j \le \Prob{Y^i \ne Y^j}$. Then, by \eqref{eq:cond2}, $C_i - C_j \le \gamma_j - \gamma_i$.
+	\end{proof}
+
+\section*{Proof of Theorem \ref{thm:MaxLearnability}}
+\begin{proof}
+	Let $a$ as in the theorem statement. By~\cref{prop:awdunique}, $\awd$ is the unique sound action-selector map over $\TWD$.
+	Thus, for any $\theta = P_S\otimes P_{Y|S}\in \TWD$, $\awd(P_S) = a(P_S)$.
+	Hence, the result follows from \cref{cor:awdoutsideincorrect}.
+	\end{proof}
+	
+
+
+\section*{Proof of Proposition \ref{prop:awdwelldef}}
+\begin{proof}
+	Let $\theta\in \TWD$, $i = a^*(\theta)$. Obviously, \eqref{eq:wd2} holds by the definition of $\TWD$.
+	Thus, the only question is whether \eqref{eq:wd1} also holds.
+	We prove this by contradiction:
+	Thus, assume that \eqref{eq:wd1} does not hold, i.e., for some $j<i$, $C_i-C_j \ge \Prob{Y^i \ne Y^j}$. Then, by \cref{cor:gammadiff}, $\Prob{ Y^i \ne Y^j} \ge \gamma_j - \gamma_i$, hence $\gamma_j + C_j \le \gamma_i + C_i$, which contradicts the definition of $i$, thus finishing the proof.
+	\end{proof}
+\section*{Proof of Proposition \ref{prop:awdsound}}
+\begin{proof}
+	Take any $\theta\in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $i = \awd(P_S)$, $j = a^*(\theta)$.
+	If $i=j$, there is nothing to be proven. Hence, first assume that $j>i$. Then, by~\eqref{eq:wd2}, $C_j - C_i \ge \Prob{Y^i \ne Y^j}$.
+	By \cref{cor:gammadiff}, $\Prob{Y^i \ne Y^j } \ge \gamma_i - \gamma_j$. Combining these two inequalities we get that
+	$\gamma_i + C_i \le \gamma_j + C_j$, which contradicts with the definition of $j$.
+	Now, assume that $j<i$. Then, by~\eqref{eq:wd}, $C_i - C_j \ge \Prob{Y^i \ne Y^j}$.
+	However, by~\eqref{eq:wd1}, $C_i -C_j < \Prob{Y^i \ne Y^j}$, thus $j<i$ cannot hold either and we must have $i=j$.
+	\end{proof}
+
+
+\section*{Proof of Proposition \ref{prop:awdunique}}
+\begin{proof}
+	Pick any $\theta = P_S\otimes P_{Y|S}\in \TWD$. If $A^*(\theta)$ is a singleton, then clearly $a(P_S) = \awd(P_S)$ since both are sound over $\TWD$.
+	Hence, assume that $A^*(\theta)$ is not a singleton.
+	Let $i = a^*(\theta) = \min A^*(\theta)$ and let $j = \min A^*(\theta) \setminus \{ i \}$.
+	We argue that $P_{Y|S}$ can be changed so that on the new instance $i$ is still an optimal action, while
+	$j$ is not an optimal action, while the new instance $\theta' = P_S \otimes P_{Y|S}'$ is in $\TWD$.
+	
+	The modification is as follows:
+	Consider any $y^{-j} \doteq (y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$.
+	For $y,y^j\in \{0,1\}$, define 
+	$q(y|y^j) = P_{Y|S}(y|y^1, \dots, y^{j-1}, y^j, y^{j+1},\dots, y^K)$
+	and similarly let
+	$q'(y|y^j) = P_{Y|S}'(y|y^1, \dots, y^{j-1}, y^j, y^{j+1},\dots, y^K)$
+	Then, we let $q'(0|0) = 0$ and $q'(0|1) = q(0|0) + q(0|1)$,
+	while we let  $q'(1|1) = 0$ and $q'(1|0) = q(1|1) + q(1|0)$.
+	This makes $P_{Y|S}'$ well-defined ($P_{Y|S}'(\cdot|y^1,\dots,y^K)$ is a distribution for any $y^1,\dots,y^K$).
+	Further, we claim that the transformation has the property that 
+	it leaves $\gamma_p$ unchanged for $p\ne j$, while $\gamma_j$ is guaranteed to decrease.
+	To see why $\gamma_p$ is left unchanged for $p\ne j$ note that
+	$\gamma_p = \sum_{y^p}  P_{Y^p}(y^p) P_{Y|Y^p}(1-y^p|y^p)$.
+	Clearly, $P_{Y^p}$ is left unchanged.
+	Introducing $y^{-k}$ to denote a tuple where the $k$th component is left out,
+	$P_{Y|Y^p}(1-y^p|y^p) = \sum_{y^{-p,-j}} P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )
+	+P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )$
+	and by definition,
+	\begin{align*}
+	& P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )\\
+	&\quad +P_{Y|Y^1,\dots,Y^K}( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )\\
+	&
+	=
+	P_{Y|Y^1,\dots,Y^K}'( 1-y^p | y^1,\dots, y^{j-1}, 0, y^{j+1}, \dots, y^K )\\
+	&\quad+P_{Y|Y^1,\dots,Y^K}'( 1-y^p | y^1,\dots, y^{j-1}, 1, y^{j+1}, \dots, y^K )\,,
+	\end{align*}
+	where the equality holds because ``$q'(y|0)+q'(y|1) = q(y|0) + q(y|1)$''.
+	Thus, $P_{Y|Y^p}(1-y^p|y^p) = P_{Y|Y^p}'(1-y^p|y^p)$ as claimed.
+	That $\gamma_j$ is non-increasing follows with an analogue calculation.
+	In fact, this shows that $\gamma_j$ is strictly decreased
+	if for any $(y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$, either $q(0|0)$ or $q(1|1)$ was positive.
+	If these are never positive, this means that $\gamma_j=1$. 
+	But then $j$ cannot be optimal since $c_j>0$.
+	Since $j$ was optimal, $\gamma_j$ is guaranteed to decrease.
+	
+	Finally, it is clear that the new instance is still in $\TWD$ since  $a^*(\theta)$ is left unchanged.
+\end{proof}
+
 \section*{Proof of  Theorem \ref{thm:tsdlearnable}}
 \begin{proof}[Proof of \cref{thm:tsdlearnable}]
 	We construct a map as required by~\cref{prop:learnablemap}.
@@ -136,15 +169,16 @@
 \section*{Proof of Theorem \ref{thm:nonunif}}
 \begin{proof}
 We first consider the case when $K=2$ and arbitrarily choose $C_2 - C_1 = 1/4$. 
-\todoc{The theorem statement should be refined or this text..}
+%\todoc{The theorem statement should be refined or this text..}
 We will consider two instances, $\theta,\theta'\in \TWD$ such that for instance $\theta$, 
 action $k=1$ is optimal with an action gap of $c(2,\theta) - c(1,\theta) = 1/4$ between the cost of the second and the first
 action,  while for instance $\theta'$, $k=2$ is the optimal action and the action gap is $c(1,\theta) - c(2,\theta) = \epsilon$
 where $0<\epsilon<3/8$.
 Further, the entries in $P_S(\theta)$ and $P_S(\theta')$ differ by at most $\epsilon$. 
 From this, a standard reasoning gives that no algorithm can achieve sublinear minimax regret over $\TWD$ because any
-algorithm is only able to identify $P_S$. \todoc{Add notation of $P_S(\theta)$ early on. Probably a good idea to add $P_S(\Theta)$ as a notation too for the ``projection'' of $\Theta$ to $P_S$. Also, we should probably remove $c$ from the instance definition;
-	in every case we are reasoning for a fixed $c$, hence it is superfluous to keep $c$ in the instance definition.}\todom{In the beginning, it is now mentioned that c is fixed and known. It is removed from definition of problem instance now. Will introduce the projection notation in the next round of edits.}
+algorithm is only able to identify $P_S$. 
+%\todoc{Add notation of $P_S(\theta)$ early on. Probably a good idea to add $P_S(\Theta)$ as a notation too for the ``projection'' of $\Theta$ to $P_S$. Also, we should probably remove $c$ from the instance definition;
+%	in every case we are reasoning for a fixed $c$, hence it is superfluous to keep $c$ in the instance definition.}\todom{In the beginning, it is now mentioned that c is fixed and known. It is removed from definition of problem instance now. Will introduce the projection notation in the next round of edits.}
 
 The constructions of $\theta$ and $\theta'$ are shown in \cref{tab:nonunif}:
 The entry in a cell gives the probability of the event as specified by the column and row labels.
