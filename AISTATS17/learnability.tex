@@ -35,11 +35,13 @@ sound action selection map for all the instances in $\Theta$.
 A class of sensor acquisition problems that contains instances that satisfy the so-called \emph{strong dominance} condition 
 will be shown to be learnable:
 \begin{defi}[Strong Dominance]
+	
 	An instance $\theta \in \TSA$  is said to satisfy the \emph{strong dominance property} if 
 	it holds in the instance that if a sensor predicts correctly
 	then all the sensors in the subsequent stages of the cascade also predict correctly, i.e., 
 	for any $i\in [K]$,
-	\begin{equation}
+	
+    \begin{equation}
 	\label{eqn:DominanceCondition}
 	Y^i=Y \,\, \Rightarrow\,\, Y^{i+1}= \dots =  Y^K = Y
 	\end{equation}
