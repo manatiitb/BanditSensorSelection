@@ -13,10 +13,10 @@ the algorithm is also applicable in our case.
 For the convenience of the reader, we give the algorithm resulting from applying the reduction to Algorithm~1 
 of \cite{WGySz:NIPS15} in an explicit form.
 For specifying the algorithm we need some extra notation.
-Recall that given a SAP instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\ne Y^k}$ where $(Y,Y^1,\dots,Y^K)\sim P$ and $k\in [K]$. Let $k^*=\arg\min_k \gamma_k +C_k$ denote the optimal action and $\Delta_k(\theta)=\gamma_k+C_k-\gamma_{k^*}+C_{k^*}$ the sub-optimality gap of arm $k$. Further, let $\Delta^*(\theta) = \min\{\Delta_k(\theta), k\neq k^* \}$ denote the smallest positive sub-optimality gap and define $\Delta_k^*(\theta) =\max\{\Delta_k(\theta), \Delta^*(\theta)\}$.
+Recall that given an USS instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\ne Y^k}$ where $(Y,Y^1,\dots,Y^K)\sim P$ and $k\in [K]$. Let $k^*=\arg\min_k \gamma_k +C_k$ denote the optimal action and $\Delta_k(\theta)=\gamma_k+C_k-\gamma_{k^*}+C_{k^*}$ the sub-optimality gap of arm $k$. Further, let $\Delta^*(\theta) = \min\{\Delta_k(\theta), k\neq k^* \}$ denote the smallest positive sub-optimality gap and define $\Delta_k^*(\theta) =\max\{\Delta_k(\theta), \Delta^*(\theta)\}$.
 	\begin{minipage}{0.48\textwidth}
 		\begin{algorithm}[H]
-			\caption{Algorithm for SAP with SD property} 
+			\caption{Algorithm for USS with SD property} 
 			\label{alg:asym}
 			\begin{algorithmic}[1]
 				\STATE Play action $K$ and observe  $Y^1,\dots,Y^K$.
@@ -108,6 +108,7 @@ Further specifying $\beta(n)$ and using the continuity of $u^*(\cdot)$ at $\thet
 \limsup_{T\rightarrow \infty} R_T(\theta,c)/\log T \le 4\alpha \inf_{u\in C_\theta} \ip{u,\gap(\gamma(\theta))}\,.
 \]
 \end{cor}
+
 Note that any $\beta(n) = an^b$ with $a\in (0,\frac{1}{2}]$, $b\in (0,1)$ satisfies the requirements in Theorem~\ref{thm:alg1-ub1} and Corollary~\ref{cor:alg1-asym-opt}.
 %Also note that the algorithms presented in \cite{CaKvLe12,BuErSh14} do not achieve this asymptotic bound.
 
@@ -122,34 +123,32 @@ While the reduction scheme described above is optimal
 %\todov{need to present a lower bound for reduction} 
 when tests satisfy SD property, it can fail under WD (see Sec.~\ref{sec:Experiments}). To this end we describe a variant of UCB algorithm. 
 %For any suboptimal arm $j < i^*$,  $C_{i^*}-C_j \leq \P\{Y^{i^*} \neq Y^j\}$ holds, and when the WD property holds, we further have $C_j -C_{i^*} \geq \P\{Y^i \neq Y^j\}$ for all $j>i^*$. 
-Note that under the WD property, for a given set of the disagreement probabilities $\P\{Y^i \neq Y^j\}$ for all $i \neq j$, the set $\{i \in [K-1]: C_j - C_i \geq \P\{Y^i \neq Y^j\} \mbox{ for all } j>i\}$ includes the optimal arm. We use this idea in Algorithm \ref{alg:UCB} to identify the optimal arm when an instance of SAP satisfies the WD property. We will experimentally validate its performance on real datasets in the next section.
+Note that under the WD property, for a given set of the disagreement probabilities $\P\{Y^i \neq Y^j\}$ for all $i \neq j$, the set $\{i \in [K-1]: C_j - C_i \geq \P\{Y^i \neq Y^j\} \mbox{ for all } j>i\}$ includes the optimal arm. We use this idea in Algorithm \ref{alg:UCB} to identify the optimal arm when an instance of USS satisfies the WD property. We will experimentally validate its performance on real datasets in the next section.
 \begin{minipage}{0.48\textwidth}
-		\begin{algorithm}[H]
-			\caption{Algorithm for SAP with WD property} %ALG1}
-			\label{alg:UCB}
-			\begin{algorithmic}[1]
-				\STATE Play action $K$ and observe $Y^1,\dots,Y^K$
-				\STATE Set $\hgamma_{ij}^1 \set \one{Y^i\ne Y^j}$ for all $i,j\in [K]$ and $i < j$.
-				\STATE $n_i(1)\leftarrow \one{i=K} \; \forall i\in [K]$.
-				\FOR{$t=2,3,...$}
-				\STATE $U_{ij}^t=\hgamma_{ij}^{t-1} + \sqrt{\frac{1.5\log(t)}{n_j(t-1)}}$  $\;\forall \; i,j \in [K]$ and $i<j$ \label{algo:UCB}
-				\STATE $S_t=\{i \in [K-1]: C_j-C_i \geq U_{ij}^t \;\forall \;   j > i \}$ \label{algo:sort}
-				\STATE Set $I_t= \arg \min S_t \cup \{K\} $
-				\STATE Play $I_t$ and observe $Y^1,\dots,Y^{I_t}$.
-				 \FOR {$i\in [I_t]$}
-				\STATE $n_i(t) \set n_i(t-1)+1$\\
-				 \STATE $\hgamma_{ij}^t \set \left (1-\frac{1}{n_j(t)}\right )
-				 \hgamma_{ij}^{t-1} + \frac{1}{n_j(t)} \,\one{Y^j\ne Y^i} \forall \; i<j \leq I_t$ \label{algo:Update}
-				\ENDFOR
-				\ENDFOR
-			\end{algorithmic}
-		\end{algorithm}
-	\end{minipage}
-
+	\begin{algorithm}[H]
+		\caption{Algorithm for USS with WD property} %ALG1}
+		\label{alg:UCB}
+		\begin{algorithmic}[1]
+			\STATE Play action $K$ and observe $Y^1,\dots,Y^K$
+			\STATE Set $\hgamma_{ij}^1 \set \one{Y^i\ne Y^j}$ for all $i,j\in [K]$ and $i < j$.
+			\STATE $n_i(1)\leftarrow \one{i=K} \; \forall i\in [K]$.
+			\FOR{$t=2,3,...$}
+			\STATE $U_{ij}^t=\hgamma_{ij}^{t-1} + \sqrt{\frac{1.5\log(t)}{n_j(t-1)}}$  $\;\forall \; i,j \in [K]$ and $i<j$ \label{algo:UCB}
+			\STATE $S_t=\{i \in [K-1]: C_j-C_i \geq U_{ij}^t \;\forall \;   j > i \}$ \label{algo:sort}
+			\STATE Set $I_t= \arg \min S_t \cup \{K\} $
+			\STATE Play $I_t$ and observe $Y^1,\dots,Y^{I_t}$.
+			\FOR {$i\in [I_t]$}
+			\STATE $n_i(t) \set n_i(t-1)+1$\\
+			\STATE $\hgamma_{ij}^t \set \left (1-\frac{1}{n_j(t)}\right )
+			\hgamma_{ij}^{t-1} + \frac{1}{n_j(t)} \,\one{Y^j\ne Y^i} \forall \; i<j \leq I_t$ \label{algo:Update}
+			\ENDFOR
+			\ENDFOR
+		\end{algorithmic}
+	\end{algorithm}
+\end{minipage}
 %The algorithm works as follows. It keeps track of $\hgamma^t_{ij}$ for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}).    % \rodos{Should we mention that due to lack of uniform learnability we do not present theoretical results here}
 %=======
 %The algorithm works as follows. It keeps track of $\hgamma^t_{ij}$ for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}).     \todov{Should we mention that due to lack of uniform learnability we do not present theoretical results here}
-
 The algorithm works as follows. At each round, $t$, based on history, we keep track of estimates, $\hgamma^t_{ij}$, of disagreements between sensor $i$ and sensor $j$.  %for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. 
 In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}). We can charaterize regret guarantees such as in Thm~\ref{thm:ftregret} under SD for this new scheme but they require some additional conditions. However, note that due to the lack of uniform learnability under WD we cannot obtain a finite-time characterization and so omit these parallel results due to space limitations. 
 

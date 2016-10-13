@@ -100,7 +100,7 @@
 	If $i=j$, there is nothing to be proven. Hence, first assume that $j>i$. Then, by~\eqref{eq:wd2}, $C_j - C_i \ge \Prob{Y^i \ne Y^j}$.
 	By \cref{cor:gammadiff}, $\Prob{Y^i \ne Y^j } \ge \gamma_i - \gamma_j$. Combining these two inequalities we get that
 	$\gamma_i + C_i \le \gamma_j + C_j$, which contradicts with the definition of $j$.
-	Now, assume that $j<i$. Then, by~\eqref{eq:wd}, $C_i - C_j \ge \Prob{Y^i \ne Y^j}$.
+	Now, assume that $j<i$. Then, by~\eqref{eqn:WD}, $C_i - C_j \ge \Prob{Y^i \ne Y^j}$.
 	However, by~\eqref{eq:wd1}, $C_i -C_j < \Prob{Y^i \ne Y^j}$, thus $j<i$ cannot hold either and we must have $i=j$.
 	\end{proof}
 
@@ -219,7 +219,7 @@ We need to verify the following:
 {\em (iii)} the claim concerning the size of the action gaps;
 {\em (iv)} that $P_S(\theta)$ and $P_S(\theta')$ are close.
 Details of the calculations to support {\em (i)}--{\em (iii)} can be found in \cref{tab:nonunif2}.
-The row marked by $(*)$ supports that the instances are proper SAP instances.
+The row marked by $(*)$ supports that the instances are proper USS instances.
 In the row marked by $(**)$, there is no requirement for $\theta'$ because 
 in $\theta'$ action two is optimal, and hence there is no action with larger index 
 than the optimal action, hence $\theta'\in \TWD$ automatically holds.
@@ -307,6 +307,31 @@ Hence, $P_S$ can also be specified to satisfy this. In particular, one possibili
 	&=\Regret_n(\pi^\prime,\theta).
 	\end{align*}
 	\end{proof}
+	
+\begin{minipage}{0.48\textwidth}
+	\begin{algorithm}[H]
+		\caption{Algorithm for USS with WD property} %ALG1}
+		\label{alg:UCB}
+		\begin{algorithmic}[1]
+			\STATE Play action $K$ and observe $Y^1,\dots,Y^K$
+			\STATE Set $\hgamma_{ij}^1 \set \one{Y^i\ne Y^j}$ for all $i,j\in [K]$ and $i < j$.
+			\STATE $n_i(1)\leftarrow \one{i=K} \; \forall i\in [K]$.
+			\FOR{$t=2,3,...$}
+			\STATE $U_{ij}^t=\hgamma_{ij}^{t-1} + \sqrt{\frac{1.5\log(t)}{n_j(t-1)}}$  $\;\forall \; i,j \in [K]$ and $i<j$ \label{algo:UCB}
+			\STATE $S_t=\{i \in [K-1]: C_j-C_i \geq U_{ij}^t \;\forall \;   j > i \}$ \label{algo:sort}
+			\STATE Set $I_t= \arg \min S_t \cup \{K\} $
+			\STATE Play $I_t$ and observe $Y^1,\dots,Y^{I_t}$.
+			\FOR {$i\in [I_t]$}
+			\STATE $n_i(t) \set n_i(t-1)+1$\\
+			\STATE $\hgamma_{ij}^t \set \left (1-\frac{1}{n_j(t)}\right )
+			\hgamma_{ij}^{t-1} + \frac{1}{n_j(t)} \,\one{Y^j\ne Y^i} \forall \; i<j \leq I_t$ \label{algo:Update}
+			\ENDFOR
+			\ENDFOR
+		\end{algorithmic}
+	\end{algorithm}
+\end{minipage}
+	
+	
 %\section{Proof of Theorem \ref{thm:K-SAPRegret}}
 %Consider a $K$-armed stochastic bandit problem where reward distribution $\nu_i$ has mean  $\gamma_1-\gamma_i- \sum_{j< i}c_j$ for all $i >1$ and arm $1$ gives a fixed reward of value $0$. The arms have side-observation structure defined by graph $G_S$.  
 %Given an arbitrary policy $\pi=(\pi_1, \pi_2, \cdots \pi_t )$ for the SAP, we obtain a policy for the bandit problem with side observation graph $G_S$ from $\pi$ as follows: Let $H_{t-1}$ denote the history, consisting of all arms played and the corresponding rewards, available to policy $\pi_{t-1}$ till time $t-2$. In round $t-1$, let $a_{t-1}$ denote the arm selected by the bandit policy,  $r_{t-1}$ the corresponding reward and $o_{t-1}$ the side-observation defined by graph $G_S$. Then, the next action $a_t$ is obtained as follows:
