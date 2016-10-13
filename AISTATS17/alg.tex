@@ -80,7 +80,7 @@ extremely poorly estimated (line \ref{alg:starve}). Note that the requirement he
 \newcommand{\norm}[1]{\|#1\|}
 For $\theta \in \TSD$, let $\gamma(\theta)$ be the error probabilities for the various sensors.
 The following result follows from Theorem~6 of \cite{WGySz:NIPS15}:
-\begin{thm}
+\begin{thm} \label{thm:ftregret}
 Let $\epsilon>0$, $\alpha>2$ arbitrary and choose any non-decreasing $\beta(n)$ that satisfies $0\le \beta(n)\le n/2$ and $\beta(m+n)\le \beta(m)+\beta(n)$ for $m,n\in \N$.
 Then, 
 for any
@@ -109,11 +109,16 @@ We don't actually have a lower bound..}
 Note that any $\beta(n) = an^b$ with $a\in (0,\frac{1}{2}]$, $b\in (0,1)$ satisfies the requirements in Theorem~\ref{thm:alg1-ub1} and Corollary~\ref{cor:alg1-asym-opt}.
 %Also note that the algorithms presented in \cite{CaKvLe12,BuErSh14} do not achieve this asymptotic bound.
 
-The algorithm in \ref{alg:asym} only estimates the disagreements $\P\{Y^1 \neq Y^j\}$ for all $j \in [K]$ which suffices to identify the optimal arm when the SAP satisfies the SD property (see Sec \ref{sec:Equiv}). Clearly, one can estimate pairwise disagreements probabilities $\P\{Y^i \neq Y^j\}$ for $i\neq j$ and use them to order the arms. We next develop an heuristic algorithm that uses this information and works for SAP satisfying WD property. 
+
+
+
+The algorithm in \ref{alg:asym} only estimates the disagreements $\P\{Y^1 \neq Y^j\}$ for all $j \in [K]$ which suffices to identify the optimal arm when the USS satisfies the SD property (see Sec \ref{sec:Equiv}). Clearly, one can estimate pairwise disagreements probabilities $\P\{Y^i \neq Y^j\}$ for $i\neq j$ and use them to order the arms. We next develop a heuristic algorithm that uses this information and works for USS under WD. 
 
 \subsection{Weak Dominance Case}
 %A natural algorithm n alternative algorithm is the elimination algorithm 
-While the reduction scheme described above is optimal \todov{need to present a lower bound for reduction} when tests satisfy SD property, it is sub-optimal for tests satisfying weak-dominance property. We describe a variant of UCB algorithm in this context. For any suboptimal arm $j < i^*$,  $C_{i^*}-C_j \leq \P\{Y^{i^*} \neq Y^j\}$ holds, and when the WD property holds, we further have $C_j -C_{i^*} \geq \P\{Y^i \neq Y^j\}$ for all $j>i^*$. Thus, given the disagreement probabilities $\P\{Y^i \neq Y^j\}$ for all $i \neq j$, the set $\{i \in [K-1]: C_j - C_i \geq \P\{Y^i \neq Y^j\} \mbox{ for all } j>i\}$ includes the optimal arm. We use this idea in Algorithm \ref{alg:UCB} to identify the optimal arm when an instance of SAP satisfies the WD property. We will experimentally validate its performance  on real datasets in the next section.
+While the reduction scheme described above is optimal \todov{need to present a lower bound for reduction} when tests satisfy SD property, it can fail under WD (see Sec.~\ref{sec:Experiments}). To this end we describe a variant of UCB algorithm. 
+%For any suboptimal arm $j < i^*$,  $C_{i^*}-C_j \leq \P\{Y^{i^*} \neq Y^j\}$ holds, and when the WD property holds, we further have $C_j -C_{i^*} \geq \P\{Y^i \neq Y^j\}$ for all $j>i^*$. 
+Note that under the WD property, for a given set of the disagreement probabilities $\P\{Y^i \neq Y^j\}$ for all $i \neq j$, the set $\{i \in [K-1]: C_j - C_i \geq \P\{Y^i \neq Y^j\} \mbox{ for all } j>i\}$ includes the optimal arm. We use this idea in Algorithm \ref{alg:UCB} to identify the optimal arm when an instance of SAP satisfies the WD property. We will experimentally validate its performance on real datasets in the next section.
 \begin{minipage}{0.48\textwidth}
 		\begin{algorithm}[H]
 			\caption{Algorithm for SAP with WD property} %ALG1}
@@ -139,7 +144,14 @@ While the reduction scheme described above is optimal \todov{need to present a l
 	
 	\vspace{.2cm}
 <<<<<<< HEAD
+<<<<<<< HEAD
 The algorithm works as follows. It keeps track of $\hgamma^t_{ij}$ for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}).    % \rodos{Should we mention that due to lack of uniform learnability we do not present theoretical results here}
 =======
 The algorithm works as follows. It keeps track of $\hgamma^t_{ij}$ for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}).     \todov{Should we mention that due to lack of uniform learnability we do not present theoretical results here}
 >>>>>>> 8a1525e9dc35ddceba91ca8cb176be45d921db8d
+=======
+The algorithm works as follows. At each round, $t$, based on history, we keep track of estimates, $\hgamma^t_{ij}$, of disagreements between sensor $i$ and sensor $j$.  %for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. 
+In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}). We can charaterize regret guarantees such as in Thm~\ref{thm:ftregret} under SD for this new scheme but they require some additional conditions. However, note that due to the lack of uniform learnability under WD we cannot obtain a finite-time characterization and so omit these parallel results due to space limitations. 
+
+  \todov{Should we mention that due to lack of uniform learnability we do not present theoretical results here}
+>>>>>>> a03b2f3f665570e0e0ea386701e7f83228a48030

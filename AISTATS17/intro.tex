@@ -4,7 +4,7 @@ In these applications (see Fig.~\ref{motiv}) inexpensive tests are first conduct
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.4\textwidth]{../figures/motiv.pdf}
-  \caption{\footnotesize Sequential Sensor/Test Selection Problem for Airport Security Systems. A number of different imaging and non-imaging tests are sequentially processed (see \cite{ML13_MultistageClassifier_TrapezSaligramaCastanon}). Costs can arise due to sensor availability and delay. Inexpensive tests are first conducted and based on their outcomes more expensive tests are conducted.}
+  \caption{\footnotesize Sequential Sensor/Test Selection in Airport Security Systems. A number of different imaging and non-imaging tests are sequentially processed (see \cite{ML13_MultistageClassifier_TrapezSaligramaCastanon}). Costs can arise due to sensor availability and delay. Inexpensive tests are first conducted and based on their outcomes more expensive tests are conducted.}
   \label{motiv}
 \vspace{-20pt}
 \end{figure}
@@ -46,7 +46,7 @@ in a stochastic, stationary environment.
 
 %This leads us to the following question: Can a learner still achieve the optimal balance in this case?  
 In Sec.~\ref{sec:Setup} we first show that, unsurprisingly that no learner can achieve sublinear regret without further assumptions. %\todoc{Has regret been defined?} \todov{yes}
-To this end we propose the notions of weak and strong dominance on tests, which correspond to constraints on joint probability distributions over the latent state and test-outcomes. Strong dominance imposes the condition that whenever a test is accurate the test appearing later in the sequence are almost surely accurate. %(in other words a child SBT cannot make an error when the parent node is accurate). 
+To this end we propose the notions of weak and strong dominance on tests, which correspond to constraints on joint probability distributions over the latent state and test-outcomes. Strong dominance (SD) is a property arising in many Engineered systems and says that whenever a test is accurate on an example, a later test in the sequence is almost surely accurate on that example. %(in other words a child SBT cannot make an error when the parent node is accurate). 
 Weak dominance is a relaxed notion that allows for errors in these predictions. We empirically demonstrate that weak dominance appears to hold by evaluating it on several real datasets. We also show that in a sense weak dominance is fundamental, namely, without this condition there exist problem instances that result in linear regret. On the other hand whenever this condition is satisfied there exist polynomial time algorithms that lead to sublinear regret. 
 
 %In particular, we reduce the SAP problem to a stochastic multi-armed bandit with side observations, 
@@ -81,9 +81,9 @@ Our paper bears some similarity with the concept of active classification, which
 %to observe the label. Again this setting is not unsupervised.
 
 %Partial monitoring:
-Our paper is also related to the framework of finite partial monitoring problems\cite{BaFoPaRaSze14}, which deals with how to infer unknown key information (that take values in a simplex) and where tests/actions reveal different types of information about the unknown information. In this context 
+Our paper is related to the framework of finite partial monitoring problems\cite{BaFoPaRaSze14}, which deals with how to infer unknown key information and where tests/actions reveal different types of information about the unknown information. In this context 
 %applies to the so-called finite problems (unknown ``key information'') is an element of the probability simplex.
-\cite{AgTeAn89:pmon} consider special cases where payoff/rewards for a subset of actions are observed. This is further studied as a side-observation problem in \cite{MaSh11} and as graph-structured feedback \cite{COLT15_OnlineLearningWithFeedback_AlonBianchiDekel, NIPS13_FromBanditsToExperts_AlonBianchiGentile,WGySz:NIPS15}). Again our work is distinct from these setups because we are unable to observe rewards for our chosen actions or any other actions.
+\cite{AgTeAn89:pmon} consider special cases where payoff/rewards for a subset of actions are observed. This is further studied as a side-observation problem in \cite{MaSh11} and as graph-structured feedback \cite{COLT15_OnlineLearningWithFeedback_AlonBianchiDekel, NIPS13_FromBanditsToExperts_AlonBianchiGentile,WGySz:NIPS15}). Our work is distinct from these setups because we are unable to observe rewards for our chosen actions or any other actions.
 \vspace{-10pt}
 %corresponding to chosen actions (whether the chosen action or in terms of side observations 
 %\todom{Need to add Yifan's paper, there seems to be few more based on this in ICML'16, AISTATS'16 and NIPS'16}
