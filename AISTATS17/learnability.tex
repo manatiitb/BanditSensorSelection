@@ -34,7 +34,7 @@ sound action selection map for all the instances in $\Theta$.
 
 A class of sensor acquisition problems that contains instances that satisfy the so-called \emph{strong dominance} condition 
 will be shown to be learnable:
-\begin{defi}[Strong Dominance]
+\begin{defi}[Strong Dominance (SD)]
 	An instance $\theta \in \TSA$  is said to satisfy the \emph{strong dominance property} if 
 	it holds in the instance that if a sensor predicts correctly
 	then all the sensors in the subsequent stages of the cascade also predict correctly, i.e., 
@@ -46,19 +46,23 @@ will be shown to be learnable:
 	almost surely (a.s.)
 	where $(Y,Y^1,\dots,Y^K)\sim P$.
 \end{defi}
+Before we develop this concept further we will motivate strong dominance based on experiments on a few real-world datasets. SD property naturally arises in the context of error-correcting codes~\cite{list-decoding}, where one sequentially corrects for errors, and thus whenever a decoder is accurate the following decoders are also accurate. On the other hand for real-datasets SD holds only approximately. Table \ref{tab:ErrorTable1} lists the error probabilities of the classifiers (sensors) for the heart and diabetic datasets from UCI repository. We split features into two sets based on provided costs (cheap tests are based on patient history and costly tests include all the features). We then trained an SVM classifier with 5-fold cross-validation and report scores based on held-out test data. 
 \begin{table}[h]
+\vspace{-6pt}
 \begin{center}
 \begin{tabular}[c]{c|c|c|c } 
 %	\caption{cap:Error statistics}
-dataset & $\gamma_1$ & $\gamma_2$ & $\delta_{12}$\\ \hline \hline
-diabetic & $0.288 $ & $ 0.219$  & 0.075\\  \hline
-heart & $0.305$ & $0.169$ &  0.051\\  \hline
+Dataset & $\gamma_1$ & $\gamma_2$ & $\delta_{12}$\\ \hline \hline
+PIMA Diabetes & $0.32 $ & $ 0.23$  & 0.065\\  \hline
+Heart (Cleveland) & $0.305$ & $0.169$ &  0.051\\  \hline
 \end{tabular}
 \label{tab:ErrorTable1}
-\caption{Error statistics}
+\caption{\footnotesize Depicts approximate Strong Dominance on real datasets: $\gamma_1 \triangleq \Pr(Y^1 \neq Y),\,\gamma_2\triangleq \Pr(Y^2 \neq Y),\, \delta_{12} \triangleq \Pr(Y^1=Y,\, Y^2\neq Y)$ }
 \end{center}
+\vspace{-13pt}
 \end{table}
-Before we develop this concept further we will motivate strong dominance based on experiments on a few real-world datasets. Table \ref{tab:ErrorTable1} lists the error probabilities of the classifiers (sensors) for the heart and diabetic datasets from UCI repository. For both the datasets, $\gamma_1$ denotes the test error of an SVM classifier (linear) trained with low cost features and $\gamma_2$ denotes test error of SVM classifier trained using both low and high-cost features (cf. Section \ref{sec:Experiments}). The last column lists $\delta_{12}:=\Prob{Y^2\neq Y \mid Y^1 = Y}$, the conditional probability that second sensor misclassifies an instance that is correctly classified by the first sensor. Strong dominance is the notion that suggests that this probability is zero. We find in these datasets that $\delta_{12}$ is small thus justifying our notion. In general we have found this behavior is representative of other cost-associated datasets. Note that strong dominance is not merely a consequence of improved accuracy with availability of more features. It is related to better {\it recall rates} of high-cost features relative to low-cost features. %Strong dominance assumption implies that the collection of ''recalled examples'' with low-cost features is a subset of those recalled with high-cost features. 
+%For both the datasets, $\gamma_1$ denotes the test error of an SVM classifier (linear) trained with low cost features and $\gamma_2$ denotes test error of SVM classifier trained using both low and high-cost features (cf. Section \ref{sec:Experiments}). 
+The last column lists the probability that second sensor misclassifies an instance that is correctly classified by the first sensor. SD is the notion that suggests that this probability is zero. We find in these datasets that $\delta_{12}$ is small thus justifying our notion. In general we have found this behavior is representative of other cost-associated datasets. %Note that strong dominance is not merely a consequence of improved accuracy with availability of more features. It is related to better {\it recall rates} of high-cost features relative to low-cost features. %Strong dominance assumption implies that the collection of ''recalled examples'' with low-cost features is a subset of those recalled with high-cost features. 
 
 
 
@@ -116,7 +120,6 @@ By \cref{cor:gammadiff} we get $\Prob{Y^i \ne Y^j} \ge C_i - C_j$.
 \end{proof}
 These results motivate the following definition:
 \begin{defi}[Weak Dominance]
-	\label{dfn:WDP}
 	An instance $\theta \in \TSA$  is said to satisfy the \emph{weak dominance property} if 
 	for $i = a^*(\theta)$,
 	\begin{align}
@@ -208,4 +211,18 @@ While $\TWD$ is learnable, it is not uniformly learnable, i.e., the minimax regr
 $\TWD$ is not uniformly learnable:
 $\Regret_n^*(\TWD) = \Omega(n)$.
 \end{thm}
+
+\noindent
+{\bf Extensions:} We describe a few extensions here but omit details due to lack of space.
+
+\noindent
+{\it Tree-Architectures:}
+%It is straightforward to see that we can generalize our cascade model to a tree-architecture. 
+%The algorithm Alg.~\ref{alg:asym} and Alg.~\ref{alg:UCB} extends to trees. 
+We can deal with trees in an analogous fashion. Like for cascades we keep track of disagreements along each path. Under SD these disagreements in turn approximate marginal error. This fact is sufficient to identify the optimal sensor (see Eqn.~\ref{eqn:interp_opt}). Similarly our results also generalize to trees under WD condition. 
+
+\noindent
+{\it Context-Dependent Sensor Selection:}
+%Our results can also be generalized to specific context dependent cases as well. 
+Each example has a context $x \in \mathbb{R}^d$. A test is a mapping that takes (partial) context and maps to an output space. We briefly describe how to extend to context-dependent sensor selection. Analogous to the context-independent case we impose context dependent notions for SD and WD, namely, Eq.~\ref{eqn:DominanceCondition} and Eq.~\ref{eq:wd} hold conditioned on each $x \in {\cal X}$. To handle these cases we let $\gamma_i(x)\triangleq \Pr(Y^{i} \neq Y)$ and $\gamma_{ij}(x) \triangleq \Pr(Y^{i} \neq Y^{j})$ denote the conditional error probability for the ith sensor and the conditional marginal error probability between sensor $i$ and $j$ respectively. Then the results can be generalized under a parameterized GLM model for disagreement, namely, the log-odds ratio $\log \frac{\gamma_{ij}(x)}{1-\gamma_{ij}(x)}$ can be written as $\theta_{ij}'x$ for some unknown $\theta_{ij} \in \mathbb{R}^d$.
 %\begin{proof}
