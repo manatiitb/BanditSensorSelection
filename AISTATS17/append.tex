@@ -45,12 +45,6 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 
 
 
-\section*{Proof of Corollary \ref{cor:twdlearnable}}
-\begin{proof}
-	By \cref{prop:awdwelldef}, $\awd$ is well-defined over $\TWD$, while by \cref{prop:awdsound}, $\awd$ is sound over $\TWD$.
-	%By \cref{prop:learnablemap}, $\TWD$ is learnable, as witnessed by $\awd$. \todoc{We should add definitions for these concepts..
-	%namely, $\awd$ well-defined over $\TWD$, $\awd$ sound over $\TWD$, etc.}\todom[]{Csaba, you did this already!!}
-\end{proof}
 
 \section*{Proof of Proposition \ref{prop:gammadiff}}
 
@@ -79,6 +73,14 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 	where in $(a)$ we used that $\Prob{ Y^j \ne Y, Y^i\ne Y^j } =  \Prob{ Y^j\ne Y,Y^i= Y}$ and also
 	$\Prob{ Y^i=Y,Y^i\ne Y^j} = \Prob{ Y^j\ne Y,Y^i= Y}$
 	which hold because $Y,Y^i,Y^j$ only take on two possible values.
+\end{proof}
+
+
+\section*{Proof of Corollary \ref{cor:twdlearnable}}
+\begin{proof}
+	By \cref{prop:awdwelldef}, $\awd$ is well-defined over $\TWD$, while by \cref{prop:awdsound}, $\awd$ is sound over $\TWD$.
+	%By \cref{prop:learnablemap}, $\TWD$ is learnable, as witnessed by $\awd$. \todoc{We should add definitions for these concepts..
+	%namely, $\awd$ well-defined over $\TWD$, $\awd$ sound over $\TWD$, etc.}\todom[]{Csaba, you did this already!!}
 \end{proof}
 
 
