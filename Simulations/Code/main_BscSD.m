@@ -18,7 +18,7 @@ BSCData_SD;
 
 %settings.c=[0 .1]';
 
-stylem = {'-^','-d','-s','-*','-.','-x','.','--x','--o','--v','--^','--'};
+stylem = {'-^','-d','-s','-x','-.','-v','.','--x','--o','--v','--^','--'};
 colorm = [0 0 0;0 0 1;0 1 0;1 0 0;0.1*[1 1 1];0.6*[1 1 1];0 0 0;0 0 0;0 0 0;0 0 0;0.1 0.9 0.1;0.8 .9 0.8];
 
 ind=1:0.05*settings.T:settings.T;
@@ -38,7 +38,7 @@ for c=C
     Reg=mean(Regs,2);
     ConfBound=1.96*std(Regs,1,2)/sqrt(settings.iterations);
     errorbar(ind, Reg(ind), ConfBound(ind), stylem{m},'Color',colorm(m,:),'LineWidth',2,'MarkerFaceColor','auto','MarkerSize',6)
-    leg{m} = sprintf('\rho=%4.3f', R(m));
+    leg{m} = sprintf('c_2=%4.3f',c);
     fprintf('.......\nFor BSC %d/%d completed\n', m, size(C,2));
 end
 

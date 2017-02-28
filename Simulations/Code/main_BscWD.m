@@ -14,66 +14,59 @@ settings.fid=fopen('errorstat.txt','w+');
 settings.p=[.4 .1 .05]';
 settings.c=[0 .1  .4]';
 
-BSCData_SD;
+BSCData_WD;
 
 %settings.c=[0 .1]';
 
-stylem = {'-^','-d','-s','-*','-.','-x','.','--x','--o','--v','--^','--'};
+stylem = {'-^','-d','-s','-x','-.','-v','.','--x','--o','--v','--^','--'};
 colorm = [0 0 0;0 0 1;0 1 0;1 0 0;0.1*[1 1 1];0.6*[1 1 1];0 0 0;0 0 0;0 0 0;0 0 0;0.1 0.9 0.1;0.8 .9 0.8];
 
 ind=1:0.05*settings.T:settings.T;
 figure;
 hold on;
 m=0;
-C=0.2:0.02:0.28;
+C=0.12:0.02:0.3;
 R=(settings.c(3)-C)./0.15;
 Reward=zeros(size(C,2),1);
 leg = {};
 for c=C
     m=m+1;
     settings.c(2)=c;
-    Regs=BSCUCB_SD(settings);
+    Regs=BSCUCB_WD1(settings);
     RegPerRound=Regs(settings.T,:)/settings.T;
     Reward(m,1)=mean(RegPerRound,2);
-    Reg=mean(Regs,2);
-    ConfBound=1.96*std(Regs,1,2)/sqrt(settings.iterations);
-    errorbar(ind, Reg(ind), ConfBound(ind), stylem{m},'Color',colorm(m,:),'LineWidth',2,'MarkerFaceColor','auto','MarkerSize',6)
-    leg{m} = sprintf('\rho=%4.3f', R(m));
+   % Reg=mean(Regs,2);
+   % ConfBound=1.96*std(Regs,1,2)/sqrt(settings.iterations);
+   % errorbar(ind, Reg(ind), ConfBound(ind), stylem{m},'Color',colorm(m,:),'LineWidth',2,'MarkerFaceColor','auto','MarkerSize',6)
+   % leg{m} = sprintf('c_2=%4.3f',c);
     fprintf('.......\nFor BSC %d/%d completed\n', m, size(C,2));
 end
 
-legend(leg,'fontsize',12,'Location','NorthWest');
-legend('boxoff')
- xlabel('Time T','fontsize',12);
-ylabel('Cummulative regret','fontsize',12);
+
+figure;
+plot(R, Reward, '-*r', 'LineWidth',2,'MarkerFaceColor','auto','MarkerSize',6); 
+xlabel('\rho','fontsize',12);
+ylabel('Regret per round','fontsize',12);
 title('BSC','fontsize',12);
 
+Reward=zeros(size(C,2),1);
+m=0;
+for c=C
+    m=m+1;
+    settings.c(2)=c;
+    Regs=BSCUCB_WD(settings);
+    RegPerRound=Regs(settings.T,:)/settings.T;
+    Reward(m,1)=mean(RegPerRound,2);
+   % Reg=mean(Regs,2);
+    %ConfBound=1.96*std(Regs,1,2)/sqrt(settings.iterations);
+    %errorbar(ind, Regs(ind), ConfBound(ind), stylem{m},'Color',colorm(m,:),'LineWidth',2,'MarkerFaceColor','auto','MarkerSize',6)
+   % leg{m} = sprintf('c=%4.3f', c);
+    fprintf('.......\nFor BSC %d/%d completed\n', m, size(C,2));
+end
 
 
-% for c=C
-%     m=m+1;
-%     settings.c(2)=c;
-%     Regs=BSCUCB_WD(settings);
-%     RegPerRound=Regs(settings.T,:)/settings.T;
-%     Reward(m,1)=mean(RegPerRound,2);
-%     Reg=mean(Regs,2);
-%     ConfBound=1.96*std(Regs,1,2)/sqrt(settings.iterations);
-%     errorbar(ind, Regs(ind), ConfBound(ind), stylem{m},'Color',colorm(m,:),'LineWidth',2,'MarkerFaceColor','auto','MarkerSize',6)
-%     leg{m} = sprintf('c=%4.3f', c);
-%     fprintf('.......\nFor BSC %d/%d completed\n', m, size(C,2));
-% end
-
-%legend(leg,'fontsize',12,'Location','NorthWest');
-%legend('boxoff')
-% xlabel('R','fontsize',12);
-% ylabel('Regret per round','fontsize',12);
-% title('BSC','fontsize',12);
-
-
-
-
-% figure;
-% plot(R, Reward, '-*r', 'LineWidth',2,'MarkerFaceColor','auto','MarkerSize',6);
+hold on;
+plot(R, Reward, '-*b', 'LineWidth',2,'MarkerFaceColor','auto','MarkerSize',6);
 % 
 % 
 % m=0;
