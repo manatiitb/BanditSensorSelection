@@ -1,6 +1,7 @@
 %!TEX root =  main.tex
 \newcommand{\set}{\leftarrow}
 \newcommand{\hgamma}{\hat{\gamma}}
+%\vspace{-5pt}
 The reduction of the previous section suggests that one can  utilize 
 an algorithm developed for stochastic bandits with side-observation to solve a USS satisfying SD property.
 In this paper we make use of Algorithm~1 of \cite{WGySz:NIPS15}
@@ -13,10 +14,13 @@ the algorithm is also applicable in our case.
 For the convenience of the reader, we give the algorithm resulting from applying the reduction to Algorithm~1 
 of \cite{WGySz:NIPS15} in an explicit form.
 For specifying the algorithm we need some extra notation.
-Recall that given an USS instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\ne Y^k}$ where $(Y,Y^1,\dots,Y^K)\sim P$ and $k\in [K]$. Let $k^*=\arg\min_k \gamma_k +C_k$ denote the optimal action and $\Delta_k(\theta)=\gamma_k+C_k-\gamma_{k^*}+C_{k^*}$ the sub-optimality gap of arm $k$. Further, let $\Delta^*(\theta) = \min\{\Delta_k(\theta), k\neq k^* \}$ denote the smallest positive sub-optimality gap and define $\Delta_k^*(\theta) =\max\{\Delta_k(\theta), \Delta^*(\theta)\}$.
+Recall that given a USS instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\ne Y^k}$ where $(Y,Y^1,\dots,Y^K)\sim P$ and $k\in [K]$. Let $k^*=\arg\min_k \gamma_k +C_k$ denote the optimal action and $\Delta_k(\theta)=\gamma_k+C_k-(\gamma_{k^*}+C_{k^*})$ the sub-optimality gap of arm $k$. Further, let $\Delta^*(\theta) = \min\{\Delta_k(\theta), k\neq k^* \}$ denote the smallest positive sub-optimality gap and define $\Delta_k^*(\theta) =\max\{\Delta_k(\theta), \Delta^*(\theta)\}$.
+
+\vspace{-.5cm}
+\begin{center}
 	\begin{minipage}{0.48\textwidth}
 		\begin{algorithm}[H]
-			\caption{Algorithm for USS with SD property} 
+			\caption{Algorithm for USS under SD property} 
 			\label{alg:asym}
 			\begin{algorithmic}[1]
 				\STATE Play action $K$ and observe  $Y^1,\dots,Y^K$.
@@ -38,14 +42,12 @@ Recall that given an USS instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\n
 				\ENDIF
 				\STATE Play $I_t$ and observe  $Y^1,\dots,Y^{I_t}$.
 				\STATE For $i\in [I_t]$, set\\
-				$\quad$ $\hgamma_i^t \set (1-1/t) \hgamma_i^{t-1} + 1/t \,\one{Y^1\ne Y^i}$.
+				$\quad$ $\hgamma_i^t \set (1-{1\over t}) \hgamma_i^{t-1} + {1\over t} \,\one{Y^1\ne Y^i}$.
 				\ENDFOR
 			\end{algorithmic}
 		\end{algorithm}
 	\end{minipage}
-
-
-
+\end{center}
 
 Since cost vector $c$ is fixed, in the following we use parameter $\gamma$ in place of $\theta$ to denote the problem instance.
 %For an instance $\gamma$, let $\pi(1,\gamma)$ denote the index of the optimal action $(\pi(1,\gamma) = \min_j C_j+\gamma_j)$, $\pi(2,\gamma)$ denote the index of the second best action $(\pi(2,\gamma) = \min_{j\ne \pi(1,\gamma)} C_j +\gamma_j)$ and more generally let $\pi(k,\gamma)$ be the index of the $k$th best action.
@@ -67,7 +69,8 @@ In particular,  we let $u^*(\gamma) = \argmin_{u\in C(\gamma)} \ip{ u, \Delta(\t
 with the understanding that for any optimal action $k$, $u_k^*(\gamma) = \min \{ u_k \,: u\in C(\gamma) \}$ (here, $\ip{x,y} = \sum_i x_i y_i$ is the standard inner product of vectors $x,y$).
 For an allocation count $u\in [0,\infty)^K$ let $m(u)\in \N^K$ denote total sensor observations, where $m_j(u) = \sum_{i=1}^j u_i$ corresponds to observations of sensor $j$.
 
-The idea of the algorithm shown as \cref{alg:asym} is as follows:
+
+The idea of \cref{alg:asym} is as follows:
 The algorithm keeps track of an estimate $\hgamma^{t}:=(\hgamma^t_i)_{i \in [K]}$ of $\gamma$ in each round, which is initialized by pulling arm $K$ as this arm
 gives information about all the other arms.
 In each round, the algorithm first checks whether given the current estimate $\hgamma^t$ and the current confidence level (where the confidence level is gradually increased over time), the current allocation count $N(t)\in \N^K$
@@ -89,13 +92,14 @@ $\theta\in \TSD$, letting $\gamma = \gamma(\theta)$
 the expected regret of \cref{alg:asym} after $T$ steps satisfies 
 %\todoc{Actually, needs to be checked.. I also replaced $\gap_{\max}(\theta)$ with $1$.}
 \begin{align*}
-&R_T(\theta)
-  \le  \Big( 2K+2+\frac{4K}{\alpha-2} \Big) 
+R_T(\theta)
+  &\le  \Big( 2K+2+\frac{4K}{\alpha-2} \Big) 
   +  4K\sum_{s=0}^T \exp{\Big( \frac{-8\beta(s)\epsilon^2}{2K} \Big)}~~~~~ \\
- &\hspace{-.3cm} + 2 \beta\Big( 4\alpha\log T\sum_{i\in \iset{K}} u_i^*(\gamma,\epsilon)+K \Big)
-  +  4\alpha\log T \sum_{i\in \iset{K}} u_i^*(\gamma,\epsilon)\gap_i(\gamma) \,,
+ &+ 2 \beta\Big( 4\alpha\log T\sum_{i\in \iset{K}} u_i^*(\gamma,\epsilon)+K \Big)\\
+ & +  4\alpha\log T \sum_{i\in \iset{K}} u_i^*(\gamma,\epsilon)\Delta_i(\theta) \\
+ &\mbox{where}  \;\; u_i^*(\gamma,\epsilon) = \sup\{u_i^*(\gamma')\,:\, \norm{\gamma'-\gamma}_{\infty}\le \epsilon \}.
 \end{align*}
-where $u_i^*(\gamma,\epsilon) = \sup\{u_i^*(\gamma')\,:\, \norm{\gamma'-\gamma}_{\infty}\le \epsilon \}$.
+%where $u_i^*(\gamma,\epsilon) = \sup\{u_i^*(\gamma')\,:\, \norm{\gamma'-\gamma}_{\infty}\le \epsilon \}$.
 \label{thm:alg1-ub1}
 \end{thm}  
 Further specifying $\beta(n)$ and using the continuity of $u^*(\cdot)$ at $\theta$, it immediately follows that Algorithm~\ref{alg:asym} achieves asymptotically optimal performance: 
@@ -104,11 +108,10 @@ Further specifying $\beta(n)$ and using the continuity of $u^*(\cdot)$ at $\thet
 \begin{cor}
 \label{cor:alg1-asym-opt}
  Suppose the conditions of Theorem~\ref{thm:alg1-ub1} hold. Assume, furthermore, that $\beta(n)$ satisfies $\beta(n) = o(n)$ and $\sum_{s=0}^\infty \exp \left( -\frac{\beta(s)\epsilon^2}{2K\sigma^2} \right)<\infty$ for any $\epsilon>0$, then for any $\theta$ such that $u^*(\theta)$ is unique, 
-\[
-\limsup_{T\rightarrow \infty} R_T(\theta,c)/\log T \le 4\alpha \inf_{u\in C_\theta} \ip{u,\gap(\gamma(\theta))}\,.
-\]
+$
+\limsup_{T\rightarrow \infty} R_T(\theta,c)/\log T \le 4\alpha \inf_{u\in C_\theta} \ip{u,\Delta(\theta)}\,$.
+%\vspace{-5pt}
 \end{cor}
-
 Note that any $\beta(n) = an^b$ with $a\in (0,\frac{1}{2}]$, $b\in (0,1)$ satisfies the requirements in Theorem~\ref{thm:alg1-ub1} and Corollary~\ref{cor:alg1-asym-opt}.
 %Also note that the algorithms presented in \cite{CaKvLe12,BuErSh14} do not achieve this asymptotic bound.
 
@@ -117,40 +120,64 @@ Note that any $\beta(n) = an^b$ with $a\in (0,\frac{1}{2}]$, $b\in (0,1)$ satisf
 
 The algorithm in \ref{alg:asym} only estimates the disagreements $\P\{Y^1 \neq Y^j\}$ for all $j \in [K]$ which suffices to identify the optimal arm when SD property (see Sec \ref{sec:Equiv}) holds. Clearly, one can estimate pairwise disagreements probabilities $\P\{Y^i \neq Y^j\}$ for $i\neq j$ and use them to order the arms. We next develop a heuristic algorithm that uses this information and works for USS under WD. 
 
-\subsection{Weak Dominance Case}
+%\vspace{-6pt}
+\subsection{Algorithm for Weak Dominance}
+%\vspace{-4pt}
 %A natural algorithm n alternative algorithm is the elimination algorithm 
-While the reduction scheme described above is optimal 
+The reduction scheme described above is optimal under SD property and can fail under the more relaxed WD property. This is because, under SD, marginal error is equal to marginal disagreement (see Prop.~2); it follows for any two sensors $i < j$, $\gamma_i-\gamma_j = (\gamma_i-\gamma_1) - (\gamma_j-\gamma_1) = \Prob{Y^i\ne Y^1} - \Prob{Y^i\ne Y^1}$; and so we can compute marginal error between any two sensors by only keeping track of disagreements relative to sensor 1. Under WD, marginal error is a lower bound and keeping track only of disagreements relative to sensor 1 no longer suffices because $\Prob{Y^i\ne Y^1} - \Prob{Y^i\ne Y^1}$ is no longer a good estimate for $\Prob{Y^i\ne Y^j}$.
+%
+%Hence, we can express marginal error between sensors, $i,\,j$ as the difference between disagreements of sensors $i$ \& $1$, and sensors $j$ \& $1$. Under WD marginal error is only a lower bound on disagreement and so .   
 %\todov{need to present a lower bound for reduction} 
-when tests satisfy SD property, it can fail under WD (see Sec.~\ref{sec:Experiments}). To this end we describe a variant of UCB algorithm. 
+%when tests satisfy SD property, it can fail under WD (see Sec.~\ref{sec:Experiments}). 
+Our key insight is based on the fact that,
 %For any suboptimal arm $j < i^*$,  $C_{i^*}-C_j \leq \P\{Y^{i^*} \neq Y^j\}$ holds, and when the WD property holds, we further have $C_j -C_{i^*} \geq \P\{Y^i \neq Y^j\}$ for all $j>i^*$. 
-Note that under the WD property, for a given set of the disagreement probabilities $\P\{Y^i \neq Y^j\}$ for all $i \neq j$, the set $\{i \in [K-1]: C_j - C_i \geq \P\{Y^i \neq Y^j\} \mbox{ for all } j>i\}$ includes the optimal arm. We use this idea in Algorithm \ref{alg:UCB} to identify the optimal arm when an instance of USS satisfies the WD property. We will experimentally validate its performance on real datasets in the next section.
+under WD, for a given set of the disagreement probabilities, for all $i \neq j$, the set $\{i \in [K-1]: C_j - C_i \geq \P\{Y^i \neq Y^j\} \mbox{ for all } j>i\}$ includes the optimal arm. We use this idea in Algorithm \ref{alg:UCB} to identify the optimal arm when an instance of USS satisfies WD. We will experimentally validate its performance on real datasets in the next section.
+\begin{center}
 \begin{minipage}{0.48\textwidth}
-	\begin{algorithm}[H]
-		\caption{Algorithm for USS with WD property} %ALG1}
-		\label{alg:UCB}
-		\begin{algorithmic}[1]
-			\STATE Play action $K$ and observe $Y^1,\dots,Y^K$
-			\STATE Set $\hgamma_{ij}^1 \set \one{Y^i\ne Y^j}$ for all $i,j\in [K]$ and $i < j$.
-			\STATE $n_i(1)\leftarrow \one{i=K} \; \forall i\in [K]$.
-			\FOR{$t=2,3,...$}
-			\STATE $U_{ij}^t=\hgamma_{ij}^{t-1} + \sqrt{\frac{1.5\log(t)}{n_j(t-1)}}$  $\;\forall \; i,j \in [K]$ and $i<j$ \label{algo:UCB}
-			\STATE $S_t=\{i \in [K-1]: C_j-C_i \geq U_{ij}^t \;\forall \;   j > i \}$ \label{algo:sort}
-			\STATE Set $I_t= \arg \min S_t \cup \{K\} $
-			\STATE Play $I_t$ and observe $Y^1,\dots,Y^{I_t}$.
-			\FOR {$i\in [I_t]$}
-			\STATE $n_i(t) \set n_i(t-1)+1$\\
-			\STATE $\hgamma_{ij}^t \set \left (1-\frac{1}{n_j(t)}\right )
-			\hgamma_{ij}^{t-1} + \frac{1}{n_j(t)} \,\one{Y^j\ne Y^i} \forall \; i<j \leq I_t$ \label{algo:Update}
-			\ENDFOR
-			\ENDFOR
-		\end{algorithmic}
-	\end{algorithm}
-\end{minipage}
+		\begin{algorithm}[H]
+			\caption{Algorithm for USS with WD property} %ALG1}
+			\label{alg:UCB}
+			\begin{algorithmic}[1]
+				\STATE Play action $K$ and observe $Y^1,\dots,Y^K$
+				\STATE Set $\hgamma_{ij}^1 \set \one{Y^i\ne Y^j}$ for all $i,j\in [K]$ and $i < j$.
+				\STATE $n_i(1)\leftarrow \one{i=K} \; \forall i\in [K]$.
+				\FOR{$t=2,3,...$}
+				\STATE $U_{ij}^t=\hgamma_{ij}^{t-1} + \sqrt{\frac{1.5\log(t)}{n_j(t-1)}}$  $\;\forall \; i,j \in [K]$ and $i<j$ \label{algo:UCB}
+				\STATE $S_t=\{i \in [K-1]: C_j-C_i \geq U_{ij}^t \;\forall \;   j > i \}$ \label{algo:sort}
+				\STATE Set $I_t= \arg \min S_t \cup \{K\} $
+				\STATE Play $I_t$ and observe $Y^1,\dots,Y^{I_t}$.
+				 \FOR {$i\in [I_t]$}
+				\STATE $n_i(t) \set n_i(t-1)+1$\\
+				 \STATE $\hgamma_{ij}^t \set \left (1-\frac{1}{n_j(t)}\right )
+				 \hgamma_{ij}^{t-1} + \frac{1}{n_j(t)} \,\one{Y^j\ne Y^i} \forall \; i<j \leq I_t$ \label{algo:Update}
+				\ENDFOR
+				\ENDFOR
+			\end{algorithmic}
+		\end{algorithm}
+	\end{minipage}
+\end{center}
+
 %The algorithm works as follows. It keeps track of $\hgamma^t_{ij}$ for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}).    % \rodos{Should we mention that due to lack of uniform learnability we do not present theoretical results here}
 %=======
 %The algorithm works as follows. It keeps track of $\hgamma^t_{ij}$ for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}).     \todov{Should we mention that due to lack of uniform learnability we do not present theoretical results here}
-The algorithm works as follows. At each round, $t$, based on history, we keep track of estimates, $\hgamma^t_{ij}$, of disagreements between sensor $i$ and sensor $j$.  %for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. 
-In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}). We can charaterize regret guarantees such as in Thm~\ref{thm:ftregret} under SD for this new scheme but they require some additional conditions. However, note that due to the lack of uniform learnability under WD we cannot obtain a finite-time characterization and so omit these parallel results due to space limitations. 
 
+The algorithm works as follows. At each round, $t$, based on history, we keep track of estimates, $\hgamma^t_{ij}$, of disagreements between sensor $i$ and sensor $j$.  %for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. 
+In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}). Regret guarantees analogous to Thm~\ref{thm:ftregret} under SD for this new scheme can also be derived but requires additional conditions. Nevertheless, no such guarantee can be provided under WD because it is not uniformly learnable (Thm~3). %However, note that due to the lack of uniform learnability under WD we cannot obtain a finite-time characterization and so omit these parallel results due to space limitations. 
+%\vspace{-5pt}
+\subsection{Extensions} 
+%\vspace{-5pt}
+We describe briefly a few extensions here, which we will elaborate on in a longer version of the paper.
+
+\noindent
+{\it Tree Structures:}
+%It is straightforward to see that we can generalize our cascade model to a tree-architecture. 
+%The algorithm Alg.~\ref{alg:asym} and Alg.~\ref{alg:UCB} extends to trees. 
+We can deal with trees, where now the sensors are organized as a tree with root node corresponding to sensor 1 and we can select any path starting from the root node. To see this, note that the marginal error condition of Eqn.~\ref{eqn:interp_opt} still characterizes optimal sensor selection. Under a modified variant of SD, namely, Eq.~\ref{eqn:DominanceCondition} is in terms of the children of an optimal sensor, it follows that it is again sufficient to keep track of disagreements. In an analogous fashion Eq.~\ref{eqn:WD} can be suitably modified as well. This leads to sublinear regret algorithm for tree-structures. %is sufficient i. holds for all children of a node $i$, we can approximate marginal errors these disagreements in turn approximate marginal error. This fact is sufficient to identify the optimal sensor (see Eqn.~\ref{eqn:interp_opt}). Similarly our results also generalize to trees under a modified WD condition wherein we require Eq.~\ref{eqn:WD} to hold for all children of an optimal node $i=a^*(\theta)$. 
+
+\noindent
+{\it Context-Dependent Sensor Selection:}
+%Our results can also be generalized to specific context dependent cases as well. 
+Each example has a context $x \in \R^d$ and a test maps (partial) context to the output space. Analogous to the context-independent case we impose context dependent notions for SD and WD, namely, Eq.~\ref{eqn:DominanceCondition} and Eq.~\ref{eqn:WD} hold conditioned on each $x \in {\cal X}$. To handle these cases we let $\gamma_i(x)\triangleq \Pr(Y^{i} \neq Y\mid x)$ and $\gamma_{ij}(x) \triangleq \Pr(Y^{i} \neq Y^{j}\mid x)$ denote the corresponding contextual error and disagreement probabilities. Our sublinear regret guarantees can be generalized for a parameterized GLM model for disagreement, namely, when the log-odds ratio $\log \frac{\gamma_{ij}(x)}{1-\gamma_{ij}(x)}$ can be written as $\theta_{ij}'x$ for some unknown $\theta_{ij} \in \mathbb{R}^d$.
+\vspace{-5pt}
 %  \todov{Should we mention that due to lack of uniform learnability we do not present theoretical results here}
 

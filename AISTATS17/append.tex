@@ -1,3 +1,18 @@
+\section*{Stochastic Partial Monitoring Problem \ref{sec:Setup}}
+In an SPM a learner interacts with a stochastic environment in a sequential manner.
+In round $t=1,2,\dots$ the learner chooses an action $A_t$ from an action set $\A$, and receives a feedback $Y_t\in \Y$
+from a distribution $p$ which depends on the action chosen and also on the environment instance identified
+with a ``parameter'' $\theta\in\Theta$:
+$Y_t \sim p(\cdot;A_t,\theta)$. 
+%The learner chooses $A_t$ based on the past feedbacks $Y_1,\dots,Y_{t-1}$. 
+The learner also incurs a reward $R_t$, which is a function of the action chosen and the unknown parameter $\theta$:
+$R_t = r(A_t,\theta)$. 
+The reward may or may not be part of the feedback for round $t$.
+The learner's goal is to maximize its total expected reward.
+The family of distributions $(p(\cdot;a,\theta))_{a,\theta}$ and the family of rewards $(r(a,\theta))_{a,\theta}$
+and the set of possible parameters $\Theta$ are known to the learner, who uses this knowledge to judiciously choose
+its next action to reduce its uncertainty about $\theta$ so that it is able to eventually converge on choosing only an 
+optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*(\theta) = \max_{a\in \A} r(a,\theta)$.  Bandit problems are a special case of SPMs where $\Y$ is the set of real numbers, $r(a,\theta)$ is the mean of distribution $p(\cdot;a,\theta)$.
 \section*{Proof of Proposition \ref{prop:learnablemap}}
 \begin{proof}
 	$\Rightarrow$: Let $\Alg$ be an algorithm that achieves sublinear regret
@@ -26,6 +41,9 @@
 	Such an index $n_0$ exists by our assumptions that $f$ grows faster than $n \mapsto \log(n)$.
 	For $n\ge n_0$, the expected regret of $\Alg$ is at most $n \times 1/n + f(n) (1-1/n) \le 1+f(n) = o(n)$.
 	\end{proof}
+
+
+
 
 \section*{Proof of Corollary \ref{cor:twdlearnable}}
 \begin{proof}
@@ -78,6 +96,65 @@
 		\noindent $\Leftarrow$: Let $C_i - C_j \le \Prob{Y^i \ne Y^j}$. Then, by \eqref{eq:cond2}, $C_i - C_j \le \gamma_j - \gamma_i$.
 	\end{proof}
 
+
+
+
+\begin{prop}
+	\label{prop:awdwelldef}
+	For any $\theta \in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $\awd(P_S)$ is well-defined.
+\end{prop}
+
+
+\begin{prop}
+	\label{prop:awdsound}
+	The map $\awd$ is sound over $\TWD$: In particular, for any
+	$\theta\in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $\awd(P_S)= a^*(\theta)$.
+\end{prop}
+
+\begin{cor}\label{cor:twdlearnable}
+	The set $\TWD$ is learnable.
+\end{cor}
+
+\begin{prop}
+	\label{prop:awdcorrectimplieswd}
+	Let $\theta \in \TSA$ and $\theta = P_S\otimes P_{Y|S}$ be such that $\awd$ is defined for $P_S$
+	and $\awd(P_S) = a^*(\theta)$. Then $\theta \in \TWD$.
+\end{prop}
+The proof follows from the definitions. An immediate corollary of the previous proposition is as follows:
+\begin{cor}\label{cor:awdoutsideincorrect}
+	Let $\theta \in \TSA$ and $\theta = P_S \otimes P_{Y|S}$. 
+	Assume that $\awd$ is defined for $P_S$ and $\theta \not\in \TWD$. Then $\awd(P_S) \ne a^*(\theta)$.
+\end{cor}
+The next proposition states that $\awd$ is essentially the only sound action selector map defined for
+all instances derived from instances of $\TWD$:
+\begin{prop}\label{prop:awdunique}
+	Take any action selector map $a: M_1( \{0,1\}^K ) \to [K]$ which is sound over $\TWD$.
+	Then, for any $P_S$ such that $\theta = P_S\otimes P_{Y|S}\in \TWD$ with some $P_{Y|S}$,
+	$a(P_S) = \awd(P_S)$.
+\end{prop}
+
+The next result shows that
+the set $\TWD$ is essentially a maximal learnable set in $\mathrm{dom}(\awd)$:
+\begin{thm}
+	\label{thm:MaxLearnability}
+	Let $a: M_1(\{0,1\}^K) \to [K]$ be an action selector map
+	such that $a$ is sound over the instances of $\TWD$.
+	Then there is no instance $\theta = P_S\otimes P_{Y|S} \in \TSA\setminus \TWD$ such that 
+	$P_S\in \mathrm{dom}(\awd)$, the optimal action of $\theta$ is unique
+	%\todoc{It would be nice to remove this uniqueness assumption, but I don't see how this could be made to work.}
+	and $a(P_S) = a^*(\theta)$.
+\end{thm}
+Note that $\mathrm{dom}(\awd)\setminus \{ P_S \,:\, \exists P_{Y|S} \textrm{ s.t. } P_S \otimes P_{Y|S} \in \TWD \} \ne \emptyset$, i.e., the theorem statement is non-vacuous.
+In particular, for $K=2$, consider $(Y,Y^1,Y^2)$ such that $Y$ and $Y^1$ are independent and $Y^2 = 1-Y^1$, we can see that the resulting instance gives rise to $P_S$ which is in the domain of $\awd$ for any $c\in \R_+^K$ (because here $\gamma_1 = \gamma_2 = 1/2$, thus $\gamma_1 - \gamma_2 = 0$ while $\Prob{Y^1\ne Y^2}=1$).
+While $\TWD$ is learnable, it is not uniformly learnable, i.e., the minimax regret $\Regret_n^*(\TWD) = \inf_{\Alg} \sup_{\theta\in \TWD} \Regret_n(\Alg,\theta)$ over $\TWD$ grows linearly:
+\begin{thm}
+	\label{thm:nonunif}
+	$\TWD$ is not uniformly learnable:
+	$\Regret_n^*(\TWD) = \Omega(n)$.
+\end{thm}
+
+
+
 \section*{Proof of Theorem \ref{thm:MaxLearnability}}
 \begin{proof}
 	Let $a$ as in the theorem statement. By~\cref{prop:awdunique}, $\awd$ is the unique sound action-selector map over $\TWD$.
@@ -100,7 +177,7 @@
 	If $i=j$, there is nothing to be proven. Hence, first assume that $j>i$. Then, by~\eqref{eq:wd2}, $C_j - C_i \ge \Prob{Y^i \ne Y^j}$.
 	By \cref{cor:gammadiff}, $\Prob{Y^i \ne Y^j } \ge \gamma_i - \gamma_j$. Combining these two inequalities we get that
 	$\gamma_i + C_i \le \gamma_j + C_j$, which contradicts with the definition of $j$.
-	Now, assume that $j<i$. Then, by~\eqref{eqn:WD}, $C_i - C_j \ge \Prob{Y^i \ne Y^j}$.
+	Now, assume that $j<i$. Then, by~\eqref{eq:wd}, $C_i - C_j \ge \Prob{Y^i \ne Y^j}$.
 	However, by~\eqref{eq:wd1}, $C_i -C_j < \Prob{Y^i \ne Y^j}$, thus $j<i$ cannot hold either and we must have $i=j$.
 	\end{proof}
 
@@ -307,31 +384,6 @@ Hence, $P_S$ can also be specified to satisfy this. In particular, one possibili
 	&=\Regret_n(\pi^\prime,\theta).
 	\end{align*}
 	\end{proof}
-	
-\begin{minipage}{0.48\textwidth}
-	\begin{algorithm}[H]
-		\caption{Algorithm for USS with WD property} %ALG1}
-		\label{alg:UCB}
-		\begin{algorithmic}[1]
-			\STATE Play action $K$ and observe $Y^1,\dots,Y^K$
-			\STATE Set $\hgamma_{ij}^1 \set \one{Y^i\ne Y^j}$ for all $i,j\in [K]$ and $i < j$.
-			\STATE $n_i(1)\leftarrow \one{i=K} \; \forall i\in [K]$.
-			\FOR{$t=2,3,...$}
-			\STATE $U_{ij}^t=\hgamma_{ij}^{t-1} + \sqrt{\frac{1.5\log(t)}{n_j(t-1)}}$  $\;\forall \; i,j \in [K]$ and $i<j$ \label{algo:UCB}
-			\STATE $S_t=\{i \in [K-1]: C_j-C_i \geq U_{ij}^t \;\forall \;   j > i \}$ \label{algo:sort}
-			\STATE Set $I_t= \arg \min S_t \cup \{K\} $
-			\STATE Play $I_t$ and observe $Y^1,\dots,Y^{I_t}$.
-			\FOR {$i\in [I_t]$}
-			\STATE $n_i(t) \set n_i(t-1)+1$\\
-			\STATE $\hgamma_{ij}^t \set \left (1-\frac{1}{n_j(t)}\right )
-			\hgamma_{ij}^{t-1} + \frac{1}{n_j(t)} \,\one{Y^j\ne Y^i} \forall \; i<j \leq I_t$ \label{algo:Update}
-			\ENDFOR
-			\ENDFOR
-		\end{algorithmic}
-	\end{algorithm}
-\end{minipage}
-	
-	
 %\section{Proof of Theorem \ref{thm:K-SAPRegret}}
 %Consider a $K$-armed stochastic bandit problem where reward distribution $\nu_i$ has mean  $\gamma_1-\gamma_i- \sum_{j< i}c_j$ for all $i >1$ and arm $1$ gives a fixed reward of value $0$. The arms have side-observation structure defined by graph $G_S$.  
 %Given an arbitrary policy $\pi=(\pi_1, \pi_2, \cdots \pi_t )$ for the SAP, we obtain a policy for the bandit problem with side observation graph $G_S$ from $\pi$ as follows: Let $H_{t-1}$ denote the history, consisting of all arms played and the corresponding rewards, available to policy $\pi_{t-1}$ till time $t-2$. In round $t-1$, let $a_{t-1}$ denote the arm selected by the bandit policy,  $r_{t-1}$ the corresponding reward and $o_{t-1}$ the side-observation defined by graph $G_S$. Then, the next action $a_t$ is obtained as follows:

@@ -5,7 +5,7 @@
 \newcommand{\PUSS}{\P_{\mathrm{USS}}\xspace}
 \renewcommand{\P}{\mathcal{P}}
 
-In this section we establish that USS with SD property is `regret equivalent' to an instance of MAB with side-information and the corresponding algorithm for MAB can be suitably imported to solve USS efficiently.   
+In this section we establish that USS with SD property is `regret equivalent' to an instance of multi-armed-bandit (MAB) with side-information. The corresponding MAB algorithm can then be suitably imported to solve USS efficiently.   
 
 \if0
 \todoc[inline]{I am thinking that maybe we should skip this general section
@@ -158,7 +158,7 @@ In summary, we get the following result:
 \begin{cor}
 $\Regret_T^*(\TSD) = \Regret_T^*(f(\TSD))$. 
 \end{cor}
-{\bf Lower Bounds:} Note that as a consequence of the reduction and the one-to-one correspondence between the two problems, lower bounds for the bandit with side-information also serves as a lower bound for the USS problem as well.
+{\bf Lower Bounds:} Note that as a consequence of the reduction and the one-to-one correspondence between the two problems, lower bounds for MAB with side-information is a lower bound for USS problem.
 
 
 %\todoc[inline]{So this could in theory be used for upper and lower bounds.. 
