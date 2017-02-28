@@ -1,0 +1,153 @@
+\begin{thebibliography}{22}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Abbasi-Yadkori et~al.(2011)Abbasi-Yadkori, P{\'a}l, and
+  Szepesv{\'a}ri]{NIPS2011_ImprovedAlgorithms_AbbasiPalSzepes}
+Abbasi-Yadkori, Yasin, P{\'a}l, D{\'a}vid, and Szepesv{\'a}ri, Csaba.
+\newblock Improved algorithms for linear stochastic bandits.
+\newblock In \emph{Proceeding of Advances in Neural Information Processing
+  Systems (NIPS)}, pp.\  2312--2320, 2011.
+
+\bibitem[Agrawal et~al.(1989)Agrawal, Teneketzis, and
+  Anantharam]{AgTeAn89:pmon}
+Agrawal, Rajeev, Teneketzis, Demosthenis, and Anantharam, Venkatachalam.
+\newblock Asymptotically efficient adaptive allocation schemes for controlled
+  i.i.d. processes: Finite parameter space.
+\newblock \emph{IEEE Transaction on Automatic Control}, 34:\penalty0 258--267,
+  1989.
+
+\bibitem[Alon et~al.(2013)Alon, Cesa-Biancbi, Gentile, and
+  Mansour]{NIPS13_FromBanditsToExperts_AlonBianchiGentile}
+Alon, N., Cesa-Biancbi, N., Gentile, C., and Mansour, Y.
+\newblock From bandits to experts: A tale of domination and independence.
+\newblock In \emph{Proceeding of Conference on Neural Information Processing
+  Systems, NIPS}, pp.\  1610--1618, 2013.
+
+\bibitem[Alon et~al.(2015)Alon, Cesa-Biancbi, Dekel, and
+  Koren]{COLT15_OnlineLearningWithFeedback_AlonBianchiDekel}
+Alon, N., Cesa-Biancbi, N., Dekel, O., and Koren, T.
+\newblock Online learning with feedback graphs:beyond bandits.
+\newblock In \emph{Proceeding of Conference on Learning Theory}, pp.\  23--35,
+  2015.
+
+\bibitem[Bart{\'o}k et~al.(2014)Bart{\'o}k, Foster, P{\'a}l, Rakhlin, and
+  {Sz}epesv{\'a}ri]{BaFoPaRaSze14}
+Bart{\'o}k, G., Foster, D., P{\'a}l, D., Rakhlin, A., and {Sz}epesv{\'a}ri,
+  {Cs}.
+\newblock Partial monitoring -- classification, regret bounds, and algorithms.
+\newblock \emph{Mathematics of Operations Research}, 39:\penalty0 967--997,
+  2014.
+
+\bibitem[Dani et~al.(2008)Dani, Hayes, and
+  Kakade]{COLT08_StochasticLinearOptimization_DaniHayesKakad}
+Dani, V., Hayes, T.~P., and Kakade, S.~M.
+\newblock Stochastic linear optimization under bandit feedback.
+\newblock In \emph{Proceeding of Conference on Learning Theory, COLT},
+  Helsinki, Finland, July 2008.
+
+\bibitem[Draper et~al.(1999)Draper, Bins, and Baek]{ADORE-99}
+Draper, B., Bins, J., and Baek, K.
+\newblock Adore: Adaptive object recognition.
+\newblock In \emph{International Conference on Vision Systems}, pp.\  522--537,
+  1999.
+
+\bibitem[Greiner et~al.(2002)Greiner, Grove, and Roth]{ActiveClass-AIJ-s}
+Greiner, R., Grove, A., and Roth, D.
+\newblock Learning cost-sensitive active classifiers.
+\newblock \emph{Artificial Intelligence}, 139:\penalty0 137--174, 2002.
+
+\bibitem[Isukapalli \& Greiner(2001)Isukapalli and
+  Greiner]{isukapalli01efficient-ICJAI}
+Isukapalli, R. and Greiner, R.
+\newblock Efficient interpretation policies.
+\newblock In \emph{International Joint Conference on Artificial Intelligence},
+  pp.\  1381--1387, 2001.
+
+\bibitem[Kapoor \& Greiner(2005)Kapoor and Greiner]{LCunderBudget-ECML05}
+Kapoor, A. and Greiner, R.
+\newblock Learning and classifying under hard budgets.
+\newblock In \emph{{ECML}}, 2005.
+
+\bibitem[Li et~al.(2010)Li, Wei, Langford, and
+  Schapire]{WWW10_Contextaulbandits_LiChuWei}
+Li, L., Wei, C., Langford, J., and Schapire, R.~E.
+\newblock A contextual-bandit approach to personalized news article
+  recommendation.
+\newblock In \emph{Proceeding of International Word Wide Web conference, WWW},
+  NC, USA, April 2010.
+
+\bibitem[Mannor \& Shamir(2011)Mannor and Shamir]{MaSh11}
+Mannor, S. and Shamir, O.
+\newblock From bandits to experts: On the value of side-observations.
+\newblock In \emph{NIPS}, 2011.
+
+\bibitem[Nan et~al.(2015)Nan, Wang, and
+  Saligrama]{NIPS2015_FeatureBudgeted_NanWangSaligrama}
+Nan, F., Wang, J., and Saligrama, V.
+\newblock Feature-budgeted random forest.
+\newblock In \emph{Proceeding of Conference on Neural Information Processing
+  Systems, NIPS}, 2015.
+
+\bibitem[P{\'o}czos et~al.(2009)P{\'o}czos, Abbasi-Yadkori, Szepesv{\'a}ri,
+  Greiner, and Sturtevant]{poczos2009}
+P{\'o}czos, B., Abbasi-Yadkori, Y., Szepesv{\'a}ri, {Cs}., Greiner, R., and
+  Sturtevant, N.
+\newblock Learning when to stop thinking and do something!
+\newblock In \emph{ICML}, pp.\  825--832, 2009.
+
+\bibitem[Rusmevichientong \& Tsitsiklis(2010)Rusmevichientong and
+  Tsitsiklis]{MOR11_LinearlyParametrized_RusmevichientongTsitsiklis}
+Rusmevichientong, Paat and Tsitsiklis, John~N.
+\newblock Linearly parameterized bandits.
+\newblock \emph{Mathematics of Operations Research}, 35\penalty0 (2):\penalty0
+  395--411, 2010.
+
+\bibitem[Seldin et~al.(2014)Seldin, Bartlett, Crammer, and
+  Abbasi-Yadkori]{SBCA14:BanditsPaid}
+Seldin, Y., Bartlett, P., Crammer, K., and Abbasi-Yadkori, Y.
+\newblock Prediction with limited advice and multiarmed bandits with paid
+  observations.
+\newblock In \emph{Proceeding of International Conference on Machine Learning,
+  ICML}, pp.\  208--287, 2014.
+
+\bibitem[Thompson(1933)]{Tho33}
+Thompson, W.R.
+\newblock On the likelihood that one unknown probability exceeds another in
+  view of the evidence of two samples.
+\newblock \emph{Biometrika}, 25:\penalty0 285--294, 1933.
+
+\bibitem[Trapeznikov \& Saligrama(2013)Trapeznikov and
+  Saligrama]{AISTATS13_SupervisedSequentialLearning_TrapezSaligram}
+Trapeznikov, K. and Saligrama, V.
+\newblock Supervised sequential classification under budget constraints.
+\newblock In \emph{AISTATS}, pp.\  235--242, 2013.
+
+\bibitem[Trapeznikov et~al.(2014)Trapeznikov, Saligrama, and
+  Castanon]{ML13_MultistageClassifier_TrapezSaligramaCastanon}
+Trapeznikov, K., Saligrama, V., and Castanon, D.~A.
+\newblock Multi-stage classifier design.
+\newblock \emph{Machine Learning}, 39:\penalty0 1--24, 2014.
+
+\bibitem[Wang et~al.(2015)Wang, Trapeznikov, and
+  Saligrama]{NIPS2015_DirectedAcyclic_WangTrapezSaligram}
+Wang, J., Trapeznikov, K., and Saligrama, V.
+\newblock Directed acyclic graph for resource constrained prediction.
+\newblock In \emph{Proceeding of Conference on Neural Information Processing
+  Systems, NIPS}, 2015.
+
+\bibitem[Wu et~al.(2015)Wu, Gy{\"o}rgy, and Szepesv{\'a}ri]{WGySz:NIPS15}
+Wu, Y., Gy{\"o}rgy, A., and Szepesv{\'a}ri, {Cs}.
+\newblock Online learning with gaussian payoffs and side observations.
+\newblock In \emph{NIPS}, pp.\  1360--1368, September 2015.
+
+\bibitem[Zolghadr et~al.(2013)Zolghadr, Bart\'ok, Greiner, Gy\"orgy, and
+  Szepesv\'ari]{ZBGGySz13:CostlyFeatures}
+Zolghadr, N., Bart\'ok, G., Greiner, R., Gy\"orgy, A., and Szepesv\'ari, C.
+\newblock Online learning with costly features and labels.
+\newblock In \emph{NIPS}, pp.\  1241--1249, 2013.
+
+\end{thebibliography}
