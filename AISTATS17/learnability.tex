@@ -1,4 +1,5 @@
 %!TEX root =  main.tex
+\vspace{-7pt}
 Let $\TSA$ be the set of all stochastic, cascaded sensor acquisition problems. 
 Thus, $\theta \in \TSA$ such that if $Y\sim \theta$ then $\gamma_k(\theta):=\Prob{Y\ne Y^k}$ 
 is a decreasing sequence.
@@ -40,7 +41,7 @@ An instance $\theta \in \TSA$  is said to satisfy the \emph{strong dominance pro
 it holds in the instance that if a sensor predicts correctly
 then all the sensors in the subsequent stages of the cascade also predict correctly, i.e., 
 for any $i\in [K]$,
-	
+	%
     \begin{equation}
 	\label{eqn:DominanceCondition}
 	Y^i=Y \,\, \Rightarrow\,\, Y^{i+1}= \dots =  Y^K = Y
@@ -48,7 +49,7 @@ for any $i\in [K]$,
 	almost surely (a.s.)
 	where $(Y,Y^1,\dots,Y^K)\sim P$.
 \end{defi}
-Before we develop this concept further we will motivate strong dominance based on experiments on a few real-world datasets. SD property naturally arises in the context of error-correcting codes~\cite{list-decoding}, where one sequentially corrects for errors, and thus whenever a decoder is accurate the following decoders are also accurate. On the other hand for real-datasets SD holds only approximately. Table \ref{tab:ErrorTable1} lists the error probabilities of the classifiers (sensors) for the heart and diabetic datasets from UCI repository. We split features into two sets based on provided costs (cheap tests are based on patient history and costly tests include all the features). We then trained an SVM classifier with 5-fold cross-validation and report scores based on held-out test data. 
+Before we develop this concept further we will motivate strong dominance based on experiments on a few real-world datasets. SD property naturally arises in the context of a cascade of error-correcting codes (see \cite{costello,voyager}). On the other hand for real-datasets SD holds only approximately. Table \ref{tab:ErrorTable1} lists the error probabilities of the classifiers (sensors) for the heart and diabetic datasets from UCI repository. We split features into two sets based on provided costs (cheap tests are based on patient history and costly tests include all the features). We then trained an SVM classifier with 5-fold cross-validation and report scores based on held-out test data. 
 \begin{table}[h]
 \vspace{-6pt}
 \begin{center}
@@ -116,17 +117,18 @@ These results motivate the following definition:
 	An instance $\theta \in \TSA$  is said to satisfy the \emph{weak dominance,  property} if 
 	for $i = a^*(\theta)$,
 	\begin{align}
-	\label{eqn:WD} \forall j>i\,\,: \,\, C_j - C_i \ge \Prob{Y^i\ne Y^j}\,.
+	\label{eqn:WD} \rho = \min_{j > i} \frac{C_j - C_i}{\Prob{Y^i\ne Y^j}} \ge 1 %\forall j>i\,\,: \,\, C_j - C_i \ge \Prob{Y^i\ne Y^j}\,.
 	\end{align}
 We denote the set of all instances in $\TSA$ that satisfies this condition by $\TWD$.	
 \end{defi}
 Note that $\TSD\subset \TWD$ since for any $\theta\in \TSD$, any $j>i = a^*(\theta)$, on the one hand $C_j - C_i \ge \gamma_i - \gamma_j$, while on the other hand, by the SD property, $\Prob{Y^i\ne Y^j} = \gamma_i - \gamma_j$.
 
-We now relate the WD to the optimality condition described in Eq.~\eqref{eqn:interp_opt}. WD can be viewed as a more stringent condition for optimal actions. Namely, for an action to be optimal we also require that the marginal cost be larger than marginal \emph{absolute} error:
+We now relate WD to the optimality condition described in Eq.~\eqref{eqn:interp_opt}. WD can be viewed as a more stringent condition for optimal actions. For an action to be optimal we require that the marginal cost be larger than marginal \emph{absolute} error, namely, for all $j > i$, with $i = a^*(\theta)$:
 \begin{equation} \label{eqn:interp_WD}
-\underbrace{C_j - C_i}_{\text{Marginal Cost}} \geq \underbrace{ E \left [ \left | \ind{Y_t \ne Y_t^i} - \ind{Y_t \ne Y_t^j} \right | \right ]}_{\text{Marginal Absolute Error}},\,\,\, \forall \, j \geq i\,.
+\underbrace{C_j - C_i}_{\text{Marginal Cost}} \geq \underbrace{ E \left [ \left | \ind{Y_t \ne Y_t^i} - \ind{Y_t \ne Y_t^j} \right | \right ]}_{\text{Marginal Absolute Error}}
 \end{equation}
-The difference between marginal error in Eq.~\eqref{eqn:interp_opt} and marginal absolute error is the presence of the absolute value. We will show later that weak-dominant set is a maximal learnable set, namely, the set cannot be expanded while ensuring learnability.
+%The difference between marginal error in Eq.~\eqref{eqn:interp_opt} and
+where we have re-written $\Prob{Y^i\ne Y^j}$ as the marginal absolute error. We will show later that weak-dominant set is a maximal learnable set, namely, the set cannot be expanded while ensuring learnability.
 
 
 We propose the following action selector $\awd: M_1(\{0,1\}^K)  \to [K]$:
@@ -141,56 +143,6 @@ For $P_S \in M_1(\{0,1\}^K) $ let $\awd(P_S)$ denote the smallest index $i\in [K
 where $C_i = c_1+\cdots + c_i$, $i\in [K]$ and $(Y^1,\dots,Y^K) \sim P_S$.
 (If no such index exists, $\awd$ is undefined, i.e., $\awd$ is a partial function.)
 \end{defi}
-\begin{prop}
-\label{prop:awdwelldef}
-For any $\theta \in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $\awd(P_S)$ is well-defined.
-\end{prop}
 
-\begin{prop}
-\label{prop:awdsound}
-The map $\awd$ is sound over $\TWD$: In particular, for any
-$\theta\in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $\awd(P_S)= a^*(\theta)$.
-\end{prop}
-
-\begin{cor}\label{cor:twdlearnable}
-The set $\TWD$ is learnable.
-\end{cor}
-
-\begin{prop}
-\label{prop:awdcorrectimplieswd}
-Let $\theta \in \TSA$ and $\theta = P_S\otimes P_{Y|S}$ be such that $\awd$ is defined for $P_S$
-and $\awd(P_S) = a^*(\theta)$. Then $\theta \in \TWD$.
-\end{prop}
-The proof follows from the definitions. An immediate corollary of the previous proposition is as follows:
-\begin{cor}\label{cor:awdoutsideincorrect}
-Let $\theta \in \TSA$ and $\theta = P_S \otimes P_{Y|S}$. 
-Assume that $\awd$ is defined for $P_S$ and $\theta \not\in \TWD$. Then $\awd(P_S) \ne a^*(\theta)$.
-\end{cor}
-The next proposition states that $\awd$ is essentially the only sound action selector map defined for
- all instances derived from instances of $\TWD$:
-\begin{prop}\label{prop:awdunique}
-Take any action selector map $a: M_1( \{0,1\}^K ) \to [K]$ which is sound over $\TWD$.
-Then, for any $P_S$ such that $\theta = P_S\otimes P_{Y|S}\in \TWD$ with some $P_{Y|S}$,
- $a(P_S) = \awd(P_S)$.
-\end{prop}
-
-The next result shows that
-the set $\TWD$ is essentially a maximal learnable set in $\mathrm{dom}(\awd)$:
-\begin{thm}
-	\label{thm:MaxLearnability}
-Let $a: M_1(\{0,1\}^K) \to [K]$ be an action selector map
-such that $a$ is sound over the instances of $\TWD$.
-Then there is no instance $\theta = P_S\otimes P_{Y|S} \in \TSA\setminus \TWD$ such that 
-$P_S\in \mathrm{dom}(\awd)$, the optimal action of $\theta$ is unique
-%\todoc{It would be nice to remove this uniqueness assumption, but I don't see how this could be made to work.}
- and $a(P_S) = a^*(\theta)$.
-\end{thm}
-Note that $\mathrm{dom}(\awd)\setminus \{ P_S \,:\, \exists P_{Y|S} \textrm{ s.t. } P_S \otimes P_{Y|S} \in \TWD \} \ne \emptyset$, i.e., the theorem statement is non-vacuous.
-In particular, for $K=2$, consider $(Y,Y^1,Y^2)$ such that $Y$ and $Y^1$ are independent and $Y^2 = 1-Y^1$, we can see that the resulting instance gives rise to $P_S$ which is in the domain of $\awd$ for any $c\in \R_+^K$ (because here $\gamma_1 = \gamma_2 = 1/2$, thus $\gamma_1 - \gamma_2 = 0$ while $\Prob{Y^1\ne Y^2}=1$).
-While $\TWD$ is learnable, it is not uniformly learnable, i.e., the minimax regret $\Regret_n^*(\TWD) = \inf_{\Alg} \sup_{\theta\in \TWD} \Regret_n(\Alg,\theta)$ over $\TWD$ grows linearly:
-\begin{thm}
-\label{thm:nonunif}
-$\TWD$ is not uniformly learnable:
-$\Regret_n^*(\TWD) = \Omega(n)$.
-\end{thm}
+For any $\theta \in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $\awd(P_S)$ is well-defined and is essentially the only sound action selector map defined for all instances derived from the instances of $\TWD$. Further, the set $\TWD$ is essentially a maximal learnable set in the  $\mathrm{dom}(\awd)$, i.e., $\TWD$ is learnable but not uniformly learnable.
 
