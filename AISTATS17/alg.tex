@@ -96,10 +96,10 @@ R_T(\theta)
   &\le  \Big( 2K+2+\frac{4K}{\alpha-2} \Big) 
   +  4K\sum_{s=0}^T \exp{\Big( \frac{-8\beta(s)\epsilon^2}{2K} \Big)}~~~~~ \\
  &+ 2 \beta\Big( 4\alpha\log T\sum_{i\in \iset{K}} u_i^*(\gamma,\epsilon)+K \Big)\\
- & +  4\alpha\log T \sum_{i\in \iset{K}} u_i^*(\gamma,\epsilon)\Delta_i(\theta) \\
- &\mbox{where}  \;\; u_i^*(\gamma,\epsilon) = \sup\{u_i^*(\gamma')\,:\, \norm{\gamma'-\gamma}_{\infty}\le \epsilon \}.
+ & +  4\alpha\log T \sum_{i\in \iset{K}} u_i^*(\gamma,\epsilon)\Delta_i(\theta) \,,
+% &\mbox{where}  \;\; u_i^*(\gamma,\epsilon) = \sup\{u_i^*(\gamma')\,:\, \norm{\gamma'-\gamma}_{\infty}\le \epsilon \}.
 \end{align*}
-%where $u_i^*(\gamma,\epsilon) = \sup\{u_i^*(\gamma')\,:\, \norm{\gamma'-\gamma}_{\infty}\le \epsilon \}$.
+where $u_i^*(\gamma,\epsilon) = \sup\{u_i^*(\gamma')\,:\, \norm{\gamma'-\gamma}_{\infty}\le \epsilon \}$.
 \label{thm:alg1-ub1}
 \end{thm}  
 Further specifying $\beta(n)$ and using the continuity of $u^*(\cdot)$ at $\theta$, it immediately follows that Algorithm~\ref{alg:asym} achieves asymptotically optimal performance: 
@@ -125,13 +125,6 @@ The algorithm in \ref{alg:asym} only estimates the disagreements $\P\{Y^1 \neq Y
 %\vspace{-4pt}
 %A natural algorithm n alternative algorithm is the elimination algorithm 
 The reduction scheme described above is optimal under SD property and can fail under the more relaxed WD property. This is because, under SD, marginal error is equal to marginal disagreement (see Prop.~2); it follows for any two sensors $i < j$, $\gamma_i-\gamma_j = (\gamma_i-\gamma_1) - (\gamma_j-\gamma_1) = \Prob{Y^i\ne Y^1} - \Prob{Y^i\ne Y^1}$; and so we can compute marginal error between any two sensors by only keeping track of disagreements relative to sensor 1. Under WD, marginal error is a lower bound and keeping track only of disagreements relative to sensor 1 no longer suffices because $\Prob{Y^i\ne Y^1} - \Prob{Y^i\ne Y^1}$ is no longer a good estimate for $\Prob{Y^i\ne Y^j}$.
-%
-%Hence, we can express marginal error between sensors, $i,\,j$ as the difference between disagreements of sensors $i$ \& $1$, and sensors $j$ \& $1$. Under WD marginal error is only a lower bound on disagreement and so .   
-%\todov{need to present a lower bound for reduction} 
-%when tests satisfy SD property, it can fail under WD (see Sec.~\ref{sec:Experiments}). 
-Our key insight is based on the fact that,
-%For any suboptimal arm $j < i^*$,  $C_{i^*}-C_j \leq \P\{Y^{i^*} \neq Y^j\}$ holds, and when the WD property holds, we further have $C_j -C_{i^*} \geq \P\{Y^i \neq Y^j\}$ for all $j>i^*$. 
-under WD, for a given set of the disagreement probabilities, for all $i \neq j$, the set $\{i \in [K-1]: C_j - C_i \geq \P\{Y^i \neq Y^j\} \mbox{ for all } j>i\}$ includes the optimal arm. We use this idea in Algorithm \ref{alg:UCB} to identify the optimal arm when an instance of USS satisfies WD. We will experimentally validate its performance on real datasets in the next section.
 \begin{center}
 \begin{minipage}{0.48\textwidth}
 		\begin{algorithm}[H]
@@ -157,6 +150,13 @@ under WD, for a given set of the disagreement probabilities, for all $i \neq j$,
 	\end{minipage}
 \end{center}
 
+%
+%Hence, we can express marginal error between sensors, $i,\,j$ as the difference between disagreements of sensors $i$ \& $1$, and sensors $j$ \& $1$. Under WD marginal error is only a lower bound on disagreement and so .   
+%\todov{need to present a lower bound for reduction} 
+%when tests satisfy SD property, it can fail under WD (see Sec.~\ref{sec:Experiments}). 
+Our key insight is based on the fact that,
+%For any suboptimal arm $j < i^*$,  $C_{i^*}-C_j \leq \P\{Y^{i^*} \neq Y^j\}$ holds, and when the WD property holds, we further have $C_j -C_{i^*} \geq \P\{Y^i \neq Y^j\}$ for all $j>i^*$. 
+under WD, for a given set of the disagreement probabilities, for all $i \neq j$, the set $\{i \in [K-1]: C_j - C_i \geq \P\{Y^i \neq Y^j\} \mbox{ for all } j>i\}$ includes the optimal arm. We use this idea in Algorithm \ref{alg:UCB} to identify the optimal arm when an instance of USS satisfies WD. We will experimentally validate its performance on real datasets in the next section.
 %The algorithm works as follows. It keeps track of $\hgamma^t_{ij}$ for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}).    % \rodos{Should we mention that due to lack of uniform learnability we do not present theoretical results here}
 %=======
 %The algorithm works as follows. It keeps track of $\hgamma^t_{ij}$ for all $i,j \in [K]$ and $i\neq j$ in each round, where $\hgamma_{ij}$ is an estimate of the probability $\P\{Y^i \neq Y^j\}$. In the first round, the algorithm plays arm $K$ and initializes its values. In each subsequent round, the algorithm computes the upper confidence value of $\hgamma^t_{ij}$ denoted as $U^t_{ij}$ (\ref{algo:UCB}) for all pairs $(i,j)$ and orders the arms: $i$ is considered better than arm $j$ if $C_j-C_i \geq U^t_{ij}$. Specifically, the algorithm plays an arm $i$ that satisfies $C_j-C_i \geq U^t_{ij}$ for all $j>i$ \ref{algo:sort}. If no such arm is found, then it plays arm $K$.  $n_j(t), j\in [K] $ counts the total number of observation of pairs $(Y^i, Y^j)$, for all $i<j$, till round $t$ and uses it to update the estimates $\hgamma_{ij}^t$ (\ref{algo:Update}).     \todov{Should we mention that due to lack of uniform learnability we do not present theoretical results here}
