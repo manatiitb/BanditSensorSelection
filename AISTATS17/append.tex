@@ -324,12 +324,7 @@ The row marked by $(*)$ supports that the instances are proper USS instances.
 In the row marked by $(**)$, there is no requirement for $\theta'$ because 
 in $\theta'$ action two is optimal, and hence there is no action with larger index 
 than the optimal action, hence $\theta'\in \TWD$ automatically holds.
-To verify the closeness of $P_S(\theta)$ and $P_S(\theta')$ we actually 
-would need to first specify $P_S$ (the tables do not fully specify these).
-However, it is clear the only restriction we put on $P_S$ is the value of $\Prob{Y^1\ne Y^2}$ (and
-that of $\Prob{Y^1=Y^2}$) and these values are within an $\epsilon$ distance of each other.
-Hence, $P_S$ can also be specified to satisfy this. In particular, one possibility for $P$ and $P_S$ are given in \cref{tab:nonunif3}.
-\bgroup
+
 \def\arraystretch{1.5}
 \begin{table}[]
 	\centering
@@ -351,10 +346,17 @@ Hence, $P_S$ can also be specified to satisfy this. In particular, one possibili
 	\caption{Calculations for the proof of \cref{thm:nonunif}.}
 	\label{tab:nonunif2}
 \end{table}
-\egroup
 
+To verify the closeness of $P_S(\theta)$ and $P_S(\theta')$ we actually 
+would need to first specify $P_S$ (the tables do not fully specify these).
+However, it is clear the only restriction we put on $P_S$ is the value of $\Prob{Y^1\ne Y^2}$ (and
+that of $\Prob{Y^1=Y^2}$) and these values are within an $\epsilon$ distance of each other.
+Hence, $P_S$ can also be specified to satisfy this. In particular, one possibility for $P$ and $P_S$ are given in \cref{tab:nonunif3}.
 \bgroup
-\def\arraystretch{1.5}
+%\egroup
+%
+%\bgroup
+%\def\arraystretch{1.5}
 \begin{table}[]
 	\centering
 	%\hspace*{-0.1in}
@@ -371,9 +373,11 @@ Hence, $P_S$ can also be specified to satisfy this. In particular, one possibili
 		$1$ & $1$ & $1$ & $0         $ & $0                       $ \\ \hline
 	\end{tabular}
 	\mbox{}
-	\vspace*{2in}
-	\hspace*{0.5in}
+	\vspace*{.5in}
+%	\hspace*{0.5in}
 	\mbox{}
+
+
 	\begin{tabular}{|c|c||c|c|}
 		\hline
 		$Y^1$ & $Y^2$ &$\theta$ & $\theta'$ \\ \hline\hline
