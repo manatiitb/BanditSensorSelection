@@ -19,7 +19,19 @@
 \usepackage{pifont} % \checkmark
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
+\usepackage[bookmarks=false]{hyperref}
+\hypersetup{
+  pdftex,
+  pdffitwindow=true,
+  pdfstartview={FitH},
+  pdfnewwindow=true,
+  colorlinks,
+  linktocpage=true,
+  linkcolor=Green,
+  urlcolor=Green,
+  citecolor=Green
+}
+
 \usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
@@ -44,9 +56,9 @@
 \usepackage{color}
 \usepackage[usenames,dvipsnames]{xcolor}
 
-%\usepackage[backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
+\usepackage[backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
 % To remove todo notes, simply uncomment the following line and comment out the previous one
- \usepackage[disable,backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
+% \usepackage[disable,backgroundcolor = White,textwidth=\marginparwidth]{todonotes}
 
 % Comments by Csaba:
 \newcommand{\todoc}[2][]{\todo[color=Apricot!20,size=\tiny,#1]{Cs: #2}}
@@ -101,12 +113,22 @@
 \newcommand{\Yti}{Y_t^i}
 \newcommand{\Yt}{Y_t}
 \newcommand{\X}{\mathcal{X}}
+\newcommand{\ses}{sensor selection\xspace}
 
-
+\usepackage{fixltx2e}
 \usepackage[capitalize]{cleveref}
+%Fix for cleveref bug... After Andrew Stacey threw some frisbee around he proposed it :)
+\makeatletter
+\def\thmt@refnamewithcomma #1#2#3,#4,#5\@nil{%
+	\@xa\def\csname\thmt@envname #1utorefname\endcsname{#3}%
+	\ifcsname #2refname\endcsname
+	\csname #2refname\expandafter\endcsname\expandafter{\thmt@envname}{#3}{#4}%
+	\fi
+}
 
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
+\if0
 \newtheorem{thm}{Theorem}
 \newtheorem{lem}{Lemma}
 \newtheorem{prop}{Proposition}
@@ -116,6 +138,68 @@
 \newtheorem{rem}{Remark}
 \newtheorem{defi}{Definition}
 \newtheorem{ass}{Assumption}
+\fi
+
+% Restatable theorems
+% ======== ======== ======== ======== ======== ========
+\usepackage{thmtools}
+\usepackage{thm-restate}
+
+\let\thm\relax
+\declaretheorem[name=Theorem,refname={Theorem,Theorems},Refname={Theorem,Theorems}]{thm}
+
+\let\lem\relax
+\declaretheorem[name=Lemma,refname={Lemma,Lemmas},Refname={Lemma,Lemmas},sibling=thm]{lem}
+
+\let\prop\relax\declaretheorem[name=Proposition,refname={Proposition,Propositions},Refname={Proposition,Propositions},sibling=thm]{prop}
+
+\let\cor\relax
+\declaretheorem[name=Corollary,refname={Corollary,Corollaries},Refname={Corollary,Corollaries},sibling=thm]{cor}
+
+\let\ex\relax
+\declaretheorem[name=Example,refname={Example,Examples},Refname={Example,Examples}]{ex}
+
+\let\cond\relax
+\declaretheorem[name=Condition,refname={Condition,Conditions},Refname={Condition,Conditions}]{cond}
+
+\let\rem\relax
+\declaretheorem[name=Remark,refname={Remark,Remarks},Refname={Remark,Remarks}]{rem}
+
+\let\defi\relax
+\declaretheorem[name=Definition,refname={Definition,Definitions},Refname={Definition,Definitions}]{defi}
+
+\let\ass\relax
+\declaretheorem[name=Assumption,refname={Assumption,Assumptions},Refname={Assumption,Assumptions}]{ass}
+
+
+% Cooperation with cleveref 
+% ======== ======== ======== ======== ======== ========
+%\Crefname{proposition}{Proposition}{Propositions}
+%\Crefname{definition}{Definition}{Definitions}
+%\crefname{proposition}{Proposition}{Propositions}
+%\crefname{definition}{Definition}{Definitions}
+
+% \crefname{question}{question}{questions}
+\Crefname{question}{Question}{Questions}
+\creflabelformat{question}{(#2#1#3)}
+
+% \crefname{problem}{problem}{problems}
+\Crefname{problem}{Problem}{Problems}
+\creflabelformat{problem}{(#2#1#3)}
+
+% \crefname{equation}{equation}{equations}
+\Crefname{equation}{Equation}{Equations}
+\creflabelformat{equation}{(#2#1#3)}
+
+%\crefname{iCondition}{\ccap{c}ondition}{\ccap{c}onditions}
+\crefname{iCondition}{Condition}{Conditions}
+\creflabelformat{iCondition}{(#2#1#3)}
+\crefrangelabelformat{iCondition}{(#3#1#4) to (#5#2#6)}
+
+\Crefname{item}{}{}
+\creflabelformat{item}{(#2#1#3)}
+\crefrangelabelformat{item}{(#3#1#4) to (#5#2#6)}
+
 
 
 
@@ -147,12 +231,12 @@
 
 \begin{abstract}
 \vspace{-10pt}
-In many security and healthcare systems a sequence of sensors/tests are used for detection and diagnosis. Each test outputs a prediction of the latent state, and carries with it inherent costs. Our objective is to {\it learn} strategies for selecting tests to optimize accuracy \& costs. Unfortunately it is often impossible to acquire-in-situ ground truth annotations and we are left with the problem of unsupervised sensor selection (USS). We pose USS as a version of stochastic partial monitoring problem with an {\it unusual} reward structure (even noisy annotations are unavailable). Unsurprisingly no learner can achieve sublinear regret without further assumptions. To this end we propose the notion of weak-dominance. This is a condition on the joint probability distribution of test outputs and latent state and says that whenever a test is accurate on an example, a later test in the sequence is likely to be accurate as well.%. It requires that whenever a sensor test is accurate the test predictions for later tests in the sequence are also likely to be accurate. %whenever an earlier stage   
-%	Sequential sensor acquisition problems (SAP) arise \todom{SAP is not a standard setup, we need to introduce it first .} in many application domains including medical-diagnostics, security and surveillance. SAP architecture is organized as a cascaded network of ``intelligent'' sensors that produce decisions upon acquisition. Sensors must be acquired sequentially and comply with the architecture. Our task is to identify the sensor with optimal accuracy-cost tradeoff. We formulate SAP as a version of the stochastic partial monitoring problem with side information and {\it unusual} reward structure.  Actions correspond to choice of sensor and the chosen sensor's parents decisions are available as side information. Nevertheless, what is atypical, is that we do not observe the reward/feedback, which a learner often uses to reject suboptimal actions. Unsurprisingly, with no further assumptions, we show that no learner can achieve sublinear regret. This negative result leads us to introduce the notion of weak dominance on cascade structures. Weak dominance supposes that a child node in the cascade has higher accuracy whenever its parent's predictions are correct. \todoc{The story is a bit more complicated. The abstract will need a rewrite once we settle on the results.}
+In many security and healthcare systems a sequence of sensors/tests are used for detection and diagnosis. Each test outputs a prediction of the latent state, and carries with it inherent costs. Our objective is to {\it learn} strategies for selecting tests to optimize accuracy \& costs. Unfortunately it is often impossible to acquire-in-situ ground truth annotations and we are left with the problem of unsupervised \ses (USS). We pose USS as a version of stochastic partial monitoring problem with an {\it unusual} reward structure (even noisy annotations are unavailable). Unsurprisingly no learner can achieve sublinear regret without further assumptions. To this end we propose the notion of weak-dominance. This is a condition on the joint probability distribution of test outputs and latent state and says that whenever a test is accurate on an example, a later test in the sequence is likely to be accurate as well.%. It requires that whenever a sensor test is accurate the test predictions for later tests in the sequence are also likely to be accurate. %whenever an earlier stage   
+%	Sequential \ses problems (SAP) arise \todom{SAP is not a standard setup, we need to introduce it first .} in many application domains including medical-diagnostics, security and surveillance. SAP architecture is organized as a cascaded network of ``intelligent'' sensors that produce decisions upon acquisition. Sensors must be acquired sequentially and comply with the architecture. Our task is to identify the sensor with optimal accuracy-cost tradeoff. We formulate SAP as a version of the stochastic partial monitoring problem with side information and {\it unusual} reward structure.  Actions correspond to choice of sensor and the chosen sensor's parents decisions are available as side information. Nevertheless, what is atypical, is that we do not observe the reward/feedback, which a learner often uses to reject suboptimal actions. Unsurprisingly, with no further assumptions, we show that no learner can achieve sublinear regret. This negative result leads us to introduce the notion of weak dominance on cascade structures. Weak dominance supposes that a child node in the cascade has higher accuracy whenever its parent's predictions are correct. \todoc{The story is a bit more complicated. The abstract will need a rewrite once we settle on the results.}
 We empirically verify that weak dominance holds on real datasets and prove that it is a maximal condition for achieving sublinear regret. We reduce USS to a special case of multi-armed bandit problem with side information and develop polynomial time algorithms that achieve sublinear regret.
-%	Sequential sensor acquisition problems (SAP) arise \todom{SAP is not a standard setup, we need to introduce it first .} in many application domains including medical-diagnostics, security and surveillance. SAP architecture is organized as a cascaded network of ``intelligent'' sensors that produce decisions upon acquisition. Sensors must be acquired sequentially and comply with the architecture. Our task is to identify the sensor with optimal accuracy-cost tradeoff. We formulate SAP as a version of the stochastic partial monitoring problem with side information and {\it unusual} reward structure.  Actions correspond to choice of sensor and the chosen sensor's parents decisions are available as side information. Nevertheless, what is atypical, is that we do not observe the reward/feedback, which a learner often uses to reject suboptimal actions. Unsurprisingly, with no further assumptions, we show that no learner can achieve sublinear regret. This negative result leads us to introduce the notion of weak dominance on cascade structures. Weak dominance supposes that a child node in the cascade has higher accuracy whenever its parent's predictions are correct. \todoc{The story is a bit more complicated. The abstract will need a rewrite once we settle on the results.}
+%	Sequential \ses problems (SAP) arise \todom{SAP is not a standard setup, we need to introduce it first .} in many application domains including medical-diagnostics, security and surveillance. SAP architecture is organized as a cascaded network of ``intelligent'' sensors that produce decisions upon acquisition. Sensors must be acquired sequentially and comply with the architecture. Our task is to identify the sensor with optimal accuracy-cost tradeoff. We formulate SAP as a version of the stochastic partial monitoring problem with side information and {\it unusual} reward structure.  Actions correspond to choice of sensor and the chosen sensor's parents decisions are available as side information. Nevertheless, what is atypical, is that we do not observe the reward/feedback, which a learner often uses to reject suboptimal actions. Unsurprisingly, with no further assumptions, we show that no learner can achieve sublinear regret. This negative result leads us to introduce the notion of weak dominance on cascade structures. Weak dominance supposes that a child node in the cascade has higher accuracy whenever its parent's predictions are correct. \todoc{The story is a bit more complicated. The abstract will need a rewrite once we settle on the results.}
 %	We then empirically verify this assumption on real datasets. We show that weak dominance is a maximal learnable set in the sense that we must suffer linear regret for any non-trivial expansion of this set. Furthermore, by reducing SAP to a special case of multi-armed bandit problem with side information we show that for any instance in the weakly dominant we only suffer a sublinear regret.
-	%		We propose a sensor acquisition problem (SAP) wherein sensors (and sensing tests) are organized into a cascaded architecture and the goal is to choose a test with the optimal cost-accuracy tradeoff for a given instance. We consider the case where we obtain no feedback in terms of rewards for our chosen actions apart from test observations. Absence of feedback raises fundamentally new challenges since one cannot infer potentially optimal tests. We pose the problem in terms of competitive optimality with the goal of minimizing cumulative regret against optimally chosen actions in hindsight. In this context we introduce the notion of weak dominance and show that it is necessary and sufficient for realizing sub-linear regret. Weak dominance on a cascade supposes that a child node in the cascade has higher accuracy when its parent node makes correct predictions. When weak dominance holds we show that we can reduce SAP to a corresponding multi-armed bandit problem with side observations. Empirically we verify that weak dominance holds for many datasets.
+	%		We propose a \ses problem (SAP) wherein sensors (and sensing tests) are organized into a cascaded architecture and the goal is to choose a test with the optimal cost-accuracy tradeoff for a given instance. We consider the case where we obtain no feedback in terms of rewards for our chosen actions apart from test observations. Absence of feedback raises fundamentally new challenges since one cannot infer potentially optimal tests. We pose the problem in terms of competitive optimality with the goal of minimizing cumulative regret against optimally chosen actions in hindsight. In this context we introduce the notion of weak dominance and show that it is necessary and sufficient for realizing sub-linear regret. Weak dominance on a cascade supposes that a child node in the cascade has higher accuracy when its parent node makes correct predictions. When weak dominance holds we show that we can reduce SAP to a corresponding multi-armed bandit problem with side observations. Empirically we verify that weak dominance holds for many datasets.
 \vspace{-12pt}
 \end{abstract}
 
@@ -195,20 +279,23 @@ We empirically verify that weak dominance holds on real datasets and prove that 
 \label{sec:Conclu}
 %\input{conclude}
 \vspace{-10pt}
-The paper describes a novel approach for unsupervised sensor selection. These types of problems arise in a number of healthcare and security applications. In these applications we have a collection of tests that are typically organized in a hierarchical architecture wherein test results are acquired in a sequential fashion. The goal is to identify the best balance between accuracy \& test-costs. The main challenge in these applications is that ground-truth annotated examples are unavailable and it is often difficult to acquire them in-situ. We proposed a novel approach for sensor selection based on a novel notion of weak and strong dominance properties. We showed that weak dominance condition is maximal in that violation of this condition leads to loss of learnability. Our experiments demonstrate that weak dominance does hold in practice for real datasets and typically for these datasets, unsupervised selection can be as effective as a supervised (bandit) setting. 
+The paper describes a novel approach for unsupervised \ses. These types of problems arise in a number of healthcare and security applications. In these applications we have a collection of tests that are typically organized in a hierarchical architecture wherein test results are acquired in a sequential fashion. The goal is to identify the best balance between accuracy \& test-costs. The main challenge in these applications is that ground-truth annotated examples are unavailable and it is often difficult to acquire them in-situ. We proposed a novel approach for \ses based on a novel notion of weak and strong dominance properties. We showed that weak dominance condition is maximal in that violation of this condition leads to loss of learnability. Our experiments demonstrate that weak dominance does hold in practice for real datasets and typically for these datasets, unsupervised selection can be as effective as a supervised (bandit) setting. 
 
-\section*{Acknowledgment}
+\section*{Acknowledgments}
 \label{sec:Ack}
-M. K. Hanawal would like to thank support from INSPIRE faculty award (IFA-14/ENG-73, 16DSTINS002) from Department of Science and Technology, Government of India and SEED grant (16IRCCSG010) from IIT Bombay.
+M. K. Hanawal would like to thank support from INSPIRE faculty award (IFA-14/ENG-73, 16DSTINS002) from Department of Science and Technology, Government of India and SEED grant (16IRCCSG010) from IIT Bombay. 
+Cs. Szepesv\'ari greatly acknowledges the support of NSERC and the Alberta Innovates Technology Futures through the Alberta  Machine Intelligence Institute (AMII).
 %\bibliographystyle{biblio}
 \bibliographystyle{IEEEtran}
 \bibliography{bandits1}
 
-
+\if0
 \newpage
 \section*{\large Supplementary material for the paper titled Unsupervised Sequential Sensor Acquisition}
 \hrulefill \hrulefill
 \hrulefill
+\fi
+
 \input{append}
 
 

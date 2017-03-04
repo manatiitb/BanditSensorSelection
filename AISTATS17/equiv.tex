@@ -131,11 +131,11 @@ $A_{t+1}\sim \pi(\cdot| A_1, V_1,\dots,A_t,V_t)$, where
 %\todom{I changed the way rewards are mapped between SAP and bandits and added the proof for regret equivalence, please check.}
 $V_s = (\one{Y_s^1\ne Y_s^1}-C_1,\dots,\one{Y_s^1\ne Y_s^{A_s}}-C_{A_s})$. Let the resulting policy be denoted by $\pi'$.
 The following can be checked by simple direct calculation:
-\begin{prop} 
+\begin{restatable}{prop}{propEquivalence}
 	\label{prop:equivalence}
 If $\theta \in \TSD$, then the regret of $\pi$ on $f(\theta)\in \Pside$
 is the same as the regret of $\pi^\prime$ on $\theta$. 
-\end{prop}
+\end{restatable}
 
 This implies that $\Regret_T^*(\TSD)\le \Regret_T^*(f(\TSD))$. Now note that this reasoning can also be repeated in the other ``direction'': 
 For this, first note that the map $f$ has a right inverse $g$ 

@@ -1,6 +1,6 @@
 %!TEX root =  main.tex
 \vspace{-7pt}
-Let $\TSA$ be the set of all stochastic, cascaded sensor acquisition problems. 
+Let $\TSA$ be the set of all stochastic, cascaded \ses problems. 
 Thus, $\theta \in \TSA$ such that if $Y\sim \theta$ then $\gamma_k(\theta):=\Prob{Y\ne Y^k}$ 
 is a decreasing sequence.
 Given a subset $\Theta\subset \TSA$, we say that $\Theta$ is \emph{learnable} 
@@ -18,22 +18,23 @@ A learner who observes the output of all sensors for long enough is able to iden
 $P_S$ with arbitrary precision, while $P_{Y|S}$ remains hidden from the learner.
 %A problem set $\Theta$ is said to be complete if $\{P_S\,:\, \exists P\in \Theta \text{ s.t. } P = P_S \otimes P_{Y|S} \}=M_1( \{0,1\}^K )$, i.e., all distributions over the sensor outputs are possible under some problem instance in $\Theta$.
  This leads to the following statement:
-\begin{prop}
+\begin{restatable}{prop}{propLearnablemap}
+%\begin{prop}
 \label{prop:learnablemap}
 %Let $\Theta \subset \TSA$ be complete. Then,
 A subset $\Theta\subset \TSA$ is learnable 
 if and only if there exists a map $a: M_1( \{0,1\}^K )\to [K]$ such that 
 for any $\theta \in \Theta$ 
 with decomposition $P = P_S \otimes P_{Y|S}$, $a(P_S)$ is an optimal action in $\theta$.
-\end{prop}
-
+%\end{prop}
+\end{restatable}
 
 An action selection map  $a: M_1( \{0,1\}^K ) \to [K]$ is said to be \emph{sound} for an instance 
 $\theta\in \TSA$ with $\theta = P_S\otimes P_{Y|S}$ if $a(P_S)$ selects an optimal action in $\theta$.
 With this terminology, the previous proposition says that a set of instances $\Theta$ is learnable if and only if there exists a
 sound action selection map for all the instances in $\Theta$.
 
-A class of sensor acquisition problems that contains instances that satisfy the so-called \emph{strong dominance} condition 
+A class of \ses problems that contains instances that satisfy the so-called \emph{strong dominance} condition 
 will be shown to be learnable:
 %\begin{defi}[Strong Dominance]
 \begin{defi}[Strong Dominance (SD)]
@@ -74,25 +75,30 @@ let $\TSD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies SD condition } \}$.
 %\begin{thm}
 
 %Let $\TSD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies the strong dominance condition } \}$.
-\begin{thm}
+\begin{restatable}{thm}{thmTSDLearnable}
+%\begin{thm}
 \label{thm:tsdlearnable}
 The set $\TSD$ is learnable.
-\end{thm}
+%\end{thm}
+\end{restatable}
 We start with a proposition that will be useful beyond the proof of this result.
 In this proposition, $\gamma_i = \gamma_i(\theta)$ for $\theta \in \TSA$ and $(Y,Y^1,\dots,Y^K) \sim \theta$.
-\begin{prop}\label{prop:gammadiff}
+\begin{restatable}{prop}{propGammadiff}
+\label{prop:gammadiff}
 For any $i,j\in [K]$, $\gamma_i - \gamma_j = \Prob{Y^i\ne Y^j} - 2\Prob{ Y^j \ne Y, Y^i=Y}$.
-\end{prop}
+\end{restatable}
 
 The proof motivates the definition of Weak Dominance (WD), a concept that we develop next through a series of smaller
 propositions. In these propositions, as before $(Y,Y^1,\dots,Y^K) \sim P$ where $P\in M_1(\{0,1\}^{K+1})$,
  $\gamma_i = \Prob{Y^i \ne Y}$, $i\in [K]$, and $C_i = c_1 + \cdots + c_i$.
 We start with a corollary of \cref{prop:gammadiff}
-\begin{cor}
+\begin{restatable}{cor}{corGammadiff}
+%\begin{cor}
 \label{cor:gammadiff}
 Let $i<j$. Then $0\le \gamma_i -\gamma_j \le \Prob{Y^i\ne Y^j}$.
-\end{cor}
-\begin{prop}
+%\end{cor}
+\end{restatable}
+\begin{restatable}{prop}{propIlej}
 \label{prop:ilej}
 Let $i<j$. Assume 
 \begin{align}
@@ -100,9 +106,9 @@ Let $i<j$. Assume
 C_j - C_i \not\in [\gamma_i - \gamma_j, \Prob{Y^i\ne Y^j} )\,.
 \end{align}
 Then $\gamma_i + C_i \le \gamma_j + C_j$ if and only if $C_j - C_i \ge \Prob{Y^i\ne Y^j}$.
-\end{prop}
+\end{restatable}
 
-\begin{prop}
+\begin{restatable}{prop}{propJlei}
 \label{prop:jlei}
 Let $j<i$. Assume
 \begin{align}
@@ -110,7 +116,7 @@ Let $j<i$. Assume
 C_i - C_j \not\in (\gamma_j - \gamma_i, \Prob{Y^i \ne Y^j} ]\,.
 \end{align}
 Then, $\gamma_i + C_i \le \gamma_j + C_j$ if and only if $C_i - C_j \le \Prob{Y^i \ne Y^j}$.
-\end{prop}
+\end{restatable}
 
 These results motivate the following definition:
 \begin{defi}[Weak Dominance (WD)]

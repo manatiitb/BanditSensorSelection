@@ -5,16 +5,18 @@
 %\todoc[inline]{I compressed the problem spec. We don't want the reader to get bored.}
 \vspace{-5pt}
 \noindent
-{\bf Preliminaries and Notation:} Proofs for formal statements appears in the supplementary. We will use upper case letters to denote random variables.
+{\bf Preliminaries and Notation:} Proofs for formal statements appear in the supplementary. 
+All random variables are printed with upper case letters, while the reverse is not necessarily true.
 The set of real numbers is denoted by $\R$. For positive integer $n$, we let
 $[n] = \{1,\dots,n\}$. % with $[n]=\emptyset$ if $n=0$.
-We let $M_1(\X)$ to denote the set of probability distributions over some set $\X$.
+We let $M_1(\X)$ to denote the set of probability distributions over some (measurable) set $\X$.
 When $\X$ is finite with a cardinality of $d \doteq |\X|$, 
 $M_1(\X)$ denotes the $d$-dimensional probability simplex.
 
 We first consider the {\it unsupervised, stochastic, 
-cascaded sensor selection} problem. We cast it as a special case of stochastic partial monitoring problem (SPM), which is described in the appendix.
-Later we will briefly describe extensions to tree-structures and contextual cases. %sensor selection. 
+cascaded \ses} problem. We cast it as a special case of stochastic partial monitoring problem (SPM), which is described in the appendix. \todoc{Check this}
+Later we will briefly describe extensions to tree-structures and contextual cases. \todoc{Check this}
+%sensor selection. 
 %\todoc{I added stochastic and cascaded. Later we may want to consider alternatives,
 %thus it will be useful to have these so that we can distinguish between the problem defined here and those
 %future alternatives.}
@@ -22,7 +24,7 @@ Formally,
 a problem instance is specified by a pair $\theta = (P,c)$, where $P$ is
 a distribution over the $K+1$ dimensional hypercube, and $c$ is a $K$-dimensional, nonnegative valued vector
 of costs.
-While $c$ is known to the learner from the start, $P$ is initially unknown. Henceforth we identify problem instance $\theta$ by $P$. 
+While the learner knows $c$ from the start, $P$ is initially unknown. Henceforth we identify problem instance $\theta$ by $P$. 
 %only as $c$ is assumed to fixed and known. 
 The instance parameters specify the learner-environment interaction as follows:
 In each round for $t=1,2,\dots$, 
@@ -44,23 +46,22 @@ Knowing this, the learner's choice of $I_t$ also indicates that he/she chooses $
 Observing sensors is costly: The cost of choosing $I_t$ is $C_{I_t} \doteq c_1 + \dots + c_{I_t}$.
 The total cost suffered by the learner in round $t$ is thus $C_{I_t} + \ind{Y_t \ne Y_t^{I_t}}$.
 The goal of the learner is to compete with the best choice given the hindsight of the values $(\gamma_k)_k$.
-Let $c(k,\theta) = \EE{ C_{k} +\ind{Y_t \ne Y_t^{k} }}  (= C_k + \gamma_k)$ and $c^*(\theta) = \min_k c(k,\theta)$. The expected regret of learner up to the end of round $T$ is 
+Let $c(k,\theta) = \EE{ C_{k} +\ind{Y_t \ne Y_t^{k} }}  (= C_k + \gamma_k)$ and $c^*(\theta) = \min_k c(k,\theta)$. The expected regret of the learner up to the end of round $T$ is 
 $\Regret_T =( \sum_{t=1}^T \EE{ c(I_t,\theta) }) - T c^*(\theta)$.
 
 \noindent
 {\bf Sublinear Regret:} The quantification of the learning speed is given by the expected regret 
 $\Regret_T$, which, for brevity and when it does not cause confusion, 
-we will just call regret. A sublinear expected regret, i.e., $\Regret_T/T \to 0$ as $T\to \infty$ means that the learner in the long run collects almost as much reward on expectation as if the optimal action was known to it.
+we will just call regret. A sublinear  regret, i.e., $\Regret_T/T \to 0$ as $T\to \infty$ means that the learner in the long run collects almost as much reward on expectation as if the optimal action was known to it.
 
 
-In what follows, we let $a^*(\theta)$ denote the optimal action that has the smallest index
-\footnote{Note that even if $i<j$ are optimal actions, there can be suboptimal actions in the interval $[i,j] (=[i,j]\cap \N)$
-(e.g., $\gamma_1=0.3$, $C_1=0$, $\gamma_2=0.25$, $C_2=0.1$, $\gamma_3=0$, $C_3=0.3$.}. Thus,
+In what follows, we let $a^*(\theta)$ denote the optimal action that has the smallest index.%
+\footnote{Note that even if $i<j$ are optimal actions, there can be suboptimal actions in the interval $[i,j] (=[i,j]\cap \N)$,
+e.g., $\gamma_1=0.3$, $C_1=0$, $\gamma_2=0.25$, $C_2=0.1$, $\gamma_3=0$, $C_3=0.3$.} 
 %in particular, $a^*(\theta) = \min \cA^*(\theta)$. 
 %\todom{How about moving this to footnote?} 
-Next, for future reference note that one 
-can express optimal actions from the viewpoint of marginal costs and marginal error. 
-In particular an action $i$ is optimal if for all $j > i$ the marginal increase in cost, $C_j - C_i$, 
+The optimality of actions can be captured in terms of marginal costs and marginal errors.
+In particular, an action $i$ is optimal if for all $j > i$ the marginal increase in cost, $C_j - C_i$, 
 is larger than the marginal decrease in error, $\gamma_i - \gamma_j$: $ \forall \, j \geq i\,$
 %
 \begin{equation} \label{eqn:interp_opt}

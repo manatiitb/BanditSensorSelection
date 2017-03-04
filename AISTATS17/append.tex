@@ -1,4 +1,9 @@
-\section*{Stochastic Partial Monitoring Problem \ref{sec:Setup}}
+%!TEX root =  main.tex
+\clearpage
+\onecolumn
+\appendix
+
+\section{Stochastic Partial Monitoring Problem (\cref{sec:Setup})}
 In an SPM a learner interacts with a stochastic environment in a sequential manner.
 In round $t=1,2,\dots$ the learner chooses an action $A_t$ from an action set $\A$, and receives a feedback $Y_t\in \Y$
 from a distribution $p$ which depends on the action chosen and also on the environment instance identified
@@ -16,7 +21,8 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 
 
 
-\section*{Proof of Proposition \ref{prop:learnablemap}}
+\section{Proof of \cref{prop:learnablemap}}
+\propLearnablemap*
 \begin{proof}
 	$\Rightarrow$: Let $\Alg$ be an algorithm that achieves sublinear regret
 	and pick  an instance  $\theta \in\Theta$. Let $P = P_S \otimes P_{Y|S}$.
@@ -46,7 +52,8 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 	\end{proof}
 
 
-\section*{Proof of  Theorem \ref{thm:tsdlearnable}}
+\section{Proof of \cref{thm:tsdlearnable}}
+\thmTSDLearnable*
 \begin{proof}[Proof of \cref{thm:tsdlearnable}]
 	We construct a map as required by~\cref{prop:learnablemap}.
 	Take an instance $\theta \in \TSD$ and let $\theta = P_S \otimes P_{Y|S}$ be its decomposition as before.
@@ -62,8 +69,8 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 \end{proof}
 
 
-\section*{Proof of Proposition \ref{prop:gammadiff}}
-
+\section{Proof of \cref{prop:gammadiff}}
+\propGammadiff*
 \begin{proof}
 	
 	We construct a map as required by~\cref{prop:learnablemap}.
@@ -95,14 +102,17 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 
 
 
-\section*{Proof of Proposition \ref{prop:ilej}}
+\section{Proof of \cref{prop:ilej}}
+\propIlej*
 \begin{proof}
 	\noindent $\Rightarrow$: From the premise, it follows that $C_j - C_i \ge \gamma_i - \gamma_j$.
 	Thus, by~\eqref{eq:cond1}, $C_j - C_i \ge \Prob{Y^i\ne Y^j}$.
 	\noindent $\Leftarrow$: We have $C_j - C_i \ge \Prob{Y^i \ne Y^j} \ge \gamma_i -\gamma_j$, where the last
 	inequality is by \cref{cor:gammadiff}.
 	\end{proof}
-\section*{Proof of proposition \ref{prop:jlei}}	
+	
+\section{Proof of \cref{prop:jlei}}	
+\propJlei*
 	\begin{proof}
 		\noindent $\Rightarrow$: The condition $\gamma_i + C_i \le \gamma_j + C_j$ implies that $\gamma_j -\gamma_i \ge C_i - C_j$.
 		By \cref{cor:gammadiff} we get $\Prob{Y^i \ne Y^j} \ge C_i - C_j$.
@@ -130,7 +140,8 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 	
 
 
-%\section*{Proof of Proposition \ref{prop:awdwelldef}}
+%\section{Proof of Proposition \ref{prop:awdwelldef}}
+\todoc{What is this doing here?}
 \begin{prop}
 	\label{prop:awdwelldef}
 	For any $\theta \in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $\awd(P_S)$ is well-defined.
@@ -144,10 +155,10 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 	\end{proof}
 
 
-%\section*{Proof of Proposition \ref{prop:awdsound}}
+%\section{Proof of Proposition \ref{prop:awdsound}}
 
-\section*{Appendix A}
-In this section prove the observation made at the end of Section \ref{sec:Learnability}
+\section{Proof for \cref{sec:Learnability}}
+In this section prove the observation made at the end of \cref{sec:Learnability}
 \begin{prop}
 	\label{prop:awdsound}
 	The map $\awd$ is sound over $\TWD$: In particular, for any
@@ -165,7 +176,7 @@ In this section prove the observation made at the end of Section \ref{sec:Learna
 \begin{cor}\label{cor:twdlearnable}
 	The set $\TWD$ is learnable.
 \end{cor}
-%\section*{Proof of Corollary \ref{cor:twdlearnable}}
+%\section{Proof of Corollary \ref{cor:twdlearnable}}
 \begin{proof}
 	By \cref{prop:awdwelldef}, $\awd$ is well-defined over $\TWD$, while by \cref{prop:awdsound}, $\awd$ is sound over $\TWD$.
 	%By \cref{prop:learnablemap}, $\TWD$ is learnable, as witnessed by $\awd$. \todoc{We should add definitions for these concepts..
@@ -187,7 +198,7 @@ The proof follows from the definitions. An immediate corollary of the previous p
 The next proposition states that $\awd$ is essentially the only sound action selector map defined for
 all instances derived from instances of $\TWD$:
 
-%\section*{Proof of Proposition \ref{prop:awdunique}}
+%\section{Proof of Proposition \ref{prop:awdunique}}
 \begin{prop}\label{prop:awdunique}
 	Take any action selector map $a: M_1( \{0,1\}^K ) \to [K]$ which is sound over $\TWD$.
 	Then, for any $P_S$ such that $\theta = P_S\otimes P_{Y|S}\in \TWD$ with some $P_{Y|S}$,
@@ -237,8 +248,7 @@ all instances derived from instances of $\TWD$:
 	
 	Finally, it is clear that the new instance is still in $\TWD$ since  $a^*(\theta)$ is left unchanged.
 \end{proof}
-T
-he next result shows that
+The next result shows that
 the set $\TWD$ is essentially a maximal learnable set in $\mathrm{dom}(\awd)$:
 
 \begin{thm}
@@ -250,7 +260,7 @@ the set $\TWD$ is essentially a maximal learnable set in $\mathrm{dom}(\awd)$:
 	%\todoc{It would be nice to remove this uniqueness assumption, but I don't see how this could be made to work.}
 	and $a(P_S) = a^*(\theta)$.
 \end{thm}
-%\section*{Proof of Theorem \ref{thm:MaxLearnability}}
+%\section{Proof of Theorem \ref{thm:MaxLearnability}}
 \begin{proof}
 	Let $a$ as in the theorem statement. By~\cref{prop:awdunique}, $\awd$ is the unique sound action-selector map over $\TWD$.
 	Thus, for any $\theta = P_S\otimes P_{Y|S}\in \TWD$, $\awd(P_S) = a(P_S)$.
@@ -261,7 +271,7 @@ Note that $\mathrm{dom}(\awd)\setminus \{ P_S \,:\, \exists P_{Y|S} \textrm{ s.t
 In particular, for $K=2$, consider $(Y,Y^1,Y^2)$ such that $Y$ and $Y^1$ are independent and $Y^2 = 1-Y^1$, we can see that the resulting instance gives rise to $P_S$ which is in the domain of $\awd$ for any $c\in \R_+^K$ (because here $\gamma_1 = \gamma_2 = 1/2$, thus $\gamma_1 - \gamma_2 = 0$ while $\Prob{Y^1\ne Y^2}=1$).
 While $\TWD$ is learnable, it is not uniformly learnable, i.e., the minimax regret $\Regret_n^*(\TWD) = \inf_{\Alg} \sup_{\theta\in \TWD} \Regret_n(\Alg,\theta)$ over $\TWD$ grows linearly:
 
-%\section*{Proof of Theorem \ref{thm:nonunif}}
+%\section{Proof of Theorem \ref{thm:nonunif}}
 \begin{thm}
 	\label{thm:nonunif}
 	$\TWD$ is not uniformly learnable:
@@ -398,7 +408,8 @@ Hence, $P_S$ can also be specified to satisfy this. In particular, one possibili
 
 \end{proof}
 
-\section*{Proof of Proposition \ref{prop:equivalence}}
+\section{Proof of \cref{prop:equivalence}}
+\propEquivalence*
 \begin{proof}First note that the mapping of the policies is such that number of pull of arm $k$ after $n$ rounds by policy $\pi$ on problem instance $f(\theta)$ is the same as the number of pulls of arm $k$ by $\pi^\prime$ on problem instance $\theta$. Recall that mean value of arm $k$ in problem instance $\theta$ $ is \gamma_k +C_k$ and that of corresponding arm in problem instance $f(\theta)$ is $\gamma_1-(\gamma_i+C_i)$. We have
 	
 	\begin{align*}
