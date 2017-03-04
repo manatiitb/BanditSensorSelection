@@ -416,16 +416,15 @@ Hence, $P_S$ can also be specified to satisfy this. In particular, one possibili
 
 \end{proof}
 
-\section{Proofs for \cref{sec:Algo}}
+\section{Proofs for \cref{sec:Equiv}}
 \propEquivalence*
 \begin{proof}First note that the mapping of the policies is such that number of pull of arm $k$ after $n$ rounds by policy $\pi$ on problem instance $f(\theta)$ is the same as the number of pulls of arm $k$ by $\pi^\prime$ on problem instance $\theta$. Recall that mean value of arm $k$ in problem instance $\theta$ $ is \gamma_k +C_k$ and that of corresponding arm in problem instance $f(\theta)$ is $\gamma_1-(\gamma_i+C_i)$. We have
-	
 	\begin{align*}
 	\Regret_n(\pi^\prime,\theta) = \sum_{k\in [K]} \EEi{P_S}{N_k(n)}(\gamma_k+C_k-\gamma_{k^*}-C_{k^*}) \,,
 	\end{align*}
 	and
 	\begin{align*}
-	&\Regret_n(\pi,f(\theta))\\
+	 \Regret_n(\pi,f(\theta))
 	&= \sum_{k\in [K]} \EEi{P_S}{N_k(n)}\left (\max_{i \in [K]}\{\gamma_1-\gamma_i- C_i\}-(\gamma_1-\gamma_k- C_k)\right) \\
 	&= \sum_{k\in [K]} \EEi{P_S}{N_k(n)}\left (\gamma_k+ C_k - \min_{i \in [K]}\{\gamma_i+ C_i\}\right) \\
 	&=\Regret_n(\pi^\prime,\theta).

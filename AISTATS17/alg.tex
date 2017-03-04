@@ -51,6 +51,7 @@ Recall that given a USS instance $\theta = (P,c)$, we let $\gamma_k = \Prob{Y\ne
 
 Since cost vector $c$ is fixed, in the following we use parameter $\gamma$ in place of $\theta$ to denote the problem instance.
 %For an instance $\gamma$, let $\pi(1,\gamma)$ denote the index of the optimal action $(\pi(1,\gamma) = \min_j C_j+\gamma_j)$, $\pi(2,\gamma)$ denote the index of the second best action $(\pi(2,\gamma) = \min_{j\ne \pi(1,\gamma)} C_j +\gamma_j)$ and more generally let $\pi(k,\gamma)$ be the index of the $k$th best action.
+To explain the algorithm, we need to introduce some new concepts.
 A (fractional) allocation count $u\in [0,\infty)^K$ determines for each action $i$ how many times the
 action is selected.
 Thanks to the cascade structure, using an action $i$ implies observing the output of all the sensors with index $j$ less than equal to $i$. Hence, a sensor $j$ gets observed $u_j+u_{j+1}+\dots+u_K$ times.
@@ -73,12 +74,12 @@ For an allocation count $u\in [0,\infty)^K$ let $m(u)\in \N^K$ denote total sens
 The idea of \cref{alg:asym} is as follows:
 The algorithm keeps track of an estimate $\hgamma^{t}\defeq(\hgamma^t_i)_{i \in [K]}$ of $\gamma$ in each round, which is initialized by pulling arm $K$ as this arm
 gives information about all the other arms.
-In each round, the algorithm first checks whether given the current estimate $\hgamma^t$ and the current confidence level (where the confidence level is gradually increased over time), the current allocation count $N(t)\in \N^K$
+In each round, the algorithm first checks whether given the current estimate $\hgamma^t$ and the current confidence level (where the confidence level is gradually increased over time), the  allocation count $N(t)\in \N^K$
 is sufficiently informative (cf. line \ref{alg:check}). If this holds, the action that is optimal under $\hgamma(t)$ is chosen 
 (cf. line \ref{alg:greedy}). If the check fails, we need to explore.
 The idea of the exploration is that it tries to ensure that the ``optimal plan'' -- assuming $\hgamma$ is the ``correct'' parameter -- is followed (line \ref{alg:plan}). However, this is only reasonable, if all components of $\gamma$ are relatively well-estimated.
 Thus, first the algorithm checks whether any of the components of $\gamma$ has a chance of being
-extremely poorly estimated (line \ref{alg:starve}). Note that the requirement here is that a significant, but still altogether diminishing fraction of the \emph{exploration rounds} is spent on estimating each components: In the long run, the fraction of exploration rounds amongst all rounds itself is diminishing; hence the forced exploration of line \ref{alg:forced} overall has a small impact on the regret, while it allows to stabilize the algorithm.
+particularly poorly estimated (line \ref{alg:starve}). Note that the requirement here is that a significant, but still altogether diminishing fraction of the \emph{exploration rounds} is spent on estimating each components: In the long run, the fraction of exploration rounds amongst all rounds itself is diminishing; hence the forced exploration of line \ref{alg:forced} overall has a small impact on the regret, while it allows to stabilize the algorithm.
 
 \newcommand{\gap}{d}
 \newcommand{\norm}[1]{\|#1\|}
@@ -109,7 +110,8 @@ Further specifying $\beta(n)$ and using the continuity of $u^*(\cdot)$ at $\thet
 \label{cor:alg1-asym-opt}
  Suppose the conditions of \cref{thm:alg1-ub1} hold. Assume, furthermore, that $\beta(n)$ satisfies $\beta(n) = o(n)$ and $\sum_{s=0}^\infty \exp \left( -\frac{\beta(s)\epsilon^2}{2K\sigma^2} \right)<\infty$ for any $\epsilon>0$, then for any $\theta$ such that $u^*(\theta)$ is unique, 
 $
-\limsup_{T\rightarrow \infty} \Regret_T(\theta,c)/\log T \le 4\alpha \inf_{u\in C_\theta} \ip{u,\Delta(\theta)}\,$.
+\limsup_{T\rightarrow \infty} \Regret_T(\theta,c)/\log T \le 4\alpha \inf_{u\in C_\theta} \ip{u,\Delta(\theta)}$,
+i.e., by the lower bound of  \cite{WGySz:NIPS15} the algorithm is asymptotically optimal.
 %\vspace{-5pt}
 \end{cor}
 Note that any $\beta(n) = an^b$ with $a\in (0,\frac{1}{2}]$, $b\in (0,1)$ satisfies the requirements in \cref{thm:alg1-ub1} and \cref{cor:alg1-asym-opt}.
@@ -118,7 +120,7 @@ Note that any $\beta(n) = an^b$ with $a\in (0,\frac{1}{2}]$, $b\in (0,1)$ satisf
 
 
 
-The algorithm in \ref{alg:asym} only estimates the disagreements $\P\{Y^1 \neq Y^j\}$ for all $j \in [K]$ which suffices to identify the optimal arm when SD property (see \cref{sec:Equiv}) holds. Clearly, one can estimate pairwise disagreements probabilities $\P\{Y^i \neq Y^j\}$ for $i\neq j$ and use them to order the arms. We next develop a heuristic algorithm that uses this information and works for USS under WD. 
+\cref{alg:asym} only estimates the disagreements $\P\{Y^1 \neq Y^j\}$ for all $j \in [K]$ which suffices to identify the optimal arm when SD property (see \cref{sec:Equiv}) holds. Clearly, one can estimate pairwise disagreements probabilities $\P\{Y^i \neq Y^j\}$ for $i\neq j$ and use them to order the arms. We next develop a heuristic algorithm that uses this information and works for USS under WD. 
 
 %\vspace{-6pt}
 \subsection{Algorithm for Weak Dominance}
