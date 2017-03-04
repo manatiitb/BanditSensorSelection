@@ -15,7 +15,9 @@ The goal in these systems is to maximize overall accuracy for an available cost-
 While it is possible to learn such decision strategies given sufficient annotated training data, what makes these applications challenging is that it is often difficult to acquire in-situ ground truth labels. 
 
 These observations motivate the problem of learning decision strategies for optimal \ses in situations where we do not have the benefit of ground-truth annotations, and what we refer to as the Unsupervised Sensor Selection (USS) problem. %We assume that the scenario is played over multiple rounds with an instance associated with each round. Each SBT outputs a prediction of the underlying state of the instance (anomaly, threat, disease or nominal etc.) and must be acquired sequentially complying with the cascade architecture in each round. The learner's goal is to figure out the hidden, stochastic state of the instance based on the sensor outputs. Since the learner knows that the sensors are ordered from least to most accurate he/she can use the most accurate sensor among his/her acquired sensors for prediction. Nevertheless, since the learner does not know the sensor accuracy he/she faces the dilemma of as to which sensor to use for predicting this state.
-In \cref{sec:Setup} we pose our problem as a version of stochastic partial monitoring problem \cite{BaFoPaRaSze14} with \emph{atypical} reward structure, where tests are viewed as actions and sequential observations serve as side information. As is common, we pose the problem in terms of competitive optimality. We consider a competitor who can choose an optimal test with the benefit of hindsight. Our goal is to minimize cumulative regret based on learning the optimal test based on observations in multiple rounds of play. %Stochastic partial monitoring problem is itself a generalization of multi-armed bandit problems, the latter going back to \cite{Tho33}. The availability of predictions of parent sensors of a chosen sensor is viewed as side observation.  
+In \cref{sec:Setup} we pose our problem as a version of stochastic partial monitoring problem \cite{BaFoPaRaSze14} with \emph{atypical} reward structure, where tests are viewed as actions and sequential observations serve as side information. As is common, we pose the problem in terms of competitive optimality. We consider a competitor who can choose an optimal test with the benefit of hindsight. Our goal is to minimize cumulative regret, the extra cost incurred due to the initial ignorance of the learner. %based on learning the optimal test 
+%based on observations in multiple rounds of play. %Stochastic partial monitoring problem is itself a generalization of multi-armed bandit problems, the latter going back to \cite{Tho33}. The availability of predictions of parent sensors of a chosen sensor is viewed as side observation.  
+\if0
 Recall that in a stochastic partial monitoring problem a decision maker needs to choose the action with the lowest expected cost by repeatedly trying the actions and observing some feedback.
 The decision maker lacks the knowledge of some key information, such as in our case, the misclassification
 error rates of the classifiers, but had this information been available, the decision maker could calculate the
@@ -24,7 +26,7 @@ Bandit problems \cite{Tho33} are a special case of partial monitoring, where the
 cost for each action, and the feedback is the noisy version of the expected cost of the action chosen.
 In the USS problem the learner only observes the outputs of the classifiers, but not the label to be predicted over multiple rounds
 in a stochastic, stationary environment. 
-
+\fi
 
 %To cast our problem as a partial monitoring problem, \todoc{Do we need this? Or leave this to the reader, just saying that casting our problem as a partial monitoring problem is trivial?} 
 %the key unknown information can be the misclassification error rates of the classifiers, an action is identified with 
@@ -46,13 +48,18 @@ in a stochastic, stationary environment.
 
 %This leads us to the following question: Can a learner still achieve the optimal balance in this case?  
 In \cref{sec:Learnability} we first show (unsurprisingly) that no learner can achieve sublinear regret without further assumptions. To this end we propose the notions of weak and strong dominance, which correspond to constraints on joint probability distributions over the latent state and test-outcomes. Strong Dominance (SD) is a property arising in many engineered systems and says that whenever a test is accurate on an example, a later test in the sequence is almost surely accurate on that example. %(in other words a child SBT cannot make an error when the parent node is accurate). 
-Weak Dominance (WD) is a relaxed notion that allows for errors in these predictions. We empirically demonstrate that WD holds by evaluating it on several real datasets. We also show that WD is fundamental in the sense that while there exist learners that achieve sublinear regret over WD instances, no new instances can be added to this class without losing this property.
+Weak Dominance (WD) is a relaxed notion that allows for errors in these predictions. We empirically demonstrate that WD holds by evaluating it on several real datasets. \todoc{The text is a bit lame. The table should be moved later and relate the numbers to WD.} 
+We also show that WD is fundamental in the sense that while there exist learners that achieve sublinear regret over WD instances, no new instances can be added to this class without losing this property.
 %on this class (non-uniform) sublinear regret learner  without this condition there exist problem instances that result in linear regret. On the other hand whenever this condition is satisfied there exist algorithms that lead to sublinear regret. 
 
 %In particular, we reduce the SAP problem to a stochastic multi-armed bandit with side observations, 
 %a problem introduced by \citet{MaSh11}.
 In \cref{sec:Equiv} under SD we show that USS is reducible to a version of multi-armed bandit problem (MAB) with side-observation, a problem that is known to be learnable with  sub-linear regret. In our reduction, we identify tests as bandit arms. % are identified by the nodes of the cascade. \todoc{Should we introduce cascade formally then above?}
-The payoff of an arm is given by marginal losses relative to the root test, and the side observation structure is defined by the feedback graph induced by the directed graph. We then formally show that there is a one-to-one mapping between algorithms for USS and algorithms for MAB with side-observation. In particular, under SD, the regret bounds for MAB with side-observation then imply corresponding regret bounds for USS. \todoc{This said WD, but that's not true, right?}
+The payoff of an arm is given by marginal losses relative to the root test, and the side observation structure is defined by the feedback graph induced by the directed graph. We then formally show that there is a one-to-one mapping between algorithms for USS and algorithms for MAB with side-observation. In particular, under SD, the regret bounds for MAB with side-observation then imply corresponding regret bounds for USS. \todoc{This said WD, but that's not true, right?} \todoc{Only this happens?}
+
+In \cref{sec:Algo} we give algorithms for the problem classes specified by either SD or WD.
+For SD instances the algorithm is based on the work of Wu et al. \cite{WGySz:NIPS15}. 
+This algorithm is shown to enjoy an asymptotically optimal regret for problems satisfying SD.
 
 %\noindent
 \subsection{Related Work}

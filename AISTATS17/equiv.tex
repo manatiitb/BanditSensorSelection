@@ -5,8 +5,9 @@
 \newcommand{\PUSS}{\P_{\mathrm{USS}}\xspace}
 \renewcommand{\P}{\mathcal{P}}
 
-In this section we establish that USS with SD property is `regret equivalent' to an instance of multi-armed-bandit (MAB) with side-information. The corresponding MAB algorithm can then be suitably imported to solve USS efficiently.   
-
+In this section we establish that USS with SD property is `regret equivalent' to an instance of multi-armed-bandit (MAB) with side-information \cite{MaSh11}. The corresponding MAB algorithm can then be suitably imported to solve USS efficiently.   
+Recall that in a MAB with side-information when in some round a decision maker chooses an action $a$ it receives noisy rewards
+for all actions in $\mathcal{N}(a)$. In the simplest case, $\mathcal{N}(a)$ is known ahead and $a\in \mathcal{N}(a)$. The challenge is to minimize regret as usual.
 \if0
 \todoc[inline]{I am thinking that maybe we should skip this general section
 and just do the specific reduction as shown below.}
@@ -102,26 +103,26 @@ In particular, the cost of arm $k$ follows the distribution of $\one{Y^k\ne Y^1}
 %\todom{We need to define in the bandit problem as $\one{Y^k\ne Y^1} - C_k$  not $\one{Y^k\ne Y^1} + C_k$. Now, the mean of rewards can be negative!! We can overcome this by adding $C_K$ to each arm so that the mean rewards are non-negative. This won't change optimal arm or regret.}
 
 %%%Manjesh: Changed +C_k to -C_k
-The costs for different arms are defined to be independent of each other.
+The random costs of different arms are defined to be independent of each other.
+\todoc{
+Ok, so if they are independent of each other (see next sentence), then the joint distributions will not be 
+same as if they were not independent of each other.
+Independence may lose information (e.g., may increase variance?).
+If we define them not to be independent of each other, we will need to be careful
+with the algorithms defined for bandits with side-observation: Do they use
+(in their proof) independence of rewards underlying different arms?
+I would think that they are not.
+The downside of not defining independent rewards is that the specification of
+bandits with side observations must allow this -- complicating things a bit in the background.
+Another executive decision we should make is whether we like to see both costs and 
+rewards.
+}
 Let $\Pside$ denote the set of resulting bandit problems and let $f:\PUSS \to \Pside$
-be the map that transforms USS instances to bandit instances by following the
-transformation that was just described.
-%\todoc[inline]{
-%Ok, so if they are independent of each other, then the joint distributions will not be 
-%same as if they were not independent of each other.
-%Independence may lose information (e.g., may increase variance?).
-%If we define them not to be independent of each other, we will need to be careful
-%with the algorithms defined for bandits with side-observation: Do they use
-%(in their proof) independence of rewards underlying different arms?
-%I would think that they are not.
-%The downside of not defining independent rewards is that the specification of
-%bandits with side observations must allow this -- complicating things a bit in the background.
-%Another executive decision we should make is whether we like to see both costs and 
-%rewards.
-%}
-%\todom{We will add this as a remark so that reviewers do not come back asking this question.}
+be the map that transforms USS instances to bandit instances by following the above
+transformation.
 
-Now let $\pi\in \Pi(\Pside)$ be a policy for $\Pside$.
+Now let $\pi\in \Pi(\Pside)$ be a policy for $\Pside$, i.e., a map that describes what action to chosen given
+past information.
 Policy $\pi$ can also be used on any $(P,c)$ instance in $\PUSS$ in an obvious way:
 In particular, given the history of actions and states $A_1,U_1,\dots,A_t,U_t$
 in $\theta=(P,c)$ where $U_s = (Y_s,Y_s^1,\dots,Y_s^{K})$ such that 
@@ -147,17 +148,16 @@ Given the sequence $(A_1,V_1,\dots,A_t,V_t)$ where
 $V_s= (B_s^1+C_1,\dots,B_ s^{K}+C_s)$ is the vector of costs for round $s$
 with $B_s^k$ being a Bernoulli with parameter $\gamma_k$,
 let $A_{t+1} \sim \pi'( \cdot| A_1,W_1,\dots,A_t,W_t)$ where
-$W_s = (B_s^1,\dots,B_s^{A_s})$. Let the resulting policy be denoted by $\pi$.
-Then the following holds:
+$W_s = (B_s^1,\dots,B_s^{A_s})$. Denoting by $\pi$ the resulting policy, we have the following proposition:
 \begin{prop}
 Let $\theta \in f(\TSD)$. Then the regret of policy $\pi$ on $\theta\in f(\TSD)$ is the same
 as the regret of policy $\pi'$ on instance $f^{-1}(\theta)$.
 \end{prop}
 Hence, $\Regret_T^*(f(\TSD))\le \Regret_T^*(\TSD)$.
 In summary, we get the following result:
-\begin{cor}
+\begin{thm}
 $\Regret_T^*(\TSD) = \Regret_T^*(f(\TSD))$. 
-\end{cor}
+\end{thm}
 {\bf Lower Bounds:} Note that as a consequence of the reduction and the one-to-one correspondence between the two problems, lower bounds for MAB with side-information is a lower bound for USS problem.
 
 

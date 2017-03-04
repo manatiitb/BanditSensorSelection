@@ -1,3 +1,4 @@
+%!TEX root =  main.tex
 %\vspace{-10pt}
 %
 %In this section we evaluate performance of Algorithms \ref{alg:asym} and \ref{alg:UCB} on synthetic and real datasets. For synthetic example, we consider data transmission over a binary symmetric channel, and for real world examples, we use diabetes (PIMA indiana) and heart disease (Clevland) from UCI dataset. In both datasets attributes/features are associated with costs, where features related to physical observations are cheap and that obtained from medical tests are costly. The experiments are setup as follows:
@@ -44,7 +45,7 @@
 %
 In this section we evaluate performance of Algorithms \ref{alg:asym} and \ref{alg:UCB} on synthetic and real datasets (PIMA-Diabetes) and Heart Disease (Cleveland). Both of these datasets have accompanying costs for individual features.%. For synthetic example, we consider a binary symmetric channel, and for real world examples, we use diabetes (PIMA indiana) and heart disease (Clevland) from UCI dataset. In both datasets attributes/features are associated with costs, where features related to physical observations are cheap and that obtained from medical tests are costly. The experiments are setup as follows:
 
-{\bf Synthetic:} We generate data as follows. The input, $Y_t$, is generated IID Ber($0.7$). Outputs for channels 1, 2, 3 have an overall error statistic, $\gamma_1 = 0.4,\,\gamma_2=0.1,\,\gamma_3=0.05$ respectively. To ensure SD we enforce Defn.~\ref{eqn:DominanceCondition} during the generation process. To relax SD requirement we introduce errors upto 10\% during data generation for sensor outputs 2 and 3 when sensor 1 predicts correctly.% (while still maintaint the overall error).  
+{\bf Synthetic:} We generate data as follows. The input, $Y_t$, is generated IID Ber($0.7$). Outputs for channels 1, 2, 3 have an overall error statistic, $\gamma_1 = 0.4,\,\gamma_2=0.1,\,\gamma_3=0.05$ respectively. To ensure SD we enforce \cref{eqn:DominanceCondition} during the generation process. To relax SD requirement we introduce errors upto 10\% during data generation for sensor outputs 2 and 3 when sensor 1 predicts correctly.% (while still maintaint the overall error).  
 
 %Channel $i=1,2,3$ flips input bit with probability $p_i$ where $p_1\geq p_2\geq p_3$. Transmission over channel $1$ is free and that over channel $2$ and $3$ costs price of $ c_2$ and $c_3\in (0,1] $ units per bit, respectively. Input bits are generated with probability $0.7$ and we set $p_1=.3, p_2=.1$ and $p_3=.05$.
 

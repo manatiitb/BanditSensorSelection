@@ -319,6 +319,7 @@ The rationale of a redundant (and hence sparse) table is so that probabilities o
 		\multirow{2}{*}{$Y^1\ne Y$} & $Y^2= Y$   & $0$ & $\frac{1}{8}$           \\ \cline{2-4} 
 		& $Y^2\ne Y$ & $\frac{3}{8}$ & $0$ \\ \hline
 	\end{tabular}
+	\hspace*{0.5in}
 	\begin{tabular}{|c|c|c|c|}
 		\hline
 		\multicolumn{2}{|c|}{Instance $\theta'$}  & $Y^1=Y^2$     & $Y^1\ne Y^2$  \\ \hline
@@ -392,11 +393,9 @@ Hence, $P_S$ can also be specified to satisfy this. In particular, one possibili
 		$1$ & $1$ & $1$ & $0         $ & $0                       $ \\ \hline
 	\end{tabular}
 	\mbox{}
-	\vspace*{.5in}
+	\hspace*{1.5in}
 %	\hspace*{0.5in}
 	\mbox{}
-
-
 	\begin{tabular}{|c|c||c|c|}
 		\hline
 		$Y^1$ & $Y^2$ &$\theta$ & $\theta'$ \\ \hline\hline
@@ -417,7 +416,7 @@ Hence, $P_S$ can also be specified to satisfy this. In particular, one possibili
 
 \end{proof}
 
-\section{Proof of \cref{prop:equivalence}}
+\section{Proofs for \cref{sec:Algo}}
 \propEquivalence*
 \begin{proof}First note that the mapping of the policies is such that number of pull of arm $k$ after $n$ rounds by policy $\pi$ on problem instance $f(\theta)$ is the same as the number of pulls of arm $k$ by $\pi^\prime$ on problem instance $\theta$. Recall that mean value of arm $k$ in problem instance $\theta$ $ is \gamma_k +C_k$ and that of corresponding arm in problem instance $f(\theta)$ is $\gamma_1-(\gamma_i+C_i)$. We have
 	
