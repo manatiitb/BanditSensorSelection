@@ -10,21 +10,23 @@ All random variables are printed with upper case letters, while the reverse is n
 The set of real numbers is denoted by $\R$. For positive integer $n$, we let
 $[n] = \{1,\dots,n\}$. % with $[n]=\emptyset$ if $n=0$.
 We let $M_1(\X)$ to denote the set of probability distributions over some (measurable) set $\X$.
-When $\X$ is finite with a cardinality of $d \doteq |\X|$, 
+When $\X$ is finite with a cardinality of $d \defeq |\X|$, 
 $M_1(\X)$ denotes the $d$-dimensional probability simplex.
 
-We first consider the {\it unsupervised, stochastic, 
-cascaded \ses} problem. We cast it as a special case of stochastic partial monitoring problem (SPM), which is described in the appendix. \todoc{Check this}
+We first define the {\it unsupervised, stochastic, 
+cascaded \ses} (USS) problem, a special subclass of stochastic partial monitoring problems 
+(for completeness, we describe these problems in \cref{sec:spm}).
 Later we will briefly describe extensions to tree-structures and contextual cases. \todoc{Check this}
 %sensor selection. 
 %\todoc{I added stochastic and cascaded. Later we may want to consider alternatives,
 %thus it will be useful to have these so that we can distinguish between the problem defined here and those
 %future alternatives.}
-Formally, 
-a problem instance is specified by a pair $\theta = (P,c)$, where $P$ is
-a distribution over the $K+1$ dimensional hypercube, and $c$ is a $K$-dimensional, nonnegative valued vector
-of costs.
-While the learner knows $c$ from the start, $P$ is initially unknown. Henceforth we identify problem instance $\theta$ by $P$. 
+An USS instance is specified by a pair $\theta = (P,c)$, where $P$ is
+a distribution over the $K+1$ dimensional binary hypercube
+and $c$ is a $K$-dimensional, nonnegative valued vector of costs.
+While the learner knows $c$ from the start, $P$ is initially unknown. 
+\emph{Henceforth we identify problem instance $\theta$ and $P$ } and e.g. will write $Y\sim \theta$ to denote
+$Y \sim P$.
 %only as $c$ is assumed to fixed and known. 
 The instance parameters specify the learner-environment interaction as follows:
 In each round for $t=1,2,\dots$, 
@@ -33,7 +35,7 @@ $Y = (Y_t,Y_t^1,\dots,Y_t^K)$ chosen at random from $P$.
 Here, $Y_t^i$ is the output of sensor $i$, while $Y_t$ is a (hidden) label to be guessed by the learner.
 Simultaneously, the learner chooses an index $I_t\in [K]$ and observes the sensor outputs $Y_t^1,\dots,Y_t^{I_t}$.
 The sensors are known to be ordered from least accurate to most accurate, 
-i.e., $\gamma_k(\theta) \doteq \Prob{Y_t\ne Y_t^k}$ is decreasing with $k$ increasing.
+i.e., $\gamma_k(\theta) \defeq \Prob{Y_t\ne Y_t^k}$ is decreasing with $k$ increasing.
 \begin{figure}[!h]
 	\centering
 	\includegraphics[scale=.4]{../Figures/Cascade.pdf}
@@ -41,9 +43,8 @@ i.e., $\gamma_k(\theta) \doteq \Prob{Y_t\ne Y_t^k}$ is decreasing with $k$ incre
 	\label{fig:SensorCascade}
 	\vspace{-.2cm}
 \end{figure} 
-\todom{How about this figure and caption?}
 Knowing this, the learner's choice of $I_t$ also indicates that he/she chooses $I_t$ to predict the unknown label $Y_t$.
-Observing sensors is costly: The cost of choosing $I_t$ is $C_{I_t} \doteq c_1 + \dots + c_{I_t}$.
+Observing sensors is costly: The cost of choosing $I_t$ is $C_{I_t} \defeq c_1 + \dots + c_{I_t}$.
 The total cost suffered by the learner in round $t$ is thus $C_{I_t} + \ind{Y_t \ne Y_t^{I_t}}$.
 The goal of the learner is to compete with the best choice given the hindsight of the values $(\gamma_k)_k$.
 Let $c(k,\theta) = \EE{ C_{k} +\ind{Y_t \ne Y_t^{k} }}  (= C_k + \gamma_k)$ and $c^*(\theta) = \min_k c(k,\theta)$. The expected regret of the learner up to the end of round $T$ is 
@@ -99,10 +100,10 @@ Here, $Y_t$ is the unknown label of context/instance $Z_t$ to be predicted in ro
 $k$, a prediction of $Y_t$. We focus on the case where $Z_t$ is not available to the learner. The case where they are observed is briefly discussed in the supplementary. 
 At the cost of $c_1+ c_2 + \dots + c_k$,
 the learner can choose to acquire the outputs of the first $k$ sensors,
-where $k\in [K] := \{1,\dots,K\}$. 
+where $k\in [K] \defeq \{1,\dots,K\}$. 
 
 Here, $c_i\ge 0$ is the marginal cost of acquiring the output of sensor $i$.
-The costs $c := (c_1,\dots,c_K)$ are known to the learner.
+The costs $c \defeq (c_1,\dots,c_K)$ are known to the learner.
 Having acquired the output of the first $k$ sensors, the learner predicts the unknown label $Y_t$ using
 the output of the last sensor acquired, i.e., using $\hY_t^k$, making the learner incur the loss
 \begin{align*}
@@ -124,7 +125,7 @@ The feedback of learner for this round is then $H_t(k)=(\hat{Y}^1_t,\ldots,\hat{
 \end{wrapfigure} 
 
 \if0
-The prediction error rate of the $i^{th}$ sensor is denoted as $\gamma_i:=\Pr\{Y_t\neq \hat{Y}^k_t\}$. The learner incurs an extra cost of $c_k\geq 0$ to acquire output of sensor $k$ after acquiring output of sensor $k-1$. The sensor cascade is depicted in the adjacent figure. In this section we assume that the error rate does not depend on the  context, and the treatment with contextual information is given in the supplementary. 
+The prediction error rate of the $i^{th}$ sensor is denoted as $\gamma_i\defeq\Pr\{Y_t\neq \hat{Y}^k_t\}$. The learner incurs an extra cost of $c_k\geq 0$ to acquire output of sensor $k$ after acquiring output of sensor $k-1$. The sensor cascade is depicted in the adjacent figure. In this section we assume that the error rate does not depend on the  context, and the treatment with contextual information is given in the supplementary. 
 \fi
 
 %Let $H_t(k)$ denote the feedback observed in round $t$ from action $k$. Since we observe predictions of all the first $k$ senors by playing action $k$, we get   $H_t(k)=(\hat{Y}^1_t,\ldots,\hat{Y}^k_t)$.
@@ -158,7 +159,7 @@ The goal of the learner is to learn a policy that minimizes the expected total l
 \label{eqn:OptimalAction}
 \mathbb{E}[L_t(k)]=\Pr\{Y_t\neq \hat{Y}^k_t\}+\sum_{j=1}^kc_j=\gamma_k +C_k\,,
 \end{equation}
-where $\gamma_k:=\Pr\{Y_t\neq \hat{Y}^k_t\}$ is the misclassification error rate of sensor $k$ and $C_k := c_1+\dots+c_k$ denotes the total cost for selecting the first $k$ sensors.
+where $\gamma_k\defeq\Pr\{Y_t\neq \hat{Y}^k_t\}$ is the misclassification error rate of sensor $k$ and $C_k \defeq c_1+\dots+c_k$ denotes the total cost for selecting the first $k$ sensors.
 Since $c$ is assumed to be known, we will denote the dependence of the various quantities below
 on $\gamma = (\gamma_1,\dots,\gamma_K)$ only.
 Denote the expected cost of choosing action $k$ by $l_k(\gamma) = \gamma_k + C_k$. Let $k^* = \arg\min_{k\in [K]} l_k(\gamma)$ be the optimal action and let 

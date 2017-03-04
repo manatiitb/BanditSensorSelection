@@ -3,7 +3,10 @@
 \onecolumn
 \appendix
 
-\section{Stochastic Partial Monitoring Problem (\cref{sec:Setup})}
+\section{Stochastic Partial Monitoring Problem}
+\label{sec:spm}
+In \cref{sec:Setup} it was mentioned that our problem is a special case stochastic partial monitoring (SPM).
+The purpose of this short section is to formally define SPM problems.
 In an SPM a learner interacts with a stochastic environment in a sequential manner.
 In round $t=1,2,\dots$ the learner chooses an action $A_t$ from an action set $\A$, and receives a feedback $Y_t\in \Y$
 from a distribution $p$ which depends on the action chosen and also on the environment instance identified
@@ -19,10 +22,20 @@ and the set of possible parameters $\Theta$ are known to the learner, who uses t
 its next action to reduce its uncertainty about $\theta$ so that it is able to eventually converge on choosing only an 
 optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*(\theta) = \max_{a\in \A} r(a,\theta)$.  Bandit problems are a special case of SPMs where $\Y$ is the set of real numbers, $r(a,\theta)$ is the mean of distribution $p(\cdot;a,\theta)$.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Proofs for \cref{sec:Learnability}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-\section{Proof of \cref{prop:learnablemap}}
+\label{sec:apxlearnability}
+Here we provide the missing proof for \cref{sec:Learnability}.
+For the convenience of the reader the statements of the various propositions are repeated.
+We start with proofs related to Strong Dominance.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Proofs Related to Strong Dominance}
+%\section{Proof of \cref{prop:learnablemap}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \propLearnablemap*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{proof}
 	$\Rightarrow$: Let $\Alg$ be an algorithm that achieves sublinear regret
 	and pick  an instance  $\theta \in\Theta$. Let $P = P_S \otimes P_{Y|S}$.
@@ -46,14 +59,53 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 	Note that by Hoeffding's inequality, 
 	$\sup_{y\in \{0,1\}^K} |\hat{P}_S(y)  - P_S(y)| \le \sqrt{\frac{K\log(4n)}{2f(n)}}$ holds with probability $1-1/n$.
 	Let $n_0$ be the first index such that for any $n\ge n_0$,
-	$\sqrt{\frac{K\log(4n)}{2f(n)}}\le \Delta^*(\theta) \doteq \min_{k:\Delta_k(\theta)>0} \Delta_k(\theta)$.
+	$\sqrt{\frac{K\log(4n)}{2f(n)}}\le \Delta^*(\theta) \defeq \min_{k:\Delta_k(\theta)>0} \Delta_k(\theta)$.
 	Such an index $n_0$ exists by our assumptions that $f$ grows faster than $n \mapsto \log(n)$.
 	For $n\ge n_0$, the expected regret of $\Alg$ is at most $n \times 1/n + f(n) (1-1/n) \le 1+f(n) = o(n)$.
-	\end{proof}
+\end{proof}
 
 
-\section{Proof of \cref{thm:tsdlearnable}}
+Next, we present the proof of \cref{prop:gammadiff}. We will need this proposition in the proof of 
+\cref{thm:tsdlearnable}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\propGammadiff*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Recall that $\gamma_i = \Prob{Y^i \ne Y}$, $(Y,Y^1,\dots,Y^K)\sim \theta$. We have
+\if0	
+	We construct a map as required by~\cref{prop:learnablemap}.
+	Take an instance $\theta \in \TWD$ and let $\theta = P_S \otimes P_{Y|S}$ be its decomposition
+	as defined above.
+	For identifying an optimal action in $\theta$, it clearly suffices
+	to know the sign of $\gamma_i + C_i - (\gamma_j +C_j)$ for all pairs $i,j\in [K]^2$.
+	Since $C_i - C_j$ is known, it remains to study $\gamma_i-\gamma_j$.
+	Without loss of generality (WLOG) let $i<j$.
+	Then, 
+\fi	
+	\begin{align*}
+	\MoveEqLeft 
+	%0  \le 
+	\gamma_i  - \gamma_j = \Prob{Y^i\ne Y} - \Prob{Y^j\ne Y} \\
+	& = \cancel{\Prob{Y^i\ne Y, Y^i=Y^j}} + \Prob{ Y^i\ne Y, Y^i\ne Y^j } 
+	 - \left\{ 
+	\cancel{\Prob{Y^j\ne Y, Y^i=Y^j}} + \Prob{ Y^j\ne Y, Y^i\ne Y^j }\right\}\\
+	& = \Prob{ Y^i\ne Y, Y^i \ne Y^j } + \Prob{Y^i=Y,Y^i\ne Y^j}       
+	 - \left\{ 
+	\Prob{ Y^j \ne Y, Y^i\ne Y^j } + \Prob{ Y^i=Y,Y^i\ne Y^j}
+	\right\}\\
+	& \stackrel{\footnotesize (a)}{=} \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y }\,,
+	\end{align*}
+	where in $(a)$ we used that $\Prob{ Y^j \ne Y, Y^i\ne Y^j } =  \Prob{ Y^j\ne Y,Y^i= Y}$ and also
+	$\Prob{ Y^i=Y,Y^i\ne Y^j} = \Prob{ Y^j\ne Y,Y^i= Y}$
+	which hold because $Y,Y^i,Y^j$ only take on two possible values.
+\end{proof}
+
+
+
+With this, we are ready to give the proof of \cref{thm:tsdlearnable}:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \thmTSDLearnable*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{proof}[Proof of \cref{thm:tsdlearnable}]
 	We construct a map as required by~\cref{prop:learnablemap}.
 	Take an instance $\theta \in \TSD$ and let $\theta = P_S \otimes P_{Y|S}$ be its decomposition as before.
@@ -68,42 +120,14 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 	Since $(C_i)_i$ are known, a map as required by~\cref{prop:learnablemap} exists.
 \end{proof}
 
-
-\section{Proof of \cref{prop:gammadiff}}
-\propGammadiff*
-\begin{proof}
-	
-	We construct a map as required by~\cref{prop:learnablemap}.
-	Take an instance $\theta \in \TWD$ and let $\theta = P_S \otimes P_{Y|S}$ be its decomposition
-	as defined above.
-	Let $\gamma_i = \Prob{Y^i \ne Y}$, $(Y,Y^1,\dots,Y^K)\sim \theta$.
-	For identifying an optimal action in $\theta$, it clearly suffices
-	to know the sign of $\gamma_i + C_i - (\gamma_j +C_j)$ for all pairs $i,j\in [K]^2$.
-	Since $C_i - C_j$ is known, it remains to study $\gamma_i-\gamma_j$.
-	Without loss of generality (WLOG) let $i<j$.
-	Then, 
-	\begin{align*}
-	\MoveEqLeft 0  \le \gamma_i  - \gamma_j = \Prob{Y^i\ne Y} - \Prob{Y^j\ne Y} \\
-	& = \cancel{\Prob{Y^i\ne Y, Y^i=Y^j}} + \Prob{ Y^i\ne Y, Y^i\ne Y^j } - \\
-	& - \left\{ 
-	\cancel{\Prob{Y^j\ne Y, Y^i=Y^j}} + \Prob{ Y^j\ne Y, Y^i\ne Y^j }\right\}\\
-	& = \Prob{ Y^i\ne Y, Y^i \ne Y^j } + \Prob{Y^i=Y,Y^i\ne Y^j}       \\
-	& - \left\{ 
-	\Prob{ Y^j \ne Y, Y^i\ne Y^j } + \Prob{ Y^i=Y,Y^i\ne Y^j}
-	\right\}\\
-	& \stackrel{\footnotesize (a)}{=} \Prob{ Y^j \ne Y^i } -2 \Prob{ Y^j\ne Y, Y^i = Y }\,,
-	\end{align*}
-	where in $(a)$ we used that $\Prob{ Y^j \ne Y, Y^i\ne Y^j } =  \Prob{ Y^j\ne Y,Y^i= Y}$ and also
-	$\Prob{ Y^i=Y,Y^i\ne Y^j} = \Prob{ Y^j\ne Y,Y^i= Y}$
-	which hold because $Y,Y^i,Y^j$ only take on two possible values.
-\end{proof}
-
-
-
-
-
-\section{Proof of \cref{prop:ilej}}
+Let us now turn to proofs and statements related to Weak Dominance.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Proofs and Statements Related to Weak Dominance}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+We start with two statements that prepare for the definition of weak dominance.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \propIlej*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{proof}
 	\noindent $\Rightarrow$: From the premise, it follows that $C_j - C_i \ge \gamma_i - \gamma_j$.
 	Thus, by~\eqref{eq:cond1}, $C_j - C_i \ge \Prob{Y^i\ne Y^j}$.
@@ -111,54 +135,38 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 	inequality is by \cref{cor:gammadiff}.
 	\end{proof}
 	
-\section{Proof of \cref{prop:jlei}}	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \propJlei*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\begin{proof}
 		\noindent $\Rightarrow$: The condition $\gamma_i + C_i \le \gamma_j + C_j$ implies that $\gamma_j -\gamma_i \ge C_i - C_j$.
 		By \cref{cor:gammadiff} we get $\Prob{Y^i \ne Y^j} \ge C_i - C_j$.
 		\noindent $\Leftarrow$: Let $C_i - C_j \le \Prob{Y^i \ne Y^j}$. Then, by \eqref{eq:cond2}, $C_i - C_j \le \gamma_j - \gamma_i$.
 	\end{proof}
 
+Recall the definition of $\awd$:
+\defAwd*
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-
-%\section{Proof of Proposition \ref{prop:awdwelldef}}
-\todoc{What is this doing here?}
+This definition makes sense:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{prop}
 	\label{prop:awdwelldef}
-	For any $\theta \in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $\awd(P_S)$ is well-defined.
+	The action-selector $\awd$ is sound over $\TWD$:
+	For any $\theta \in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $\awd(P_S)$ is well-defined, i.e., the domain
+	of $\awd$ includes all of $\TWD$.
 \end{prop}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{proof}
-	Let $\theta\in \TWD$, $i = a^*(\theta)$. Obviously, \eqref{eq:wd2} holds by the definition of $\TWD$.
+	Let $\theta\in \TWD$, $i = a^*(\theta)$. 
+	It suffices to show that $i$ satisfies both \eqref{eq:wd1} and \eqref{eq:wd2}.
+	Obviously, \eqref{eq:wd2} holds by the definition of $\TWD$.
 	Thus, the only question is whether \eqref{eq:wd1} also holds.
 	We prove this by contradiction:
-	Thus, assume that \eqref{eq:wd1} does not hold, i.e., for some $j<i$, $C_i-C_j \ge \Prob{Y^i \ne Y^j}$. Then, by \cref{cor:gammadiff}, $\Prob{ Y^i \ne Y^j} \ge \gamma_j - \gamma_i$, hence $\gamma_j + C_j \le \gamma_i + C_i$, which contradicts the definition of $i$, thus finishing the proof.
+	In particular if \eqref{eq:wd1} does not hold then for some $j<i$, $C_i-C_j \ge \Prob{Y^i \ne Y^j}$. 
+	Then, by \cref{cor:gammadiff}, $\Prob{ Y^i \ne Y^j} \ge \gamma_j - \gamma_i$, hence $\gamma_j + C_j \le \gamma_i + C_i$, which contradicts the definition of $i$, thus finishing the proof. 
 	\end{proof}
-
-
-%\section{Proof of Proposition \ref{prop:awdsound}}
-
-\section{Proof for \cref{sec:Learnability}}
-In this section prove the observation made at the end of \cref{sec:Learnability}
+We can now prove that $\awd$ is sound:
 \begin{prop}
 	\label{prop:awdsound}
 	The map $\awd$ is sound over $\TWD$: In particular, for any
@@ -172,10 +180,10 @@ In this section prove the observation made at the end of \cref{sec:Learnability}
 	Now, assume that $j<i$. Then, by~\eqref{eq:wd}, $C_i - C_j \ge \Prob{Y^i \ne Y^j}$.
 	However, by~\eqref{eq:wd1}, $C_i -C_j < \Prob{Y^i \ne Y^j}$, thus $j<i$ cannot hold either and we must have $i=j$.
 	\end{proof}
-
-\begin{cor}\label{cor:twdlearnable}
+A corollary of the previous result is that $\TWD$ is also learnable:
+\begin{thm}\label{cor:twdlearnable}
 	The set $\TWD$ is learnable.
-\end{cor}
+\end{thm}
 %\section{Proof of Corollary \ref{cor:twdlearnable}}
 \begin{proof}
 	By \cref{prop:awdwelldef}, $\awd$ is well-defined over $\TWD$, while by \cref{prop:awdsound}, $\awd$ is sound over $\TWD$.
@@ -183,7 +191,7 @@ In this section prove the observation made at the end of \cref{sec:Learnability}
 	%namely, $\awd$ well-defined over $\TWD$, $\awd$ sound over $\TWD$, etc.}\todom[]{Csaba, you did this already!!}
 \end{proof}
 
-
+Now, we will prove that $\awd$ is the only sound action selector over $\TWD$.
 \begin{prop}
 	\label{prop:awdcorrectimplieswd}
 	Let $\theta \in \TSA$ and $\theta = P_S\otimes P_{Y|S}$ be such that $\awd$ is defined for $P_S$
@@ -195,15 +203,15 @@ The proof follows from the definitions. An immediate corollary of the previous p
 	Assume that $\awd$ is defined for $P_S$ and $\theta \not\in \TWD$. Then $\awd(P_S) \ne a^*(\theta)$.
 \end{cor}
 
-The next proposition states that $\awd$ is essentially the only sound action selector map defined for
+The next result states that $\awd$ is essentially the only sound action selector map defined for
 all instances derived from instances of $\TWD$:
 
 %\section{Proof of Proposition \ref{prop:awdunique}}
-\begin{prop}\label{prop:awdunique}
+\begin{thm}\label{prop:awdunique}
 	Take any action selector map $a: M_1( \{0,1\}^K ) \to [K]$ which is sound over $\TWD$.
 	Then, for any $P_S$ such that $\theta = P_S\otimes P_{Y|S}\in \TWD$ with some $P_{Y|S}$,
 	$a(P_S) = \awd(P_S)$.
-\end{prop}
+\end{thm}
 \begin{proof}
 	Pick any $\theta = P_S\otimes P_{Y|S}\in \TWD$. If $A^*(\theta)$ is a singleton, then clearly $a(P_S) = \awd(P_S)$ since both are sound over $\TWD$.
 	Hence, assume that $A^*(\theta)$ is not a singleton.
@@ -212,7 +220,7 @@ all instances derived from instances of $\TWD$:
 	$j$ is not an optimal action, while the new instance $\theta' = P_S \otimes P_{Y|S}'$ is in $\TWD$.
 	
 	The modification is as follows:
-	Consider any $y^{-j} \doteq (y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$.
+	Consider any $y^{-j} \defeq (y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$.
 	For $y,y^j\in \{0,1\}$, define 
 	$q(y|y^j) = P_{Y|S}(y|y^1, \dots, y^{j-1}, y^j, y^{j+1},\dots, y^K)$
 	and similarly let
@@ -271,6 +279,7 @@ Note that $\mathrm{dom}(\awd)\setminus \{ P_S \,:\, \exists P_{Y|S} \textrm{ s.t
 In particular, for $K=2$, consider $(Y,Y^1,Y^2)$ such that $Y$ and $Y^1$ are independent and $Y^2 = 1-Y^1$, we can see that the resulting instance gives rise to $P_S$ which is in the domain of $\awd$ for any $c\in \R_+^K$ (because here $\gamma_1 = \gamma_2 = 1/2$, thus $\gamma_1 - \gamma_2 = 0$ while $\Prob{Y^1\ne Y^2}=1$).
 While $\TWD$ is learnable, it is not uniformly learnable, i.e., the minimax regret $\Regret_n^*(\TWD) = \inf_{\Alg} \sup_{\theta\in \TWD} \Regret_n(\Alg,\theta)$ over $\TWD$ grows linearly:
 
+We close by showing that while $\TWD$ is learnable and maximal, the price is that it is not uniformly learnable:
 %\section{Proof of Theorem \ref{thm:nonunif}}
 \begin{thm}
 	\label{thm:nonunif}

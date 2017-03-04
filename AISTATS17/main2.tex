@@ -101,7 +101,7 @@
 \newcommand{\Yti}{Y_t^i}
 \newcommand{\Yt}{Y_t}
 \newcommand{\X}{\mathcal{X}}
-
+\newcommand{\defeq}{\defeq} % triangleeq
 
 \usepackage[capitalize]{cleveref}
 
@@ -271,7 +271,7 @@ First, a few words about our notation: We will use upper case letters to denote 
 The set of real numbers is denoted by $\R$. For positive integer $n$, we let
 $[n] = \{1,\dots,n\}$. % with $[n]=\emptyset$ if $n=0$.
 We let $M_1(\X)$ to denote the set of probability distributions over some set $\X$.
-When $\X$ is finite with a cardinality of $d \doteq |\X|$, 
+When $\X$ is finite with a cardinality of $d \defeq |\X|$, 
 $M_1(\X)$ can be identified with the $d$-dimensional probability simplex.
 
 %\emph{Stochastic partial monitoring problem} is described by a collection of 
@@ -327,7 +327,7 @@ The framework of SPM is quite general and allows for parametric and non-parametr
 %the so-called non-parametric settings. 
 %For example, $K$-armed bandits with reward distributions supported
 %over $[0,1]$ can be modelled by choosing $\Theta$ as the set of all $K$-tuples 
-%$\theta:=(\theta_1,\dots,\theta_K)$ of distributions over $[0,1]$ and setting $p(\cdot;a,\theta) = \theta_a(\cdot)$.
+%$\theta\defeq(\theta_1,\dots,\theta_K)$ of distributions over $[0,1]$ and setting $p(\cdot;a,\theta) = \theta_a(\cdot)$.
 In what follows we identify $\Theta$ with set of instances $(p(\cdot;a,\theta),r(a,\theta))_{\theta\in \Theta}$.
 In other words we view elements of $\Theta$ as a pair $p,r$ where $p(\cdot;a)$ is a probability distribution over $\Y$ for each $a\in \A$ and $r$ is a map from $\A$ to the reals.
 
@@ -346,7 +346,7 @@ In other words we view elements of $\Theta$ as a pair $p,r$ where $p(\cdot;a)$ i
 The set of real numbers is denoted by $\R$. For positive integer $n$, we let
 $[n] = \{1,\dots,n\}$. % with $[n]=\emptyset$ if $n=0$.
 We let $M_1(\X)$ to denote the set of probability distributions over some set $\X$.
-When $\X$ is finite with a cardinality of $d \doteq |\X|$, 
+When $\X$ is finite with a cardinality of $d \defeq |\X|$, 
 $M_1(\X)$ can be identified with the $d$-dimensional probability simplex.
 
 We first consider the {\it unsupervised, stochastic, 
@@ -368,7 +368,7 @@ $Y = (Y_t,Y_t^1,\dots,Y_t^K)$ chosen at random from $P$.
 Here, $Y_t^i$ is the output of sensor $i$, while $Y_t$ is a (hidden) label to be guessed by the learner.
 Simultaneously, the learner chooses an index $I_t\in [K]$ and observes the sensor outputs $Y_t^1,\dots,Y_t^{I_t}$.
 The sensors are known to be ordered from least accurate to most accurate, 
-i.e., $\gamma_k(\theta) \doteq \Prob{Y_t\ne Y_t^k}$ is decreasing with $k$ increasing.
+i.e., $\gamma_k(\theta) \defeq \Prob{Y_t\ne Y_t^k}$ is decreasing with $k$ increasing.
 \begin{figure}[!h]
 	\centering
 	\includegraphics[scale=.4]{cascade.pdf}
@@ -378,7 +378,7 @@ i.e., $\gamma_k(\theta) \doteq \Prob{Y_t\ne Y_t^k}$ is decreasing with $k$ incre
 \end{figure} 
 \todom{How about this figure and caption?}
 Knowing this, the learner's choice of $I_t$ also indicates that he/she chooses $I_t$ to predict the unknown label $Y_t$.
-Observing sensors is costly: The cost of choosing $I_t$ is $C_{I_t} \doteq c_1 + \dots + c_{I_t}$.
+Observing sensors is costly: The cost of choosing $I_t$ is $C_{I_t} \defeq c_1 + \dots + c_{I_t}$.
 The total cost suffered by the learner in round $t$ is thus $C_{I_t} + \ind{Y_t \ne Y_t^{I_t}}$.
 The goal of the learner is to compete with the best choice given the hindsight of the values $(\gamma_k)_k$.
 The expected regret of learner up to the end of round $n$ is 
@@ -436,10 +436,10 @@ Here, $Y_t$ is the unknown label of context/instance $Z_t$ to be predicted in ro
 $k$, a prediction of $Y_t$. We focus on the case where $Z_t$ is not available to the learner. The case where they are observed is briefly discussed in the appendix. 
 At the cost of $c_1+ c_2 + \dots + c_k$,
 the learner can choose to acquire the outputs of the first $k$ sensors,
-where $k\in [K] := \{1,\dots,K\}$. 
+where $k\in [K] \defeq \{1,\dots,K\}$. 
 
 Here, $c_i\ge 0$ is the marginal cost of acquiring the output of sensor $i$.
-The costs $c := (c_1,\dots,c_K)$ are known to the learner.
+The costs $c \defeq (c_1,\dots,c_K)$ are known to the learner.
 Having acquired the output of the first $k$ sensors, the learner predicts the unknown label $Y_t$ using
 the output of the last sensor acquired, i.e., using $\hY_t^k$, making the learner incur the loss
 \begin{align*}
@@ -461,7 +461,7 @@ The feedback of learner for this round is then $H_t(k)=(\hat{Y}^1_t,\ldots,\hat{
 \end{wrapfigure} 
 
 \if0
-The prediction error rate of the $i^{th}$ sensor is denoted as $\gamma_i:=\Pr\{Y_t\neq \hat{Y}^k_t\}$. The learner incurs an extra cost of $c_k\geq 0$ to acquire output of sensor $k$ after acquiring output of sensor $k-1$. The sensor cascade is depicted in the adjacent figure. In this section we assume that the error rate does not depend on the  context, and the treatment with contextual information is given in the supplementary. 
+The prediction error rate of the $i^{th}$ sensor is denoted as $\gamma_i\defeq\Pr\{Y_t\neq \hat{Y}^k_t\}$. The learner incurs an extra cost of $c_k\geq 0$ to acquire output of sensor $k$ after acquiring output of sensor $k-1$. The sensor cascade is depicted in the adjacent figure. In this section we assume that the error rate does not depend on the  context, and the treatment with contextual information is given in the supplementary. 
 \fi
 
 %Let $H_t(k)$ denote the feedback observed in round $t$ from action $k$. Since we observe predictions of all the first $k$ senors by playing action $k$, we get   $H_t(k)=(\hat{Y}^1_t,\ldots,\hat{Y}^k_t)$.
@@ -495,7 +495,7 @@ The goal of the learner is to learn a policy that minimizes the expected total l
 \label{eqn:OptimalAction}
 \mathbb{E}[L_t(k)]=\Pr\{Y_t\neq \hat{Y}^k_t\}+\sum_{j=1}^kc_j=\gamma_k +C_k\,,
 \end{equation}
-where $\gamma_k:=\Pr\{Y_t\neq \hat{Y}^k_t\}$ is the misclassification error rate of sensor $k$ and $C_k := c_1+\dots+c_k$ denotes the total cost for selecting the first $k$ sensors.
+where $\gamma_k\defeq\Pr\{Y_t\neq \hat{Y}^k_t\}$ is the misclassification error rate of sensor $k$ and $C_k \defeq c_1+\dots+c_k$ denotes the total cost for selecting the first $k$ sensors.
 Since $c$ is assumed to be known, we will denote the dependence of the various quantities below
 on $\gamma = (\gamma_1,\dots,\gamma_K)$ only.
 Denote the expected cost of choosing action $k$ by $l_k(\gamma) = \gamma_k + C_k$. Let $k^* = \arg\min_{k\in [K]} l_k(\gamma)$ be the optimal action and let 
@@ -522,7 +522,7 @@ R^\psi_T(\pi)&=& \sum_{k \in [K]}\mathbb{E}[N_k(T)]\Delta_k\,.
 %\input{learnability}
 %!TEX root =  main.tex
 Let $\TSA$ be the set of all stochastic, cascaded \ses problems. 
-Thus, $\theta \in \TSA$ such that if $Y\sim \theta$ then $\gamma_k(\theta):=\Prob{Y\ne Y^k}$ 
+Thus, $\theta \in \TSA$ such that if $Y\sim \theta$ then $\gamma_k(\theta)\defeq\Prob{Y\ne Y^k}$ 
 is a decreasing sequence.
 Given a subset $\Theta\subset \TSA$, we say that $\Theta$ is \emph{learnable} 
 if there exists a learning algorithm $\Alg$ such that
@@ -579,7 +579,7 @@ PIMA Diabetes & $0.32 $ & $ 0.23$  & 0.065\\  \hline
 Heart (Cleveland) & $0.305$ & $0.169$ &  0.051\\  \hline
 \end{tabular}
 \label{tab:ErrorTable1}
-\caption{\footnotesize Depicts approximate Strong Dominance on real datasets: $\gamma_1 \triangleq \Pr(Y^1 \neq Y),\,\gamma_2\triangleq \Pr(Y^2 \neq Y),\, \delta_{12} \triangleq \Pr(Y^1=Y,\, Y^2\neq Y)$ }
+\caption{\footnotesize Depicts approximate Strong Dominance on real datasets: $\gamma_1 \defeq \Pr(Y^1 \neq Y),\,\gamma_2\defeq \Pr(Y^2 \neq Y),\, \delta_{12} \defeq \Pr(Y^1=Y,\, Y^2\neq Y)$ }
 \end{center}
 \vspace{-13pt}
 \end{table}
@@ -746,7 +746,7 @@ We can deal with trees in an analogous fashion. Like for cascades we keep track 
 \noindent
 {\it Context-Dependent Sensor Selection:}
 %Our results can also be generalized to specific context dependent cases as well. 
-Each example has a context $x \in \mathbb{R}^d$. A test is a mapping that takes (partial) context and maps to an output space. We briefly describe how to extend to context-dependent \ses. Analogous to the context-independent case we impose context dependent notions for SD and WD, namely, Eq.~\ref{eqn:DominanceCondition} and Eq.~\ref{eq:wd} hold conditioned on each $x \in {\cal X}$. To handle these cases we let $\gamma_i(x)\triangleq \Pr(Y^{i} \neq Y)$ and $\gamma_{ij}(x) \triangleq \Pr(Y^{i} \neq Y^{j})$ denote the conditional error probability for the ith sensor and the conditional marginal error probability between sensor $i$ and $j$ respectively. Then the results can be generalized under a parameterized GLM model for disagreement, namely, the log-odds ratio $\log \frac{\gamma_{ij}(x)}{1-\gamma_{ij}(x)}$ can be written as $\theta_{ij}'x$ for some unknown $\theta_{ij} \in \mathbb{R}^d$.
+Each example has a context $x \in \mathbb{R}^d$. A test is a mapping that takes (partial) context and maps to an output space. We briefly describe how to extend to context-dependent \ses. Analogous to the context-independent case we impose context dependent notions for SD and WD, namely, Eq.~\ref{eqn:DominanceCondition} and Eq.~\ref{eq:wd} hold conditioned on each $x \in {\cal X}$. To handle these cases we let $\gamma_i(x)\defeq \Pr(Y^{i} \neq Y)$ and $\gamma_{ij}(x) \defeq \Pr(Y^{i} \neq Y^{j})$ denote the conditional error probability for the ith sensor and the conditional marginal error probability between sensor $i$ and $j$ respectively. Then the results can be generalized under a parameterized GLM model for disagreement, namely, the log-odds ratio $\log \frac{\gamma_{ij}(x)}{1-\gamma_{ij}(x)}$ can be written as $\theta_{ij}'x$ for some unknown $\theta_{ij} \in \mathbb{R}^d$.
 %\begin{proof}
 
 
@@ -1024,7 +1024,7 @@ For an allocation count $u\in [0,\infty)^K$ let $m(u)\in \N^K$ denote total sens
 
 
 The idea of \cref{alg:asym} is as follows:
-The algorithm keeps track of an estimate $\hgamma^{t}:=(\hgamma^t_i)_{i \in [K]}$ of $\gamma$ in each round, which is initialized by pulling arm $K$ as this arm
+The algorithm keeps track of an estimate $\hgamma^{t}\defeq(\hgamma^t_i)_{i \in [K]}$ of $\gamma$ in each round, which is initialized by pulling arm $K$ as this arm
 gives information about all the other arms.
 In each round, the algorithm first checks whether given the current estimate $\hgamma^t$ and the current confidence level (where the confidence level is gradually increased over time), the current allocation count $N(t)\in \N^K$
 is sufficiently informative (cf. line \ref{alg:check}). If this holds, the action that is optimal under $\hgamma(t)$ is chosen 
@@ -1129,7 +1129,7 @@ We can deal with trees, where now the sensors are organized as a tree with root 
 \noindent
 {\it Context-Dependent Sensor Selection:}
 %Our results can also be generalized to specific context dependent cases as well. 
-Each example has a context $x \in \R^d$ and a test maps (partial) context to the output space. Analogous to the context-independent case we impose context dependent notions for SD and WD, namely, Eq.~\ref{eqn:DominanceCondition} and Eq.~\ref{eqn:WD} hold conditioned on each $x \in {\cal X}$. To handle these cases we let $\gamma_i(x)\triangleq \Pr(Y^{i} \neq Y\mid x)$ and $\gamma_{ij}(x) \triangleq \Pr(Y^{i} \neq Y^{j}\mid x)$ denote the corresponding contextual error and disagreement probabilities. Our sublinear regret guarantees can be generalized for a parameterized GLM model for disagreement, namely, when the log-odds ratio $\log \frac{\gamma_{ij}(x)}{1-\gamma_{ij}(x)}$ can be written as $\theta_{ij}'x$ for some unknown $\theta_{ij} \in \mathbb{R}^d$.
+Each example has a context $x \in \R^d$ and a test maps (partial) context to the output space. Analogous to the context-independent case we impose context dependent notions for SD and WD, namely, Eq.~\ref{eqn:DominanceCondition} and Eq.~\ref{eqn:WD} hold conditioned on each $x \in {\cal X}$. To handle these cases we let $\gamma_i(x)\defeq \Pr(Y^{i} \neq Y\mid x)$ and $\gamma_{ij}(x) \defeq \Pr(Y^{i} \neq Y^{j}\mid x)$ denote the corresponding contextual error and disagreement probabilities. Our sublinear regret guarantees can be generalized for a parameterized GLM model for disagreement, namely, when the log-odds ratio $\log \frac{\gamma_{ij}(x)}{1-\gamma_{ij}(x)}$ can be written as $\theta_{ij}'x$ for some unknown $\theta_{ij} \in \mathbb{R}^d$.
 \vspace{-5pt}
 %  \todov{Should we mention that due to lack of uniform learnability we do not present theoretical results here}
 
@@ -1212,7 +1212,7 @@ We train three linear SVM classifiers with 5-fold cross-validation and have veri
 %			diabetic & $0.345 $ & $ 0.324$ & 0.246 & $ 0.116 $ & 0.089 &0.058\\  \hline
 %			heart & $0.292$ & $0.27$ & 0.146 & $0.124$ & 0.067 & 0.079\\  \hline
 %		\end{tabular}
-%		\caption{Error statistics for real and synthetic datasets. $\delta_{ij}:=\P\{Y_j\neq Y \mid Y_i = Y\}$.}
+%		\caption{Error statistics for real and synthetic datasets. $\delta_{ij}\defeq\P\{Y_j\neq Y \mid Y_i = Y\}$.}
 %\label{tab:error_stats}
 %\vspace{-.5cm}
 %	\end{figure}
@@ -1498,7 +1498,7 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 	Note that by Hoeffding's inequality, 
 	$\sup_{y\in \{0,1\}^K} |\hat{P}_S(y)  - P_S(y)| \le \sqrt{\frac{K\log(4n)}{2f(n)}}$ holds with probability $1-1/n$.
 	Let $n_0$ be the first index such that for any $n\ge n_0$,
-	$\sqrt{\frac{K\log(4n)}{2f(n)}}\le \Delta^*(\theta) \doteq \min_{k:\Delta_k(\theta)>0} \Delta_k(\theta)$.
+	$\sqrt{\frac{K\log(4n)}{2f(n)}}\le \Delta^*(\theta) \defeq \min_{k:\Delta_k(\theta)>0} \Delta_k(\theta)$.
 	Such an index $n_0$ exists by our assumptions that $f$ grows faster than $n \mapsto \log(n)$.
 	For $n\ge n_0$, the expected regret of $\Alg$ is at most $n \times 1/n + f(n) (1-1/n) \le 1+f(n) = o(n)$.
 	\end{proof}
@@ -1590,7 +1590,7 @@ optimal action $a^*(\theta)$, achieving the best possible reward per round, $r^*
 	$j$ is not an optimal action, while the new instance $\theta' = P_S \otimes P_{Y|S}'$ is in $\TWD$.
 	
 	The modification is as follows:
-	Consider any $y^{-j} \doteq (y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$.
+	Consider any $y^{-j} \defeq (y^1,\dots,y^{j-1},y^{j+1},\dots,y^K)\in \{0,1\}^{K-1}$.
 	For $y,y^j\in \{0,1\}$, define 
 	$q(y|y^j) = P_{Y|S}(y|y^1, \dots, y^{j-1}, y^j, y^{j+1},\dots, y^K)$
 	and similarly let
@@ -1853,7 +1853,7 @@ Hence, $P_S$ can also be specified to satisfy this. In particular, one possibili
 %
 %\subsection{Proof of Theorem \ref{thm:2CSAPRegret}}
 %Let $\{x_t,y_t\}_{t\geq 0}$ be an arbitrary sequence of context-label pairs. Consider a stochastic linear bandit where $D_t=\{0, x_t\} $ is a decision set in round $t$. 
-%From the previous section, we know that given a context $x$, action $1$ is optimal if $\gamma_1(x)-\gamma_2(x) -c< 0$, otherwise  action $2$ is optimal. Let $\theta:=\theta_1-\theta_2$, then it boils down to check if $x^\prime\theta-c<0$ for each context $x\in \mathcal{C}$. 
+%From the previous section, we know that given a context $x$, action $1$ is optimal if $\gamma_1(x)-\gamma_2(x) -c< 0$, otherwise  action $2$ is optimal. Let $\theta\defeq\theta_1-\theta_2$, then it boils down to check if $x^\prime\theta-c<0$ for each context $x\in \mathcal{C}$. 
 %
 %For all $t$, define $\epsilon_t= \boldsymbol{1}\{\hat{Y}^1_t \neq \hat{Y}^2_t\}-x_t^\prime\theta$. Note that $\epsilon_t \in [0 \;1]$ for all $t$, and since sensors do not have memory, they are conditionally independent given past contexts. Thus, $\{\epsilon_t\}_{t>0}$ are conditionally $R$-sub-Gaussian for some finite $R$.  
 %

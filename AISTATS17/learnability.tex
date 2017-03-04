@@ -1,13 +1,14 @@
 %!TEX root =  main.tex
 \vspace{-7pt}
 Let $\TSA$ be the set of all stochastic, cascaded \ses problems. 
-Thus, $\theta \in \TSA$ such that if $Y\sim \theta$ then $\gamma_k(\theta):=\Prob{Y\ne Y^k}$ 
+Thus, $\theta \in \TSA$ such that if $Y\sim \theta$ then $\gamma_k(\theta)\defeq\Prob{Y\ne Y^k}$ 
 is a decreasing sequence.
 Given a subset $\Theta\subset \TSA$, we say that $\Theta$ is \emph{learnable} 
 if there exists a learning algorithm $\Alg$ such that
 for any $\theta\in \Theta$, the expected regret $\EE{ \Regret_n(\Alg,\theta) }$ 
 of algorithm $\Alg$ on instance $\theta$ is sublinear.
-A subset $\Theta$ is said to be a maximal learnable problem class if it is learnable and for any $\Theta'\subset \TSA$ superset
+A subset $\Theta$ is said to be a \emph{maximal learnable problem class} 
+if it is learnable and for any $\Theta'\subset \TSA$ superset
 of $\Theta$, $\Theta'$ is not learnable.
 In this section we study two special learnable problem classes, $\TSD\subset \TWD$, where the regularity properties of the instances in $\TSD$ are more intuitive, while $\TWD$ can be seen as a maximal extension of $\TSD$.
 
@@ -24,8 +25,9 @@ $P_S$ with arbitrary precision, while $P_{Y|S}$ remains hidden from the learner.
 %Let $\Theta \subset \TSA$ be complete. Then,
 A subset $\Theta\subset \TSA$ is learnable 
 if and only if there exists a map $a: M_1( \{0,1\}^K )\to [K]$ such that 
-for any $\theta \in \Theta$ 
+for any $\theta  = (P,c) \in \Theta$ 
 with decomposition $P = P_S \otimes P_{Y|S}$, $a(P_S)$ is an optimal action in $\theta$.
+Following our previous convention, we also write $\theta = P_S \otimes P_{Y|S}$.
 %\end{prop}
 \end{restatable}
 
@@ -48,9 +50,9 @@ for any $i\in [K]$,
 	Y^i=Y \,\, \Rightarrow\,\, Y^{i+1}= \dots =  Y^K = Y
 	\end{equation}
 	almost surely (a.s.)
-	where $(Y,Y^1,\dots,Y^K)\sim P$.
+	where $(Y,Y^1,\dots,Y^K)\sim \theta$.
 \end{defi}
-Before we develop this concept further we will motivate strong dominance based on experiments on a few real-world datasets. SD property naturally arises in the context of a cascade of error-correcting codes (see \cite{costello,voyager}). On the other hand for real-datasets SD holds only approximately. Table \ref{tab:ErrorTable1} lists the error probabilities of the classifiers (sensors) for the heart and diabetic datasets from UCI repository. We split features into two sets based on provided costs (cheap tests are based on patient history and costly tests include all the features). We then trained an SVM classifier with 5-fold cross-validation and report scores based on held-out test data. 
+Before we develop this concept further we will motivate strong dominance based on experiments on a few real-world examples. First, SD naturally arises in the context of a cascade of error-correcting codes (see \cite{costello,voyager}). On the other hand for ``natural'' systems SD holds ``approximately'' only. \Cref{tab:ErrorTable1} lists the error probabilities of the classifiers (sensors) for the heart and diabetic datasets from UCI repository. We split features into two sets based on provided costs (cheap tests are based on patient history and costly tests include all the features). We then trained an SVM classifier with 5-fold cross-validation and report scores based on held-out test data. 
 \begin{table}[h]
 \vspace{-6pt}
 \begin{center}
@@ -60,10 +62,10 @@ Dataset & $\gamma_1$ & $\gamma_2$ & $\delta_{12}$\\ \hline \hline
 PIMA Diabetes & $0.32 $ & $ 0.23$  & 0.065\\  \hline
 Heart (Cleveland) & $0.305$ & $0.169$ &  0.051\\  \hline
 \end{tabular}
-\label{tab:ErrorTable1}
-\caption{\footnotesize Depicts approximate SD property on real datasets: $\gamma_1 \triangleq \Pr(Y^1 \neq Y),\,\gamma_2\triangleq \Pr(Y^2 \neq Y),\, \delta_{12} \triangleq \Pr(Y^1=Y,\, Y^2\neq Y)$ }
 \end{center}
+\caption{\footnotesize Depicts approximate SD property on real datasets: $\gamma_1 \defeq \Pr(Y^1 \neq Y),\,\gamma_2\defeq \Pr(Y^2 \neq Y),\, \delta_{12} \defeq \Pr(Y^1=Y,\, Y^2\neq Y)$ }
 \vspace{-13pt}
+\label{tab:ErrorTable1}
 \end{table}
 %For both the datasets, $\gamma_1$ denotes the test error of an SVM classifier (linear) trained with low cost features and $\gamma_2$ denotes test error of SVM classifier trained using both low and high-cost features (cf. Section \ref{sec:Experiments}). 
 The last column lists the probability that second sensor misclassifies an instance that is correctly classified by the first sensor. SD is the notion that suggests that this probability is zero. We find in these datasets that $\delta_{12}$ is small thus justifying our notion. In general we have found this behavior is representative of other cost-associated datasets. %Note that strong dominance is not merely a consequence of improved accuracy with availability of more features. It is related to better {\it recall rates} of high-cost features relative to low-cost features. %Strong dominance assumption implies that the collection of ''recalled examples'' with low-cost features is a subset of those recalled with high-cost features. 
@@ -81,23 +83,28 @@ let $\TSD = \{ \theta\in \TSA\,:\, \theta \text{ satisfies SD condition } \}$.
 The set $\TSD$ is learnable.
 %\end{thm}
 \end{restatable}
-We start with a proposition that will be useful beyond the proof of this result.
-In this proposition, $\gamma_i = \gamma_i(\theta)$ for $\theta \in \TSA$ and $(Y,Y^1,\dots,Y^K) \sim \theta$.
+In the following results we let $(Y,Y^1,\dots,Y^K) \sim \theta$.
+The key to the proof of \cref{thm:tsdlearnable} is the following proposition:
 \begin{restatable}{prop}{propGammadiff}
 \label{prop:gammadiff}
-For any $i,j\in [K]$, $\gamma_i - \gamma_j = \Prob{Y^i\ne Y^j} - 2\Prob{ Y^j \ne Y, Y^i=Y}$.
+Let $\gamma_i = \gamma_i(\theta)$ for $\theta \in \TSA$, 
+Then, for any $i,j\in [K]$, $\gamma_i - \gamma_j = \Prob{Y^i\ne Y^j} - 2\Prob{ Y^j \ne Y, Y^i=Y}$.
 \end{restatable}
-
-The proof motivates the definition of Weak Dominance (WD), a concept that we develop next through a series of smaller
-propositions. In these propositions, as before $(Y,Y^1,\dots,Y^K) \sim P$ where $P\in M_1(\{0,1\}^{K+1})$,
- $\gamma_i = \Prob{Y^i \ne Y}$, $i\in [K]$, and $C_i = c_1 + \cdots + c_i$.
-We start with a corollary of \cref{prop:gammadiff}
+Next we relax SD. The relaxation is developed 
+%The proof motivates the definition of Weak Dominance (WD), a concept that we develop next 
+through a series of smaller
+propositions. 
+%In these propositions, as before $(Y,Y^1,\dots,Y^K) \sim P$ where $P\in M_1(\{0,1\}^{K+1})$,
+% $\gamma_i = \Prob{Y^i \ne Y}$, $i\in [K]$, and $C_i = c_1 + \cdots + c_i$.
+We start with a corollary to \cref{prop:gammadiff}:
 \begin{restatable}{cor}{corGammadiff}
 %\begin{cor}
 \label{cor:gammadiff}
 Let $i<j$. Then $0\le \gamma_i -\gamma_j \le \Prob{Y^i\ne Y^j}$.
 %\end{cor}
 \end{restatable}
+The next two propositions consider the dual cases $i<j$ and $i>j$
+and the decrease/increase of total costs:
 \begin{restatable}{prop}{propIlej}
 \label{prop:ilej}
 Let $i<j$. Assume 
@@ -120,25 +127,28 @@ Then, $\gamma_i + C_i \le \gamma_j + C_j$ if and only if $C_i - C_j \le \Prob{Y^
 
 These results motivate the following definition:
 \begin{defi}[Weak Dominance (WD)]
-	An instance $\theta \in \TSA$  is said to satisfy the \emph{weak dominance,  property} if 
+	An instance $\theta \in \TSA$  is said to satisfy the \emph{weak dominance property} if 
 	for $i = a^*(\theta)$,
 	\begin{align}
-	\label{eq:wd} \rho = \min_{j > i} \frac{C_j - C_i}{\Prob{Y^i\ne Y^j}} \ge 1 %\forall j>i\,\,: \,\, C_j - C_i \ge \Prob{Y^i\ne Y^j}\,.
+	\label{eq:wd} \rho = \min_{j > i} \frac{C_j - C_i}{\Prob{Y^i\ne Y^j}} \ge 1 \,.
+	%\forall j>i\,\,: \,\, C_j - C_i \ge \Prob{Y^i\ne Y^j}\,.
 	\end{align}
 We denote the set of all instances in $\TSA$ that satisfies this condition by $\TWD$.	
 \end{defi}
-Note that $\TSD\subset \TWD$ since for any $\theta\in \TSD$, any $j>i = a^*(\theta)$, on the one hand $C_j - C_i \ge \gamma_i - \gamma_j$, while on the other hand, by the SD property, $\Prob{Y^i\ne Y^j} = \gamma_i - \gamma_j$.
+Note that $\TSD\subset \TWD$ since for any $\theta\in \TSD$ and any $j>i = a^*(\theta)$, on the one hand $C_j - C_i \ge \gamma_i - \gamma_j$, while on the other hand, by SD, $\Prob{Y^i\ne Y^j} = \gamma_i - \gamma_j$.
 
-We now relate WD to the optimality condition described in Eq.~\eqref{eqn:interp_opt}. WD can be viewed as a more stringent condition for optimal actions. For an action to be optimal we require that the marginal cost be larger than marginal \emph{absolute} error, namely, for all $j > i$, with $i = a^*(\theta)$:
+We now relate WD to the optimality condition described in \cref{eqn:interp_opt}. WD can be viewed as a more stringent condition for optimal actions. For an action to be optimal we require that the marginal cost be larger than marginal \emph{absolute} error, namely, for all $j > i$, with $i = a^*(\theta)$:
 \begin{equation} \label{eqn:interp_WD}
 \underbrace{C_j - C_i}_{\text{Marginal Cost}} \geq \underbrace{ E \left [ \left | \ind{Y_t \ne Y_t^i} - \ind{Y_t \ne Y_t^j} \right | \right ]}_{\text{Marginal Absolute Error}}
 \end{equation}
 %The difference between marginal error in Eq.~\eqref{eqn:interp_opt} and
-where we have re-written $\Prob{Y^i\ne Y^j}$ as the marginal absolute error. We will show later that weak-dominant set is a maximal learnable set, namely, the set cannot be expanded while ensuring learnability.
+where we have re-written $\Prob{Y^i\ne Y^j}$ as the marginal absolute error. 
+%We will show later that weak-dominant set is a maximal learnable set, namely, the set cannot be expanded while ensuring learnability.
 
 
 We propose the following action selector $\awd: M_1(\{0,1\}^K)  \to [K]$:
-\begin{defi}\label{def:awd}
+\begin{restatable}{defi}{defAwd}
+\label{def:awd}
 For $P_S \in M_1(\{0,1\}^K) $ let $\awd(P_S)$ denote the smallest index $i\in [K]$ such that
 \begin{subequations}
 \begin{align}
@@ -148,7 +158,9 @@ For $P_S \in M_1(\{0,1\}^K) $ let $\awd(P_S)$ denote the smallest index $i\in [K
 \end{subequations}
 where $C_i = c_1+\cdots + c_i$, $i\in [K]$ and $(Y^1,\dots,Y^K) \sim P_S$.
 (If no such index exists, $\awd$ is undefined, i.e., $\awd$ is a partial function.)
-\end{defi}
+\end{restatable}
 
-For any $\theta \in \TWD$ with $\theta = P_S\otimes P_{Y|S}$, $\awd(P_S)$ is well-defined and is essentially the only sound action selector map defined for all instances derived from the instances of $\TWD$. Further, the set $\TWD$ is essentially a maximal learnable set in the  $\mathrm{dom}(\awd)$, i.e., $\TWD$ is learnable but not uniformly learnable (see Appendix A for formal statements and proofs.).
+The action selector $\awd$ is sound for any $\theta \in \TWD$ and is in in fact essentially the only sound action selector map defined for all instances %derived from the instances 
+of $\TWD$. Further, the set $\TWD$ is essentially a maximal learnable set in the  $\mathrm{dom}(\awd)$, i.e., $\TWD$ is learnable but not uniformly learnable
+ (see \cref{sec:apxlearnability} for formal statements and proofs).
 

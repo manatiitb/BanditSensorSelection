@@ -48,7 +48,8 @@
 %\usepackage{algorithmicx}
 %\usepackage[ruled]{algorithm}
 %\usepackage{algpseudocode}
-\usepackage{subfigure} 
+% \usepackage{subfigure}  Deprecated, do not use it anymore, use subcaption:
+\usepackage{subcaption}
 \usepackage[makeroom]{cancel}
 \usepackage{xspace}
 \usepackage{mathtools}
@@ -81,6 +82,8 @@
 \newcommand{\TSD}{\Theta_{\SD}}
 \newcommand{\TWD}{\Theta_{\WD}}
 \newcommand{\awd}{a_{\mathrm{wd}}}
+\newcommand{\defeq}{\doteq} % triangleeq
+
 \def\ddefloop#1{\ifx\ddefloop#1\else\ddef{#1}\expandafter\ddefloop\fi}
 
 % \bA, \bB, ...
@@ -188,8 +191,8 @@
 \creflabelformat{problem}{(#2#1#3)}
 
 % \crefname{equation}{equation}{equations}
-\Crefname{equation}{Equation}{Equations}
-\creflabelformat{equation}{(#2#1#3)}
+%\Crefname{equation}{Equation}{Equations}
+%\creflabelformat{equation}{(#2#1#3)}
 
 %\crefname{iCondition}{\ccap{c}ondition}{\ccap{c}onditions}
 \crefname{iCondition}{Condition}{Conditions}
@@ -200,7 +203,11 @@
 \creflabelformat{item}{(#2#1#3)}
 \crefrangelabelformat{item}{(#3#1#4) to (#5#2#6)}
 
-
+\if0
+\crefname{table}{Table}{Tables}
+\Crefname{table}{Table}{Tables}
+\creflabelformat{table}{(#2#1#3)}
+\fi
 
 
 \begin{document}

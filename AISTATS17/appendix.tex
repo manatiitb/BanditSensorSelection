@@ -35,7 +35,7 @@
 %&=& \Pr\{\hat{Y}^1_t\neq Y_t\}\left( 1-\frac{\Pr\{\hat{Y}^2_t \neq  Y_t, \hat{Y}^1_t\neq Y_t\}}{\Pr\{\hat{Y}^1_t\neq Y_t\}} \right )\\
 %&=& \Pr\{\hat{Y}^1_t\neq Y_t\}-\Pr\{\hat{Y}^2_t \neq  Y_t\}  \;\; \mbox{by contrapositve of  (\ref{eqn:DominanceCondition})} 
 %\end{eqnarray}
-%From Lemma \ref{lma:SuffStat2Action}, mean of the observations $Z_t:=\boldsymbol{1}{\{\hat{Y}_t^1 \neq \hat{Y}_t^2 \}}$ from action $2$ in the SAP is a sufficient statistics to identify the optimal arm. Thus, any SAP only needs to know $Z_t$ in each round, and $Z_t$ are i.i.d with mean $\gamma_1-\gamma_2$.  Our mapping of policies is such that any poilcy for SAP (1-armed bandits) and the derived policy on the 1-armed bandit (SAP) play the sub-optimal arm same number of times.  For the sake of simplicity assume that action $1$ is optimal for SAP  $(\gamma_1> \gamma_2 + c)$ and let a policy $\pi$ on SAP plays it $N_1(T)$ number if times. Then, we have
+%From Lemma \ref{lma:SuffStat2Action}, mean of the observations $Z_t\defeq\boldsymbol{1}{\{\hat{Y}_t^1 \neq \hat{Y}_t^2 \}}$ from action $2$ in the SAP is a sufficient statistics to identify the optimal arm. Thus, any SAP only needs to know $Z_t$ in each round, and $Z_t$ are i.i.d with mean $\gamma_1-\gamma_2$.  Our mapping of policies is such that any poilcy for SAP (1-armed bandits) and the derived policy on the 1-armed bandit (SAP) play the sub-optimal arm same number of times.  For the sake of simplicity assume that action $1$ is optimal for SAP  $(\gamma_1> \gamma_2 + c)$ and let a policy $\pi$ on SAP plays it $N_1(T)$ number if times. Then, we have
 %\[ R^\psi_T(\pi)=\Delta_i\mathbb{E}[N^\psi_1(T)]=(\gamma_1-\gamma_2-c)\mathbb{E}[N_1(T)]\]
 %Let $f(\pi)$ denote the policy for the 1-armed bandit obtained using the mapping (\ref{eqn:SAPto1Bandit}). Now, for the $1$-armed bandit, where the arm with stochastic rewards is optimal, we have
 %\[ R^\phi_T(f(\pi))=(\mu_2-\mu_1)\mathbb{E}[N_1(T)]=(\gamma_1-\gamma_2-c)\mathbb{E}[N^\phi_1(T)]\]
@@ -111,7 +111,7 @@ Consider a CSA-problem with $K=2$ sensors. Let $\mathcal{C}$ be a bounded set an
 
 \subsection{Proof of Theorem \ref{thm:2CSAPRegret}}
 Let $\{x_t,y_t\}_{t\geq 0}$ be an arbitrary sequence of context-label pairs. Consider a stochastic linear bandit where $D_t=\{0, x_t\} $ is a decision set in round $t$. 
-From the previous section, we know that given a context $x$, action $1$ is optimal if $\gamma_1(x)-\gamma_2(x) -c< 0$, otherwise  action $2$ is optimal. Let $\theta:=\theta_1-\theta_2$, then it boils down to check if $x^\prime\theta-c<0$ for each context $x\in \mathcal{C}$. 
+From the previous section, we know that given a context $x$, action $1$ is optimal if $\gamma_1(x)-\gamma_2(x) -c< 0$, otherwise  action $2$ is optimal. Let $\theta\defeq\theta_1-\theta_2$, then it boils down to check if $x^\prime\theta-c<0$ for each context $x\in \mathcal{C}$. 
 
 For all $t$, define $\epsilon_t= \boldsymbol{1}\{\hat{Y}^1_t \neq \hat{Y}^2_t\}-x_t^\prime\theta$. Note that $\epsilon_t \in [0 \;1]$ for all $t$, and since sensors do not have memory, they are conditionally independent given past contexts. Thus, $\{\epsilon_t\}_{t>0}$ are conditionally $R$-sub-Gaussian for some finite $R$.  
 
